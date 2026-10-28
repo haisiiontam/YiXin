@@ -1,0 +1,8 @@
+/* 样式入口：顺序即层叠顺序，令牌 → 基础 → 布局 → 棋盘 → 面板 → 页面 → 响应式。 */
+@import "./tokens.css";
+@import "./base.css";
+@import "./layout.css";
+@import "./board.css";
+@import "./panels.css";
+@import "./pages.css";
+@import "./responsive.css";

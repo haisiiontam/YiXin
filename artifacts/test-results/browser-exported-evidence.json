@@ -1,6 +1,6 @@
 {
   "format": "gomoku-channel-evidence/v1",
-  "exportedAt": "2026-10-27T01:05:36.451Z",
+  "exportedAt": "2026-10-28T12:48:54.980Z",
   "localTeachingOnly": true,
   "domain": {
     "name": "GomokuChannel",
@@ -8,10 +8,10 @@
     "chainId": 31337,
     "verifyingContract": "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab"
   },
-  "channelId": "0xbe8b5af30ebb011f56e07e2765711dcb30125d063c2288599bceda62c910f4f4",
+  "channelId": "0xaf7e8154133cfbc88ade39c1ceaf529ddf7dabf42ce03c3f2b716f71ae8730a3",
   "participants": {
-    "black": "0x5ECA6831dc7333de1d47a520D7fC87EFe69bF1e9",
-    "white": "0x9968ecbbE272A8Ea7F7F16091255D457923767a2"
+    "black": "0x6E262f89B282F9bFE73c5d0416A757e8D93519FC",
+    "white": "0x8d64ff44e1351B7e2E10B904e9d5bB9948aaa36B"
   },
   "stake": 10,
   "checkpoint": {
@@ -26,8 +26,8 @@
       100,
       116
     ],
-    "sigBlack": "0xe4f37468a2880459532556486663f0dfde5c4db13098f559bc4df2cc48680270570982057078f030409a6c8be3d50a0f0b59f1d0afdebc8d55eedc054862657a1b",
-    "sigWhite": "0xc3e3d5042d69d605edab3f0255e68a9211e177f4ccd2ae50e59131b4ec226c481d77471dfdcf9e692a426f5f220702ac095b9e66ae7071cb1c9d0adda16ae4841c"
+    "sigBlack": "0xd8c1ca1b6aa127ea1b9f88d870a488d3b0508c908e16c71898a62e6a4ffc6f94740cee9fe622e6219c761d652b605140a3d1495f34561ac2de2639603cc771121b",
+    "sigWhite": "0xe14d89b6285e01001f291eddd431d8a979099bd6cfbcccb586c76f9614e8196159b3dd087edb680b1effe6a3ce8325d53bdb3e4579a92be301a14620708621cb1c"
   },
   "onchain": {
     "status": "settled",
@@ -49,30 +49,30 @@
   "transactions": [
     {
       "label": "锁定黑方积分",
-      "hash": "0xb1f8d4603f4b4d96a098d619aa6a71e6fcaf15c1915fa5b8187dd63af4179fb7",
-      "gasUsed": "148797",
-      "blockNumber": 58,
-      "timestamp": 1793063132
+      "hash": "0xe98448b729195c7d1179a7cd77cb97d7c6f33a6ff6a9834651b00bbe0c4d9501",
+      "gasUsed": "148785",
+      "blockNumber": 40,
+      "timestamp": 1793191730
     },
     {
       "label": "锁定白方积分",
-      "hash": "0xe541469294b96d593e2c7a153636d16e0ad98a33511bb7efd1bdeddad9b68a7e",
+      "hash": "0xba0ac1467d0de6879d60a25654095f4f81a2c2e6665c0d7e82e042fc293c4fe4",
       "gasUsed": "45697",
-      "blockNumber": 59,
-      "timestamp": 1793063133
+      "blockNumber": 41,
+      "timestamp": 1793191730
     },
     {
       "label": "结算积分",
-      "hash": "0x39faa1920954d40434cf3d01aa9b80b64d1a06d4e24429db7cfe26730b5bc2ad",
-      "gasUsed": "237205",
-      "blockNumber": 60,
-      "timestamp": 1793063135
+      "hash": "0x2c84601ec8c9216a974e0df13f13b59a5daf55f6fadf5a47e558e832b2203e06",
+      "gasUsed": "237193",
+      "blockNumber": 42,
+      "timestamp": 1793191734
     }
   ],
   "initialization": [
     {
       "label": "新钱包注册（每地址一次）",
-      "hash": "0x5eb9769405ae5df2aa56b729d86684324918ee9b6c522b481d5f261cf3d7cfb5",
+      "hash": "0x754574c3d332d989f30b0c6de1b64a935bcd3f3c410c200552da0738352e2853",
       "gasUsed": "72380"
     }
   ],
@@ -81,7 +81,7 @@
     "offchainMoves": 9,
     "baselineTransactions": 11,
     "savedPercent": 72.7,
-    "totalGas": "431699"
+    "totalGas": "431675"
   },
   "trustBoundary": "积分无现实价值；独立保管签名快照，并在挑战期内监控链；中继不可代签；本地开发RPC不适合公网。"
 }

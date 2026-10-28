@@ -1,0 +1,37 @@
+/* 响应式：宽屏双栏，平板收窄侧栏，手机纵向堆叠。 */
+@media (max-width: 1180px) {
+  .workspace { grid-template-columns: 76px minmax(0, 1fr); }
+  .sidebar { padding: 24px 10px; align-items: center; }
+  .sidebar-label, .nav-item > span, .sidebar-note, .sidebar-bottom { display: none; }
+  .nav-item { padding: 12px; }
+  .nav-dot { display: none; }
+  .play-layout, .lab-layout { grid-template-columns: minmax(0, 1fr) 320px; gap: 18px; }
+  .main { padding: 28px 24px 0; }
+}
+@media (max-width: 900px) {
+  .play-layout, .lab-layout, .about-layout { grid-template-columns: 1fr; }
+  .topbar { padding: 12px 18px; }
+  .page-heading h1 { font-size: 26px; }
+  .environment { display: none; }
+}
+@media (max-width: 640px) {
+  .workspace { grid-template-columns: 1fr; }
+  .sidebar { flex-direction: row; justify-content: center; border-right: 0; border-bottom: 1px solid var(--card-line); padding: 8px; order: -1; }
+  .brand small, .network-id, .wallet small { display: none; }
+  .brand strong { font-size: 22px; }
+  .main { padding: 18px 12px 0; }
+  .board-card { padding: 18px 14px 0; }
+  .demo-progress { margin: 0 -14px; padding: 12px 14px; }
+  .board-frame { padding: 22px 0 0 22px; }
+  .stone-no { display: none; }
+  .history-item { grid-template-columns: 44px 1fr; }
+  .comparison > div { grid-template-columns: 1fr; }
+  .tx-row { grid-template-columns: 26px 1fr; }
+  .tx-gas { grid-column: 2; text-align: left; }
+  .about-intro { padding: 22px; }
+  .about-intro h2 { font-size: 24px; }
+  .turn-banner { flex-wrap: wrap; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition: none !important; scroll-behavior: auto !important; }
+}

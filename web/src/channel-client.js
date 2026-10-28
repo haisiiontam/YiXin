@@ -1,6 +1,7 @@
 import { Wallet, JsonRpcProvider, Contract, AbiCoder, keccak256, randomBytes, TypedDataEncoder, verifyTypedData } from 'ethers';
 import { STATE_TYPES, BLACK_WIN, evaluate, movesHex, fromHex, isPrefix, requireExtension, metrics, relayAuthText } from '../../shared/gomoku.mjs';
 import { verifyEvidence } from '../../shared/evidence.mjs';
+import { chooseMove, LEVELS } from '../../shared/ai.mjs';
 const STATUS = ['idle', 'invited', 'active', 'dispute', 'settled', 'cancelled'];
 const STORE = 'gomoku-channel-v1';
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -9,7 +10,7 @@ function readableError(e) { return e.reason || e.shortMessage || e.message || St
 export class ChannelClient {
   constructor() {
     this.listeners = new Set(); this._room = null; this._checkpoint = { moves: [], sigBlack: '', sigWhite: '' }; this._handling = Promise.resolve();
-    this.state = { ready: false, busy: false, error: '', mode: 'player', address: '', points: 0, chainId: 31337, contractAddress: '', channelId: '', inviteUrl: '', role: 0, black: '', white: '', stake: 10, status: 'idle', moves: [], pending: null, winner: 0, terminal: false, reason: '', nextPlayer: 1, deadline: 0, challengePeriod: 60, now: Math.floor(Date.now() / 1000), connected: false, peerConnected: false, autoAck: true, signatures: { black: '', white: '' }, digest: '', transactions: [], events: [], history: [], initialization: [], demoProgress: '', networkName: 'Gomoku Local EVM', metrics: metrics([], []) };
+    this.state = { ready: false, busy: false, error: '', mode: 'player', address: '', points: 0, chainId: 31337, contractAddress: '', channelId: '', inviteUrl: '', role: 0, black: '', white: '', stake: 10, status: 'idle', moves: [], pending: null, winner: 0, terminal: false, reason: '', nextPlayer: 1, deadline: 0, challengePeriod: 60, now: Math.floor(Date.now() / 1000), connected: false, peerConnected: false, autoAck: true, signatures: { black: '', white: '' }, digest: '', transactions: [], events: [], history: [], initialization: [], demoProgress: '', aiLevel: '', aiThinking: false, networkName: 'Gomoku Local EVM', metrics: metrics([], []) };
     try { this.state.history = JSON.parse(localStorage.getItem(`${STORE}:history`) || '[]'); } catch {}
   }
   subscribe(fn) { this.listeners.add(fn); fn(this._snapshot()); return () => this.listeners.delete(fn); }
@@ -39,6 +40,7 @@ export class ChannelClient {
       const raw = activeId && localStorage.getItem(`${STORE}:evidence:${activeId}`);
       if (raw) { try { await this.importEvidence(JSON.parse(raw)); this._log('已从本地证据恢复，可直接进行链上争议', 'success'); } catch (restoreError) { this._log(readableError(restoreError), 'warning'); } }
     } }
+    else await this._resumeAi();
   }
   async _prepareWallet(wallet) {
     await this._api('/api/faucet', { address: wallet.address });
@@ -57,7 +59,8 @@ export class ChannelClient {
   }
   _resetGame() {
     this._checkpoint = { moves: [], sigBlack: '', sigWhite: '' }; this._room = null; this._demoId = null;
-    this._emit({ mode: 'player', channelId: '', inviteUrl: '', role: 0, black: '', white: '', stake: 10, status: 'idle', moves: [], pending: null, winner: 0, terminal: false, reason: '', nextPlayer: 1, deadline: 0, signatures: { black: '', white: '' }, digest: '', transactions: [], events: [], demoProgress: '', peerConnected: false });
+    this._emit({ mode: 'player', channelId: '', inviteUrl: '', role: 0, black: '', white: '', stake: 10, status: 'idle', moves: [], pending: null, winner: 0, terminal: false, reason: '', nextPlayer: 1, deadline: 0, signatures: { black: '', white: '' }, digest: '', transactions: [], events: [], demoProgress: '', aiLevel: '', aiThinking: false, peerConnected: false });
+    this._ai = null;
   }
   async createRoom(stake = 10) {
     return this._busy(async () => {
@@ -182,6 +185,7 @@ export class ChannelClient {
     return receipt;
   }
   async move(position) {
+    if (this.state.mode === 'ai') return this._aiHumanMove(position);
     return this._busy(async () => {
       if (this.state.status !== 'active' || this.state.terminal) throw Error('当前对局不能进行链下落子');
       if (this.state.role !== this.state.nextPlayer) throw Error('请等待对方落子');
@@ -226,12 +230,15 @@ export class ChannelClient {
     const old = this.state.history.findIndex(h => h.id === record.id);
     if (old >= 0) { record.settledAt = this.state.history[old].settledAt; this.state.history[old] = record; }
     else this.state.history.unshift(record);
+    if (this.state.mode === 'ai') { record.aiLevel = this.state.aiLevel; localStorage.removeItem(this._aiSessionKey()); }
     localStorage.setItem(`${STORE}:history`, JSON.stringify(this.state.history));
     localStorage.setItem(`${STORE}:evidence:${record.id}`, JSON.stringify(this.exportEvidence())); this._emit();
   }
   exportEvidence() {
     return { format: 'gomoku-channel-evidence/v1', exportedAt: new Date().toISOString(), localTeachingOnly: true,
       domain: this.domain, channelId: this.state.channelId, participants: { black: this.state.black, white: this.state.white }, stake: this.state.stake,
+      // 人机局标注对手类型（说明性字段，不参与签名核验）。
+      opponent: this.state.mode === 'ai' ? { type: 'local-ai', level: this.state.aiLevel, levelName: LEVELS[this.state.aiLevel]?.name || '' } : undefined,
       checkpoint: structuredClone(this._checkpoint), onchain: { status: this.state.status, moves: this.state.moves, winner: this.state.winner, reason: this.state.reason, deadline: this.state.deadline },
       transactions: structuredClone(this.state.transactions), initialization: structuredClone(this.state.initialization), metrics: structuredClone(this.state.metrics),
       trustBoundary: '积分无现实价值；独立保管签名快照，并在挑战期内监控链；中继不可代签；本地开发RPC不适合公网。' };
@@ -257,6 +264,76 @@ export class ChannelClient {
       this._log(`证据双签和${transactions.length}笔交易已核验；当前为独立证据恢复模式`, 'success');
       return verified;
     });
+  }
+  // ---------- 人机对弈：AI 是第二个本地测试钱包，协议与真人局完全相同 ----------
+  _aiSessionKey() { return `${STORE}:ai-session:${this.config.address}`; }
+  // 人和 AI 各对“完整有序棋谱”做一次 EIP-712 签名，合成一个双签快照。
+  async _signBoth(moves) {
+    const value = { channelId: this._demoId, movesHash: keccak256(movesHex(moves)) };
+    const [mine, theirs] = await Promise.all([this.wallet.signTypedData(this.domain, STATE_TYPES, value), this._ai.wallet.signTypedData(this.domain, STATE_TYPES, value)]);
+    const humanIsBlack = this._ai.humanRole === 1;
+    return { moves, sigBlack: humanIsBlack ? mine : theirs, sigWhite: humanIsBlack ? theirs : mine };
+  }
+  async startAiGame(level = 'adept', humanRole = 1, stake = 10) {
+    return this._busy(async () => {
+      if (!LEVELS[level]) throw Error('未知的 AI 难度');
+      if (!Number.isInteger(stake) || stake < 1) throw Error('对局积分须为正整数');
+      if (['active', 'dispute', 'invited'].includes(this.state.status)) throw Error('请先完成当前对局再开始人机对弈');
+      this._closeSocket(); this._resetGame();
+      const ai = Wallet.createRandom().connect(this.provider);
+      this._emit({ mode: 'ai', aiLevel: level, demoProgress: '正在准备 AI 对手的本地钱包' });
+      await this._prepareWallet(ai);
+      const salt = '0x' + Array.from(randomBytes(32), b => b.toString(16).padStart(2, '0')).join('');
+      const black = humanRole === 1 ? this.wallet : ai, white = humanRole === 1 ? ai : this.wallet;
+      const id = keccak256(AbiCoder.defaultAbiCoder().encode(['address', 'address', 'bytes32'], [black.address, white.address, salt]));
+      this._demoId = id; this._ai = { wallet: ai, level, humanRole };
+      this._emit({ channelId: id, role: humanRole, black: black.address, white: white.address, stake, status: 'invited', demoProgress: '双方锁定积分' });
+      await this._transaction(this.contract.connect(black).openChannel(white.address, stake, salt), '锁定黑方积分');
+      await this._transaction(this.contract.connect(white).joinChannel(id), '锁定白方积分');
+      this._emit({ status: 'active', connected: false, peerConnected: false, demoProgress: '' });
+      localStorage.setItem(this._aiSessionKey(), JSON.stringify({ key: ai.privateKey, channelId: id, level, humanRole }));
+      this._applyCheckpoint(); await this.refresh();
+      this._log(`人机对局开始：对手「${LEVELS[level].name}」，每手仍由双方 EIP-712 签名，链上只有开通与结算`, 'success');
+      if (humanRole === 2) await this._aiReply();
+    });
+  }
+  async _aiHumanMove(position) {
+    return this._busy(async () => {
+      if (this.state.status !== 'active' || this.state.terminal) throw Error('当前对局不能落子');
+      if (this.state.role !== this.state.nextPlayer) throw Error('请等待 AI 落子');
+      const next = [...this._checkpoint.moves, position]; requireExtension(this._checkpoint.moves, next);
+      this._checkpoint = await this._signBoth(next); this._applyCheckpoint();
+      this._log(`第${next.length}手已由你和 AI 双方签名确认，全程未发送链上交易`, 'success');
+      if (!this.state.terminal) await this._aiReply();
+    });
+  }
+  async _aiReply() {
+    this._emit({ aiThinking: true });
+    try {
+      await pause(380); // 给界面一次重绘机会，并让节奏更像“对手在思考”
+      const level = this._ai.level, moves = this._checkpoint.moves;
+      const position = chooseMove(moves, { level, timeBudgetMs: LEVELS[level].timeBudgetMs });
+      const next = [...moves, position]; requireExtension(moves, next);
+      this._checkpoint = await this._signBoth(next); this._applyCheckpoint();
+      this._log(`AI 落子并与你双签：第${next.length}手`);
+    } finally { this._emit({ aiThinking: false }); }
+  }
+  // 刷新页面后恢复未完成的人机局：私钥只存于本地浏览器，棋谱与双签重新核验后才接受。
+  async _resumeAi() {
+    const raw = localStorage.getItem(this._aiSessionKey()); if (!raw) return;
+    try {
+      const s = JSON.parse(raw), c = await this.contract.getChannel(s.channelId);
+      if (Number(c.status) !== 2) { localStorage.removeItem(this._aiSessionKey()); return; }
+      const evidence = JSON.parse(localStorage.getItem(`${STORE}:evidence:${s.channelId}`) || 'null');
+      if (!evidence) throw Error('缺少本地证据');
+      verifyEvidence(evidence, { chainId: this.config.chainId, verifyingContract: this.config.address });
+      this._ai = { wallet: new Wallet(s.key, this.provider), level: s.level, humanRole: s.humanRole };
+      this._demoId = s.channelId; this._checkpoint = structuredClone(evidence.checkpoint);
+      this._emit({ mode: 'ai', aiLevel: s.level, channelId: s.channelId, role: s.humanRole, black: c.black, white: c.white, stake: Number(c.stake), status: 'active', transactions: evidence.transactions || [] });
+      this._applyCheckpoint(); await this.refresh();
+      this._log('已恢复未完成的人机对局（棋谱与双签取自本地证据并重新核验）', 'success');
+      if (!this.state.terminal && this._checkpoint.moves.length % 2 + 1 !== s.humanRole) await this._aiReply();
+    } catch (e) { localStorage.removeItem(this._aiSessionKey()); this._log(`人机对局恢复失败：${readableError(e)}`, 'warning'); }
   }
   async runDemo() {
     return this._busy(async () => {

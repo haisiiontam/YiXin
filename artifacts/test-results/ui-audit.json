@@ -1,0 +1,69 @@
+{
+  "generatedAt": "2026-10-28T13:00:14.184Z",
+  "url": "http://127.0.0.1:4191",
+  "checks": [
+    {
+      "label": "light/对局大厅",
+      "smallText": [],
+      "lowContrast": [],
+      "unnamed": [],
+      "overflowX": false
+    },
+    {
+      "label": "light/通道实验室",
+      "smallText": [],
+      "lowContrast": [],
+      "unnamed": [],
+      "overflowX": false
+    },
+    {
+      "label": "light/对局记录",
+      "smallText": [],
+      "lowContrast": [],
+      "unnamed": [],
+      "overflowX": false
+    },
+    {
+      "label": "light/项目说明",
+      "smallText": [],
+      "lowContrast": [],
+      "unnamed": [],
+      "overflowX": false
+    },
+    {
+      "label": "dark/对局大厅",
+      "smallText": [],
+      "lowContrast": [],
+      "unnamed": [],
+      "overflowX": false
+    },
+    {
+      "label": "dark/通道实验室",
+      "smallText": [],
+      "lowContrast": [],
+      "unnamed": [],
+      "overflowX": false
+    },
+    {
+      "label": "dark/对局记录",
+      "smallText": [],
+      "lowContrast": [],
+      "unnamed": [],
+      "overflowX": false
+    },
+    {
+      "label": "dark/项目说明",
+      "smallText": [],
+      "lowContrast": [],
+      "unnamed": [],
+      "overflowX": false
+    }
+  ],
+  "boardButtons": 225,
+  "failures": [],
+  "summary": {
+    "pages": 8,
+    "failures": 0,
+    "smallTextPages": 0
+  }
+}

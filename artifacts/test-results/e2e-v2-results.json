@@ -1,0 +1,95 @@
+{
+  "generatedAt": "2026-10-28T13:02:16.897Z",
+  "url": "http://127.0.0.1:4191",
+  "browser": "Microsoft Edge via Playwright",
+  "tests": [
+    {
+      "name": "新版首页：棋盘 225 点、主题与音效开关、人机对弈入口可见",
+      "status": "passed",
+      "durationMs": 808
+    },
+    {
+      "name": "人机对弈：人类执黑点击棋盘，AI 每手回应，全程双签，终局链上结算",
+      "status": "passed",
+      "durationMs": 12295
+    },
+    {
+      "name": "链上积分守恒：胜方 +stake、负方 -stake，且合约结果与证据一致",
+      "status": "passed",
+      "durationMs": 111
+    },
+    {
+      "name": "复盘：滑块回看第 k 手的棋盘等于前 k 手，回看不产生新交易",
+      "status": "passed",
+      "durationMs": 445
+    },
+    {
+      "name": "夜间主题：切换后 data-theme=dark，刷新后偏好保持",
+      "status": "passed",
+      "durationMs": 641
+    },
+    {
+      "name": "对局证书：导出 SVG，内容含通道摘要且不含私钥字段",
+      "status": "passed",
+      "durationMs": 249
+    },
+    {
+      "name": "形势提示：请求提示给出 3 个空位建议，且不发送交易",
+      "status": "passed",
+      "durationMs": 1693
+    },
+    {
+      "name": "刷新恢复：未完成的人机局重新核验本地双签证据后继续，棋谱不丢",
+      "status": "passed",
+      "durationMs": 267
+    },
+    {
+      "name": "移动端 390px 无横向溢出（新版布局）",
+      "status": "passed",
+      "durationMs": 832
+    }
+  ],
+  "errors": [],
+  "screenshots": [
+    "docs\\assets\\v2-01-lobby-light.png",
+    "docs\\assets\\v2-02-ai-game-end.png",
+    "docs\\assets\\v2-03-ai-settled.png",
+    "docs\\assets\\v2-04-review.png",
+    "docs\\assets\\v2-05-dark.png",
+    "docs\\assets\\v2-06-hint.png",
+    "docs\\assets\\v2-07-mobile.png"
+  ],
+  "aiGame": {
+    "moves": 35,
+    "transactions": [
+      {
+        "label": "锁定黑方积分",
+        "gasUsed": "148773"
+      },
+      {
+        "label": "锁定白方积分",
+        "gasUsed": "45697"
+      },
+      {
+        "label": "结算积分",
+        "gasUsed": "684909"
+      }
+    ],
+    "channelId": "0x84cc9c772382849df41ada5f42ce9a25da2e4911fa72a69cb4532262ce71a837",
+    "winner": 1,
+    "pointsBlack": 1010,
+    "pointsWhite": 990
+  },
+  "certificate": {
+    "file": "artifacts/test-results/v2-certificate.svg",
+    "bytes": 13490
+  },
+  "aiResume": {
+    "movesBefore": 1,
+    "movesAfter": 1
+  },
+  "summary": {
+    "passed": 9,
+    "failed": 0
+  }
+}

@@ -39,3 +39,23 @@
 - 独立生成需求分析与项目设计Word，准备中文启动脚本、试用空表、交付状态矩阵、未部署的本地介绍页和源码归档脚本。
 - 更新8份课程材料manifest的PDF提取状态和页数；原始材料只读未改。归档排除课程提取、数据库、缓存、权限恢复和密钥，只保留工程与捕获测试证据。
 - 本地Git真实提交01eca1b、4ce42fb保存实现与测试里程碑，报告图4-1对应这两个当时已有提交。报告/交付整理另作实际提交，不倒填历史。
+
+## 迭代 2（2026-10-28）：人机对弈、复盘、证书与视觉重做
+
+计划与取舍见 `docs/iteration-2-plan.md`，决策见 `docs/adr-iteration-2.md`，问题复盘见 `docs/bug-retrospective.md`。
+
+- **基线**：解压 `弈信-交付包-20261028.zip`（SHA256 `42db2625…ccbc2f`）到 `app/`，建立本地 Git 基线提交 `04edaa5`。重装依赖后原有合约 11 组、协议 4 组共 15/15 通过。
+- **未改动**：合约、`shared/gomoku.mjs`、`shared/evidence.mjs`、服务端，因此原合约测试与报告数据继续有效。
+- **新增共享模块**：`shared/analysis.mjs`（棋型识别、形势曲线、威胁）、`shared/ai.mjs`（三档 AI、提示、点评）、`shared/certificate.mjs`（SVG 证书）。AI 与证书由子代理实现，我独立复跑测试并复核了主流程。
+- **客户端**：`ChannelClient` 新增 `startAiGame`、`_aiHumanMove`、`_aiReply`、`_resumeAi`；人机局证据带 `opponent` 标注。
+- **前端**：`App.jsx` 拆为 `components/*`，样式拆为 7 个文件，加入日/夜主题、合成音效、复盘时间轴、形势曲线、威胁标记、提示、手数显示、历史页证书导出。
+- **实测结果**
+  - 单元测试 53/53 通过（合约 11、协议 4、AI 30、证书 8），原始日志 `artifacts/test-results/unit-all-iter2.log`。
+  - 新增浏览器 E2E 9/9 通过（`e2e-v2-results.json`）：35 手人机局为 open+join+settle 共 3 笔交易，gas 148773 / 45697 / 684909，结算后黑 1010、白 990。
+  - 原有浏览器 E2E 8/8 在新界面上通过。
+  - 界面审计 `ui-audit.json`：4 页 × 2 主题，对比度失败 0 项，小于 12px 文字 0 处，横向溢出 0 处；审计第一次运行曾发现 12 项对比度问题，已修复。
+- **局限**
+  - 无法查看截图，视觉风格未经我目测，仅有程序化审计。
+  - E2E 的“人类”一方由 master 档 AI 通过点击棋盘代操作，不是真人测试。
+  - Docker：见下一条，镜像尚未用新代码重建。
+- **Docker 现状（如实）**：本轮开始时 `E:\Gomoku` 下没有 `.tools`、`.runtime`、`deploy`，`com.docker.service` 仍注册在系统中但指向不存在的 `E:\Gomoku\.tools\Docker`，因此引擎不可用。新版本只在本地 Node 服务（端口 4191）上做了浏览器验证。
