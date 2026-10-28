@@ -59,3 +59,4 @@
   - E2E 的“人类”一方由 master 档 AI 通过点击棋盘代操作，不是真人测试。
   - Docker：见下一条，镜像尚未用新代码重建。
 - **Docker 现状（如实）**：本轮开始时 `E:\Gomoku` 下没有 `.tools`、`.runtime`、`deploy`，`com.docker.service` 仍注册在系统中但指向不存在的 `E:\Gomoku\.tools\Docker`，因此引擎不可用。新版本只在本地 Node 服务（端口 4191）上做了浏览器验证。
+- **证据覆盖说明**：重跑原有测试时，`artifacts/test-results/` 下的 `contract-results.json`、`protocol-results.json`、`e2e-results.json` 以及 `docs/assets/01-08` 截图被新一轮结果覆盖（提交 `909a856` 中显示为修改）。交付包里的原始版本取自基线提交 `04edaa5`，另存于 `artifacts/test-results/baseline-v1/` 与 `docs/assets/baseline-v1/`。其中 `contract-results.json` 的 `generatedAt` 为 2026-10-27T11:36:08Z，与 `testing.md` 引用的 00:58:25Z 不同，说明交付包里的版本是后来重跑的；`testing.md` 的数字未据此更新，以原始 JSON 为准。
