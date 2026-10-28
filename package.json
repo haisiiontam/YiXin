@@ -1,0 +1,29 @@
+{
+  "name": "gomoku-channel-lab",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "可验证结算的状态通道五子棋课程设计",
+  "scripts": {
+    "compile": "node scripts/compile.mjs",
+    "build": "vite build",
+    "start": "node server/index.mjs",
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "test:e2e": "node scripts/e2e.mjs",
+    "verify": "node scripts/verify.mjs"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "5.4.0",
+    "ethers": "6.17.0",
+    "express": "5.1.0",
+    "ganache": "7.9.2",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "ws": "8.18.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1",
+    "solc": "0.8.30",
+    "vite": "7.1.12"
+  }
+}

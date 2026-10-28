@@ -1,0 +1,11 @@
+﻿{
+  "valid": true,
+  "cryptographicOnly": true,
+  "channelId": "0xbe8b5af30ebb011f56e07e2765711dcb30125d063c2288599bceda62c910f4f4",
+  "movesCount": 9,
+  "winner": 1,
+  "terminal": true,
+  "digest": "0x2bc83483a5e705e83e7af521043eac39026486294b065c55aea6bf5e86f93257",
+  "black": "0x5ECA6831dc7333de1d47a520D7fC87EFe69bF1e9",
+  "white": "0x9968ecbbE272A8Ea7F7F16091255D457923767a2"
+}

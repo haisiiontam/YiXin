@@ -1,0 +1,16 @@
+node_modules/
+.cache/
+.tmp/
+.vendor/
+web/dist/
+artifacts/contracts/
+artifacts/runtime/
+artifacts/permission-recovery/
+artifacts/playwright/
+*.log
+__pycache__/
+.env
+.dsh-office-*/
+reports/pdf-opening-lines.txt
+artifacts/office-preview-path.txt
+deliverables/

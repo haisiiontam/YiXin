@@ -1,0 +1,82 @@
+[
+  {
+    "name": "@openzeppelin/contracts",
+    "version": "5.4.0",
+    "installedVersion": "5.4.0",
+    "license": "MIT",
+    "repository": "https://github.com/OpenZeppelin/openzeppelin-contracts",
+    "licenseFile": ""
+  },
+  {
+    "name": "ethers",
+    "version": "6.17.0",
+    "installedVersion": "6.17.0",
+    "license": "MIT",
+    "repository": "https://github.com/ethers-io/ethers.js",
+    "licenseFile": "node_modules/ethers/LICENSE.md"
+  },
+  {
+    "name": "express",
+    "version": "5.1.0",
+    "installedVersion": "5.1.0",
+    "license": "MIT",
+    "repository": "expressjs/express",
+    "licenseFile": "node_modules/express/LICENSE"
+  },
+  {
+    "name": "ganache",
+    "version": "7.9.2",
+    "installedVersion": "7.9.2",
+    "license": "MIT",
+    "repository": "https://github.com/trufflesuite/ganache",
+    "licenseFile": "node_modules/ganache/LICENSE"
+  },
+  {
+    "name": "react",
+    "version": "19.1.1",
+    "installedVersion": "19.1.1",
+    "license": "MIT",
+    "repository": "https://github.com/facebook/react",
+    "licenseFile": "node_modules/react/LICENSE"
+  },
+  {
+    "name": "react-dom",
+    "version": "19.1.1",
+    "installedVersion": "19.1.1",
+    "license": "MIT",
+    "repository": "https://github.com/facebook/react",
+    "licenseFile": "node_modules/react-dom/LICENSE"
+  },
+  {
+    "name": "ws",
+    "version": "8.18.3",
+    "installedVersion": "8.18.3",
+    "license": "MIT",
+    "repository": "https://github.com/websockets/ws",
+    "licenseFile": "node_modules/ws/LICENSE"
+  },
+  {
+    "name": "@playwright/test",
+    "version": "1.56.1",
+    "installedVersion": "1.56.1",
+    "license": "Apache-2.0",
+    "repository": "https://github.com/microsoft/playwright",
+    "licenseFile": "node_modules/@playwright/test/LICENSE"
+  },
+  {
+    "name": "solc",
+    "version": "0.8.30",
+    "installedVersion": "0.8.30",
+    "license": "MIT",
+    "repository": "https://github.com/ethereum/solc-js",
+    "licenseFile": "node_modules/solc/LICENSE"
+  },
+  {
+    "name": "vite",
+    "version": "7.1.12",
+    "installedVersion": "7.1.12",
+    "license": "MIT",
+    "repository": "https://github.com/vitejs/vite",
+    "licenseFile": "node_modules/vite/LICENSE.md"
+  }
+]

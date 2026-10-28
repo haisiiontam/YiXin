@@ -1,0 +1,1345 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-27T11:36:08.006Z",
+  "environment": {
+    "node": "v22.9.0",
+    "chainId": 31337,
+    "hardfork": "shanghai",
+    "transport": "in-memory EIP1193 + ethers BrowserProvider",
+    "challengePeriod": 30,
+    "invitePeriod": 60,
+    "solc": "0.8.30+commit.73712a01.Emscripten.clang",
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    }
+  },
+  "tests": [
+    {
+      "name": "registration, escrow, access control and invitation deadline refund conserve issuance",
+      "status": "passed",
+      "durationMs": 1138
+    },
+    {
+      "name": "join requires registered white and enough liquid points; locks across channels remain conserved",
+      "status": "passed",
+      "durationMs": 822
+    },
+    {
+      "name": "full replay validates black and white wins, all directions, edge wrap, illegal histories and legal draw",
+      "status": "passed",
+      "durationMs": 17751
+    },
+    {
+      "name": "EIP712 domain, contract, channel, move order, signer identity and malformed signatures are isolated",
+      "status": "passed",
+      "durationMs": 3731
+    },
+    {
+      "name": "white victory and full-board draw settle actual locked points exactly once",
+      "status": "passed",
+      "durationMs": 12863
+    },
+    {
+      "name": "unsigned empty challenge, authorization, turn, legality and force-last-move refusal recovery",
+      "status": "passed",
+      "durationMs": 3151
+    },
+    {
+      "name": "dispute escalation rejects equal, stale and divergent checkpoints and stale terminal settlements",
+      "status": "passed",
+      "durationMs": 4893
+    },
+    {
+      "name": "deadline equality rejects moves and challenges and awards timeout to the waiting player",
+      "status": "passed",
+      "durationMs": 1771
+    },
+    {
+      "name": "terminal signed challenge immediately settles; compatible signed terminal can settle after dispute expiry",
+      "status": "passed",
+      "durationMs": 3970
+    },
+    {
+      "name": "failed on-chain transaction is recorded and preserves balances and game state",
+      "status": "passed",
+      "durationMs": 651
+    },
+    {
+      "name": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "status": "passed",
+      "durationMs": 9028
+    }
+  ],
+  "transactions": [
+    {
+      "scenario": "registration, escrow, access control and invitation deadline refund conserve issuance",
+      "category": "deployment",
+      "action": "deploy GomokuChannel",
+      "hash": "0x046d75846a5d8ed17d0d034e9dc9801a18086fac3ec4e1dca925fbcb66713a0f",
+      "blockNumber": 1,
+      "gasUsed": "2258206",
+      "status": 1
+    },
+    {
+      "scenario": "registration, escrow, access control and invitation deadline refund conserve issuance",
+      "category": "registration",
+      "action": "register 0",
+      "hash": "0x3165f698ffb1d956736b7e2bbb4b1d073b8fec2a66fef82e1e0a86573b35b080",
+      "blockNumber": 2,
+      "gasUsed": "89480",
+      "status": 1
+    },
+    {
+      "scenario": "registration, escrow, access control and invitation deadline refund conserve issuance",
+      "category": "registration",
+      "action": "register 1",
+      "hash": "0x759624d1d6a320872b8766adfb1a820c8d7908abb79826a9d8c264345aca0d29",
+      "blockNumber": 3,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "registration, escrow, access control and invitation deadline refund conserve issuance",
+      "category": "registration",
+      "action": "register 2",
+      "hash": "0x24cbaa6747067096b86693757059ceaf93f29a7f521287b7ef23ea423a941e98",
+      "blockNumber": 4,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "registration, escrow, access control and invitation deadline refund conserve issuance",
+      "category": "game",
+      "action": "open",
+      "hash": "0x9d6525d864e4cb54e43c65befc09f018d55e9e8cef06c09db8378ab7f1f57ada",
+      "blockNumber": 5,
+      "gasUsed": "165897",
+      "status": 1
+    },
+    {
+      "scenario": "registration, escrow, access control and invitation deadline refund conserve issuance",
+      "category": "game",
+      "action": "cancel at exact deadline",
+      "hash": "0x63de7f9b9311541c9a94b0fefea551c4b337665082d6f66ba80e595fb389081d",
+      "blockNumber": 8,
+      "gasUsed": "40327",
+      "status": 1
+    },
+    {
+      "scenario": "join requires registered white and enough liquid points; locks across channels remain conserved",
+      "category": "deployment",
+      "action": "deploy GomokuChannel",
+      "hash": "0x0f51ffb91ff1f3045d309d28fcc7e3c7c8003c1cbc45c00bcda51256948f5f1a",
+      "blockNumber": 9,
+      "gasUsed": "2258206",
+      "status": 1
+    },
+    {
+      "scenario": "join requires registered white and enough liquid points; locks across channels remain conserved",
+      "category": "registration",
+      "action": "register 0",
+      "hash": "0x0fc584735dad37956bf05415ff64e4281436e1fe663e32810714de39ed74424e",
+      "blockNumber": 10,
+      "gasUsed": "89480",
+      "status": 1
+    },
+    {
+      "scenario": "join requires registered white and enough liquid points; locks across channels remain conserved",
+      "category": "registration",
+      "action": "register 1",
+      "hash": "0x6f7ba0fae318ebc5ef36071434654e22f741a82893069c5db086a43340bc9fa0",
+      "blockNumber": 11,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "join requires registered white and enough liquid points; locks across channels remain conserved",
+      "category": "registration",
+      "action": "register 2",
+      "hash": "0x7b9f84ad891a9d6805484cd47c73a848933adbf4ac9041907f86eb7bd5ab2b7c",
+      "blockNumber": 12,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "join requires registered white and enough liquid points; locks across channels remain conserved",
+      "category": "game",
+      "action": "open",
+      "hash": "0xf7b4f0c9601e9ce9bc93d06dc04c2c840cc03e6dd898c324af526398bfa74bbd",
+      "blockNumber": 13,
+      "gasUsed": "161109",
+      "status": 1
+    },
+    {
+      "scenario": "join requires registered white and enough liquid points; locks across channels remain conserved",
+      "category": "game",
+      "action": "join",
+      "hash": "0x20770470afc9692f9f9e46c02c7f0015c5a37bbacf3e98ad740c52a5443ee96c",
+      "blockNumber": 14,
+      "gasUsed": "40897",
+      "status": 1
+    },
+    {
+      "scenario": "join requires registered white and enough liquid points; locks across channels remain conserved",
+      "category": "game",
+      "action": "second black opens",
+      "hash": "0x67af3e62fa576ec1833d9e69d67a7f1ee4219ea7615ff9889e38479ba8e7c995",
+      "blockNumber": 15,
+      "gasUsed": "148797",
+      "status": 1
+    },
+    {
+      "scenario": "join requires registered white and enough liquid points; locks across channels remain conserved",
+      "category": "game",
+      "action": "invite unregistered white",
+      "hash": "0xbb116a2a6e74ac32d438072ab88d9f78d4345d74dbd2e26a64519a1dd40b8903",
+      "blockNumber": 16,
+      "gasUsed": "148785",
+      "status": 1
+    },
+    {
+      "scenario": "full replay validates black and white wins, all directions, edge wrap, illegal histories and legal draw",
+      "category": "deployment",
+      "action": "deploy GomokuChannel",
+      "hash": "0xda220e35061109426c0835f548e02f261e9dc904da3de3948df91604d3992664",
+      "blockNumber": 17,
+      "gasUsed": "2258206",
+      "status": 1
+    },
+    {
+      "scenario": "full replay validates black and white wins, all directions, edge wrap, illegal histories and legal draw",
+      "category": "registration",
+      "action": "register 0",
+      "hash": "0xf355a61b92e7fa10cea4b7423921b829d8efef987c8bb3189db9cb1c387cae14",
+      "blockNumber": 18,
+      "gasUsed": "89480",
+      "status": 1
+    },
+    {
+      "scenario": "full replay validates black and white wins, all directions, edge wrap, illegal histories and legal draw",
+      "category": "registration",
+      "action": "register 1",
+      "hash": "0x1a3a0450eb46d3ce07b16a8dca2232492099dc08f320fc8aaff8cf1db6a1cd2a",
+      "blockNumber": 19,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "full replay validates black and white wins, all directions, edge wrap, illegal histories and legal draw",
+      "category": "registration",
+      "action": "register 2",
+      "hash": "0x73434e5bed22a10ef1ee2f2eb1d8f96f03240baed994f83788b3e7874c693f8f",
+      "blockNumber": 20,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "EIP712 domain, contract, channel, move order, signer identity and malformed signatures are isolated",
+      "category": "deployment",
+      "action": "deploy GomokuChannel",
+      "hash": "0xba32680cce749ea079656d6bdce5e632b095e0068f9e57846f12b9d7a9b1d331",
+      "blockNumber": 21,
+      "gasUsed": "2258206",
+      "status": 1
+    },
+    {
+      "scenario": "EIP712 domain, contract, channel, move order, signer identity and malformed signatures are isolated",
+      "category": "registration",
+      "action": "register 0",
+      "hash": "0x25fd96dbf0ee6d489bf397d6a130474967299b63f512ded0d7a06da227c59740",
+      "blockNumber": 22,
+      "gasUsed": "89480",
+      "status": 1
+    },
+    {
+      "scenario": "EIP712 domain, contract, channel, move order, signer identity and malformed signatures are isolated",
+      "category": "registration",
+      "action": "register 1",
+      "hash": "0x77ac3088180c4353831748f102da7c737cd04f70d56b457fba45ce718bc5fded",
+      "blockNumber": 23,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "EIP712 domain, contract, channel, move order, signer identity and malformed signatures are isolated",
+      "category": "registration",
+      "action": "register 2",
+      "hash": "0x6f6509fb3afe30a68af63cfec7845ad8cef175f169007ba9c44558b96b4930c3",
+      "blockNumber": 24,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "EIP712 domain, contract, channel, move order, signer identity and malformed signatures are isolated",
+      "category": "game",
+      "action": "open",
+      "hash": "0xf94e4a94665a3664fcc56c34a178b95c18cce46cb20eb13cc8d69557924acf72",
+      "blockNumber": 25,
+      "gasUsed": "165897",
+      "status": 1
+    },
+    {
+      "scenario": "EIP712 domain, contract, channel, move order, signer identity and malformed signatures are isolated",
+      "category": "game",
+      "action": "join",
+      "hash": "0xdf301b4b97b97c9669858cbb6fc167b8e20018f4f5dee145d3da1278cad06c03",
+      "blockNumber": 26,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "scenario": "EIP712 domain, contract, channel, move order, signer identity and malformed signatures are isolated",
+      "category": "game",
+      "action": "open",
+      "hash": "0xd60e29ae6ce2df7cc58eba1d469d40733163e926e7fbb7777e6d963211ff3701",
+      "blockNumber": 27,
+      "gasUsed": "148797",
+      "status": 1
+    },
+    {
+      "scenario": "EIP712 domain, contract, channel, move order, signer identity and malformed signatures are isolated",
+      "category": "game",
+      "action": "join",
+      "hash": "0x84e65645e8934d78c18a1924bacf0a1e962a17847a2a8eb1d9eef0095e797563",
+      "blockNumber": 28,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "scenario": "EIP712 domain, contract, channel, move order, signer identity and malformed signatures are isolated",
+      "category": "deployment",
+      "action": "deploy GomokuChannel",
+      "hash": "0x9f5e0c04e28003087023b550dade8c3f14f304f8fd550a1ba39f7a0ce6aa72ac",
+      "blockNumber": 29,
+      "gasUsed": "2258206",
+      "status": 1
+    },
+    {
+      "scenario": "EIP712 domain, contract, channel, move order, signer identity and malformed signatures are isolated",
+      "category": "registration",
+      "action": "register 0",
+      "hash": "0x9732687d7684211e3107a9f7ca249c3d0d97bc455b92cf9f7c303a6580f42c50",
+      "blockNumber": 30,
+      "gasUsed": "89480",
+      "status": 1
+    },
+    {
+      "scenario": "EIP712 domain, contract, channel, move order, signer identity and malformed signatures are isolated",
+      "category": "registration",
+      "action": "register 1",
+      "hash": "0x5cfa9b8b327338ce01606c1bff850429e6fd2e1ff4d68352d212d6bd2cac7e2a",
+      "blockNumber": 31,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "EIP712 domain, contract, channel, move order, signer identity and malformed signatures are isolated",
+      "category": "registration",
+      "action": "register 2",
+      "hash": "0x90155caef62ee2b611806b5268b1c8a57842faa8454f804e650d1a6ce336ec4c",
+      "blockNumber": 32,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "EIP712 domain, contract, channel, move order, signer identity and malformed signatures are isolated",
+      "category": "game",
+      "action": "same id on another contract open",
+      "hash": "0x77856b4d6fc88cc41fc27f2716810b747336ef7d5f065a27aa66e23d0188f25d",
+      "blockNumber": 33,
+      "gasUsed": "165897",
+      "status": 1
+    },
+    {
+      "scenario": "EIP712 domain, contract, channel, move order, signer identity and malformed signatures are isolated",
+      "category": "game",
+      "action": "same id on another contract join",
+      "hash": "0x8116a0b027e59b200869702c0ee92c4f1181ef0a5a3973e43f3aca60bb1c6ed8",
+      "blockNumber": 34,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "scenario": "EIP712 domain, contract, channel, move order, signer identity and malformed signatures are isolated",
+      "category": "game",
+      "action": "valid black settlement",
+      "hash": "0x3c7d22cb676ec066c815431f88c17420d25eee6e4592c8a09cdc49946d5cf072",
+      "blockNumber": 35,
+      "gasUsed": "229349",
+      "status": 1
+    },
+    {
+      "scenario": "white victory and full-board draw settle actual locked points exactly once",
+      "category": "deployment",
+      "action": "deploy GomokuChannel",
+      "hash": "0xb5d0170e191bebedef6002ed8d716cb35b117eaa460b0607c6962d13e3747663",
+      "blockNumber": 36,
+      "gasUsed": "2258206",
+      "status": 1
+    },
+    {
+      "scenario": "white victory and full-board draw settle actual locked points exactly once",
+      "category": "registration",
+      "action": "register 0",
+      "hash": "0xcdc7f37fd9b2373282eb3966a2d284102d170519fb220e18c401255da33af5c3",
+      "blockNumber": 37,
+      "gasUsed": "89480",
+      "status": 1
+    },
+    {
+      "scenario": "white victory and full-board draw settle actual locked points exactly once",
+      "category": "registration",
+      "action": "register 1",
+      "hash": "0xc14a86be59d1e78245d5544370972f2b7f557cce606a9670262f47af848b57b9",
+      "blockNumber": 38,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "white victory and full-board draw settle actual locked points exactly once",
+      "category": "registration",
+      "action": "register 2",
+      "hash": "0xf2e96b5a809e5b77f62056fe651bb2a198dbc2fabbb194b3e21e59ca520df16d",
+      "blockNumber": 39,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "white victory and full-board draw settle actual locked points exactly once",
+      "category": "game",
+      "action": "open",
+      "hash": "0xbbd3210ccef447e612663548e139aedb7b59272850374e4fc1595f6ae2992622",
+      "blockNumber": 40,
+      "gasUsed": "165897",
+      "status": 1
+    },
+    {
+      "scenario": "white victory and full-board draw settle actual locked points exactly once",
+      "category": "game",
+      "action": "join",
+      "hash": "0xd55867dda2160094c23ee9c4b78b5a7d8675e9e2e52d96c94c4a2304ba8ceb76",
+      "blockNumber": 41,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "scenario": "white victory and full-board draw settle actual locked points exactly once",
+      "category": "game",
+      "action": "white settlement",
+      "hash": "0x5d6c298499d16a1a92f4646bf07de09eb07cf85ba826c66ab7475cecf5138990",
+      "blockNumber": 42,
+      "gasUsed": "236499",
+      "status": 1
+    },
+    {
+      "scenario": "white victory and full-board draw settle actual locked points exactly once",
+      "category": "game",
+      "action": "open",
+      "hash": "0x3801b9f6c6ee39db1d008324a9c89fbe65c1c2ff162b71719c1cfed7f1416f12",
+      "blockNumber": 43,
+      "gasUsed": "165897",
+      "status": 1
+    },
+    {
+      "scenario": "white victory and full-board draw settle actual locked points exactly once",
+      "category": "game",
+      "action": "join",
+      "hash": "0x5f4eafc594b71b16acce817f7fcf492cc51174998bb3d81b059ad78a6788acc6",
+      "blockNumber": 44,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "scenario": "white victory and full-board draw settle actual locked points exactly once",
+      "category": "game",
+      "action": "draw settlement 225 moves",
+      "hash": "0xd70b542ffe86704719d6b2afa51d0b7e45b8bb38c125b55608de769f7f2fbb64",
+      "blockNumber": 45,
+      "gasUsed": "3550645",
+      "status": 1
+    },
+    {
+      "scenario": "unsigned empty challenge, authorization, turn, legality and force-last-move refusal recovery",
+      "category": "deployment",
+      "action": "deploy GomokuChannel",
+      "hash": "0x7961984d4570170dd6a56c34335b2bf35046208aa3a28d3c25fb90531a96ed77",
+      "blockNumber": 46,
+      "gasUsed": "2258206",
+      "status": 1
+    },
+    {
+      "scenario": "unsigned empty challenge, authorization, turn, legality and force-last-move refusal recovery",
+      "category": "registration",
+      "action": "register 0",
+      "hash": "0x9231d7381c9cfa8fb591055ed839d27e7b2d8a7dd8be44946b3967feaf2c12b0",
+      "blockNumber": 47,
+      "gasUsed": "89480",
+      "status": 1
+    },
+    {
+      "scenario": "unsigned empty challenge, authorization, turn, legality and force-last-move refusal recovery",
+      "category": "registration",
+      "action": "register 1",
+      "hash": "0x78cf1d5cfd646b0969f5ca9e85abd490f2f4b991571859f21c84c63e62b2b22f",
+      "blockNumber": 48,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "unsigned empty challenge, authorization, turn, legality and force-last-move refusal recovery",
+      "category": "registration",
+      "action": "register 2",
+      "hash": "0x957d653b0c345ea60370da35f385a1772b562639fa745af5a9a5b964c5fe7cc3",
+      "blockNumber": 49,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "unsigned empty challenge, authorization, turn, legality and force-last-move refusal recovery",
+      "category": "game",
+      "action": "open",
+      "hash": "0xa8b562405dd945a7fb6df0466b1bdb4dcb2d6c9b3005a133716858f5e695b069",
+      "blockNumber": 50,
+      "gasUsed": "165897",
+      "status": 1
+    },
+    {
+      "scenario": "unsigned empty challenge, authorization, turn, legality and force-last-move refusal recovery",
+      "category": "game",
+      "action": "join",
+      "hash": "0xf39f95e1c686eb7012fe2488f070df5ab1610410280f51a32b6cd429dd23f813",
+      "blockNumber": 51,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "scenario": "unsigned empty challenge, authorization, turn, legality and force-last-move refusal recovery",
+      "category": "game",
+      "action": "empty unsigned challenge",
+      "hash": "0x4680b48103f897d8f5fb0b75a01bb21f2395e1d6d4278a7a24172bce924b8043",
+      "blockNumber": 52,
+      "gasUsed": "59375",
+      "status": 1
+    },
+    {
+      "scenario": "unsigned empty challenge, authorization, turn, legality and force-last-move refusal recovery",
+      "category": "game",
+      "action": "black forced first move",
+      "hash": "0x4a2d8d5cee04aeba0d3fde5fcb0bf0cac875429d1ae341bdfc1f7e0f5788ef7d",
+      "blockNumber": 54,
+      "gasUsed": "69326",
+      "status": 1
+    },
+    {
+      "scenario": "unsigned empty challenge, authorization, turn, legality and force-last-move refusal recovery",
+      "category": "game",
+      "action": "new signed prefix",
+      "hash": "0x053f5e8988b162472b26890a5970fd7d10e015a3d5fe3508857596affc772f26",
+      "blockNumber": 56,
+      "gasUsed": "170308",
+      "status": 1
+    },
+    {
+      "scenario": "unsigned empty challenge, authorization, turn, legality and force-last-move refusal recovery",
+      "category": "game",
+      "action": "black wins despite refused last signature",
+      "hash": "0x3d24966ba0097ca9205d3e1dfb5c619d936b7d0725451bc379d535a036749f94",
+      "blockNumber": 57,
+      "gasUsed": "198919",
+      "status": 1
+    },
+    {
+      "scenario": "dispute escalation rejects equal, stale and divergent checkpoints and stale terminal settlements",
+      "category": "deployment",
+      "action": "deploy GomokuChannel",
+      "hash": "0x173748dcae386a430f9b53aaabfa35639c437c53e331908167d97bb5c1162a38",
+      "blockNumber": 58,
+      "gasUsed": "2258206",
+      "status": 1
+    },
+    {
+      "scenario": "dispute escalation rejects equal, stale and divergent checkpoints and stale terminal settlements",
+      "category": "registration",
+      "action": "register 0",
+      "hash": "0x7d4a572b6ffc605fcb3210e5738fbde5ee3e24be412e4e3c253aca09a5a8e7bf",
+      "blockNumber": 59,
+      "gasUsed": "89480",
+      "status": 1
+    },
+    {
+      "scenario": "dispute escalation rejects equal, stale and divergent checkpoints and stale terminal settlements",
+      "category": "registration",
+      "action": "register 1",
+      "hash": "0x666aae2249c31519fcce9cba651dbe9cae68d05cbf7937be043567cc3b3d4686",
+      "blockNumber": 60,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "dispute escalation rejects equal, stale and divergent checkpoints and stale terminal settlements",
+      "category": "registration",
+      "action": "register 2",
+      "hash": "0x6a3a4b35a295d578063511739a0571482f00c158e4411c58a0733e34c924bd54",
+      "blockNumber": 61,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "dispute escalation rejects equal, stale and divergent checkpoints and stale terminal settlements",
+      "category": "game",
+      "action": "open",
+      "hash": "0x96945c9e32ab3135d297aab4878a9ef92bb53db5d339253fcd80c90a7c2db666",
+      "blockNumber": 62,
+      "gasUsed": "165897",
+      "status": 1
+    },
+    {
+      "scenario": "dispute escalation rejects equal, stale and divergent checkpoints and stale terminal settlements",
+      "category": "game",
+      "action": "join",
+      "hash": "0x0b5ccf1ef139e3dd90ed10b74324b9a6a54d559cdc9798158931d960dff02597",
+      "blockNumber": 63,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "scenario": "dispute escalation rejects equal, stale and divergent checkpoints and stale terminal settlements",
+      "category": "game",
+      "action": "initial signed dispute",
+      "hash": "0x6ff7fd844ddbe4868cbeaf8d8b4adc64b5c6036ad0190175dbc7221d652971b0",
+      "blockNumber": 64,
+      "gasUsed": "142870",
+      "status": 1
+    },
+    {
+      "scenario": "dispute escalation rejects equal, stale and divergent checkpoints and stale terminal settlements",
+      "category": "game",
+      "action": "escalate before deadline",
+      "hash": "0x668f70aa0a6e7bdde63df85554c311ebcc77e4771b39261e11fa38337744017e",
+      "blockNumber": 66,
+      "gasUsed": "172933",
+      "status": 1
+    },
+    {
+      "scenario": "dispute escalation rejects equal, stale and divergent checkpoints and stale terminal settlements",
+      "category": "game",
+      "action": "compatible white terminal settlement",
+      "hash": "0xcc926c90a6a9831f9c695096af6ac990a80d7e7f5a6863730cbae115a058b72e",
+      "blockNumber": 68,
+      "gasUsed": "227145",
+      "status": 1
+    },
+    {
+      "scenario": "dispute escalation rejects equal, stale and divergent checkpoints and stale terminal settlements",
+      "category": "game",
+      "action": "open",
+      "hash": "0x957329136554069890246aa2bc25b41736b9204efdaaa7af94be61e8862efcec",
+      "blockNumber": 69,
+      "gasUsed": "165897",
+      "status": 1
+    },
+    {
+      "scenario": "dispute escalation rejects equal, stale and divergent checkpoints and stale terminal settlements",
+      "category": "game",
+      "action": "join",
+      "hash": "0x96877f0ba3fbc9f323cc4997eb5683e3c42893953979882323f180fcb18637f5",
+      "blockNumber": 70,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "scenario": "dispute escalation rejects equal, stale and divergent checkpoints and stale terminal settlements",
+      "category": "game",
+      "action": "longer nonterminal checkpoint",
+      "hash": "0x95732606f480c915805e19f5784fc56fa538ef5560788223df18712c328fa7a5",
+      "blockNumber": 71,
+      "gasUsed": "210746",
+      "status": 1
+    },
+    {
+      "scenario": "deadline equality rejects moves and challenges and awards timeout to the waiting player",
+      "category": "deployment",
+      "action": "deploy GomokuChannel",
+      "hash": "0xe7062dc6cd8ba860083677d670447e5c3c26a40d768297242a021dd998a2e936",
+      "blockNumber": 72,
+      "gasUsed": "2258206",
+      "status": 1
+    },
+    {
+      "scenario": "deadline equality rejects moves and challenges and awards timeout to the waiting player",
+      "category": "registration",
+      "action": "register 0",
+      "hash": "0x419cc7995686fbf120420d8c3327bdbfed129ed75dd35b5ab094dece95023c75",
+      "blockNumber": 73,
+      "gasUsed": "89480",
+      "status": 1
+    },
+    {
+      "scenario": "deadline equality rejects moves and challenges and awards timeout to the waiting player",
+      "category": "registration",
+      "action": "register 1",
+      "hash": "0x9450d9a022015aa62d46ea9afb7a3d9687c3ea2cf104232c1ff3045943f9c389",
+      "blockNumber": 74,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "deadline equality rejects moves and challenges and awards timeout to the waiting player",
+      "category": "registration",
+      "action": "register 2",
+      "hash": "0xd31b86ff5f76a1b1436e1797efc5bf169f47f698352c2960f1d089525ba5f5b0",
+      "blockNumber": 75,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "deadline equality rejects moves and challenges and awards timeout to the waiting player",
+      "category": "game",
+      "action": "open",
+      "hash": "0xd3cd8dd7dd16a8f06da45a8855d2c919d206459f67470ff74b0d1ff89913b8b7",
+      "blockNumber": 76,
+      "gasUsed": "165897",
+      "status": 1
+    },
+    {
+      "scenario": "deadline equality rejects moves and challenges and awards timeout to the waiting player",
+      "category": "game",
+      "action": "join",
+      "hash": "0x11800d0463890ed6f10549b21c387b7153f5e2b132d77688ef580098a43a7915",
+      "blockNumber": 77,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "scenario": "deadline equality rejects moves and challenges and awards timeout to the waiting player",
+      "category": "game",
+      "action": "start deadline dispute",
+      "hash": "0x61c786510490f1b21a347e20c1a3683e081d01f8d6b6e0571ba61439cb67f9ef",
+      "blockNumber": 78,
+      "gasUsed": "72735",
+      "status": 1
+    },
+    {
+      "scenario": "deadline equality rejects moves and challenges and awards timeout to the waiting player",
+      "category": "game",
+      "action": "timeout at exact deadline",
+      "hash": "0xee5edf1d8733b209744c7bba1fd2be29746f595913d89d91d3d72d0c08eb75fa",
+      "blockNumber": 81,
+      "gasUsed": "71136",
+      "status": 1
+    },
+    {
+      "scenario": "deadline equality rejects moves and challenges and awards timeout to the waiting player",
+      "category": "game",
+      "action": "open",
+      "hash": "0x156ce9e0f6de74511a1243edf6b830711236f65c47cd7e46e058f0e1eec57082",
+      "blockNumber": 82,
+      "gasUsed": "165897",
+      "status": 1
+    },
+    {
+      "scenario": "deadline equality rejects moves and challenges and awards timeout to the waiting player",
+      "category": "game",
+      "action": "join",
+      "hash": "0xc66908d6369d914d5bdb45815d247080a9c457d31579d3615e4dfc36d77cdd24",
+      "blockNumber": 83,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "scenario": "deadline equality rejects moves and challenges and awards timeout to the waiting player",
+      "category": "game",
+      "action": "start deadline dispute",
+      "hash": "0x67a2acab066b7568d6bef45f1777808c7f195b49134a9933ac0b0dd2ae8d9c0b",
+      "blockNumber": 84,
+      "gasUsed": "103988",
+      "status": 1
+    },
+    {
+      "scenario": "deadline equality rejects moves and challenges and awards timeout to the waiting player",
+      "category": "game",
+      "action": "timeout at exact deadline",
+      "hash": "0xcf1e269f644ca6e0fb81960e4c558d30e2d78f16d1975ba3334a414ddbd32d90",
+      "blockNumber": 87,
+      "gasUsed": "70996",
+      "status": 1
+    },
+    {
+      "scenario": "terminal signed challenge immediately settles; compatible signed terminal can settle after dispute expiry",
+      "category": "deployment",
+      "action": "deploy GomokuChannel",
+      "hash": "0x483945d273289869f284341f082481b8988b3ac79d3d0802cc959e3bfe8e82e2",
+      "blockNumber": 88,
+      "gasUsed": "2258206",
+      "status": 1
+    },
+    {
+      "scenario": "terminal signed challenge immediately settles; compatible signed terminal can settle after dispute expiry",
+      "category": "registration",
+      "action": "register 0",
+      "hash": "0xd2ef793f7818092a1e4363d20d05c267d6b50b9e313736e94d1e39899c2387b9",
+      "blockNumber": 89,
+      "gasUsed": "89480",
+      "status": 1
+    },
+    {
+      "scenario": "terminal signed challenge immediately settles; compatible signed terminal can settle after dispute expiry",
+      "category": "registration",
+      "action": "register 1",
+      "hash": "0x09958e3667d7898bd6c05c5f90945b8b838106508d210bcb1b962b6cbaa92bc8",
+      "blockNumber": 90,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "terminal signed challenge immediately settles; compatible signed terminal can settle after dispute expiry",
+      "category": "registration",
+      "action": "register 2",
+      "hash": "0xc9460503a086cfb4f23c15f4ffe3effdb40e111e359787cad1e9109aae4f68af",
+      "blockNumber": 91,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "terminal signed challenge immediately settles; compatible signed terminal can settle after dispute expiry",
+      "category": "game",
+      "action": "open",
+      "hash": "0x7d561e8afa7b18dffc1c85ee0e8d265b7ecf527496077bfa2a5f3cd47a41c390",
+      "blockNumber": 92,
+      "gasUsed": "165897",
+      "status": 1
+    },
+    {
+      "scenario": "terminal signed challenge immediately settles; compatible signed terminal can settle after dispute expiry",
+      "category": "game",
+      "action": "join",
+      "hash": "0xc3eb7dba1368227c713579e485f07d551ea9710feeddd56087b0374604a1dbff",
+      "blockNumber": 93,
+      "gasUsed": "45685",
+      "status": 1
+    },
+    {
+      "scenario": "terminal signed challenge immediately settles; compatible signed terminal can settle after dispute expiry",
+      "category": "game",
+      "action": "terminal white challenge",
+      "hash": "0xd1f05f3cdebfacc9827c47699fcf99a7fac2b838e542feb90cf2775454e9d6e4",
+      "blockNumber": 94,
+      "gasUsed": "236874",
+      "status": 1
+    },
+    {
+      "scenario": "terminal signed challenge immediately settles; compatible signed terminal can settle after dispute expiry",
+      "category": "game",
+      "action": "open",
+      "hash": "0x50e190a9a8390f6803ae13971791e8d076f90547d170e7ebcb94b633ff946147",
+      "blockNumber": 95,
+      "gasUsed": "165897",
+      "status": 1
+    },
+    {
+      "scenario": "terminal signed challenge immediately settles; compatible signed terminal can settle after dispute expiry",
+      "category": "game",
+      "action": "join",
+      "hash": "0x0178662f8ad5e94354df6c30e60abdac2bd95a4d2123f050a373564ea1a141ff",
+      "blockNumber": 96,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "scenario": "terminal signed challenge immediately settles; compatible signed terminal can settle after dispute expiry",
+      "category": "game",
+      "action": "signed checkpoint",
+      "hash": "0x7a0c7f8d546af5ad4d2de0801a1308b42e03857548dadc24bdfe1fcb481a9c56",
+      "blockNumber": 97,
+      "gasUsed": "205310",
+      "status": 1
+    },
+    {
+      "scenario": "terminal signed challenge immediately settles; compatible signed terminal can settle after dispute expiry",
+      "category": "game",
+      "action": "compatible terminal settlement after expiry",
+      "hash": "0xbacb5465a5263694a77f987bfd302f2324fa60080fd1ccbc3c528cb65a38659b",
+      "blockNumber": 99,
+      "gasUsed": "215183",
+      "status": 1
+    },
+    {
+      "scenario": "failed on-chain transaction is recorded and preserves balances and game state",
+      "category": "deployment",
+      "action": "deploy GomokuChannel",
+      "hash": "0xc048c39e27e8029d98ef1313d2dd1f29f3516c26f2aa2b62b6e353a3190818f0",
+      "blockNumber": 100,
+      "gasUsed": "2258206",
+      "status": 1
+    },
+    {
+      "scenario": "failed on-chain transaction is recorded and preserves balances and game state",
+      "category": "registration",
+      "action": "register 0",
+      "hash": "0xd62ae0d9c4089578250c0070cdeb77b140350f24827d0c1beeae56fcb694ade6",
+      "blockNumber": 101,
+      "gasUsed": "89480",
+      "status": 1
+    },
+    {
+      "scenario": "failed on-chain transaction is recorded and preserves balances and game state",
+      "category": "registration",
+      "action": "register 1",
+      "hash": "0xb8e1743e057ef24afcfcf379e72571df772b85c2018a8d2d6d282c1f1328bedc",
+      "blockNumber": 102,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "failed on-chain transaction is recorded and preserves balances and game state",
+      "category": "registration",
+      "action": "register 2",
+      "hash": "0xb016ebcf910f5da60def5a5d0976acbc84c3f85b0ac546c79da8f1aac21d6f15",
+      "blockNumber": 103,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "failed on-chain transaction is recorded and preserves balances and game state",
+      "category": "game",
+      "action": "open",
+      "hash": "0xc7837d97032025c1118ce9acbd3c5e083d40f04dc9404223e989a50ab1c98e2f",
+      "blockNumber": 104,
+      "gasUsed": "165897",
+      "status": 1
+    },
+    {
+      "scenario": "failed on-chain transaction is recorded and preserves balances and game state",
+      "category": "game",
+      "action": "join",
+      "hash": "0x07f57316c3a3d9428f287c884b8d041e8f1a80ce8c7d2332d3f459c8cbe16a61",
+      "blockNumber": 105,
+      "gasUsed": "45685",
+      "status": 1
+    },
+    {
+      "scenario": "failed on-chain transaction is recorded and preserves balances and game state",
+      "category": "reverted",
+      "action": "invalid timeout transaction",
+      "hash": "0x438e0668c2a5856e809a8c1bf6c8efce8b0f6ac5542807f06b4dc6333af038d9",
+      "blockNumber": 106,
+      "gasUsed": "26376",
+      "status": 0
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "deployment",
+      "action": "deploy GomokuChannel",
+      "hash": "0xa8563af3d3033c2b9c206cc684db90494f30ddca1c97ca20347508f1046edc67",
+      "blockNumber": 107,
+      "gasUsed": "2258206",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "registration",
+      "action": "register 0",
+      "hash": "0xb7449dccc771ca3123018f2dcc01b9e10ce145b38fd0297bf3963ee201849cd6",
+      "blockNumber": 108,
+      "gasUsed": "89480",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "registration",
+      "action": "register 1",
+      "hash": "0x695701fce4af798531cdf85f94be3459a5d85a49bb13886283e9cb7bdd39d255",
+      "blockNumber": 109,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "registration",
+      "action": "register 2",
+      "hash": "0x46193bfeb4699732d127240ff59fdbad67ba85960dda7973769443acf9b6ed25",
+      "blockNumber": 110,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "deployment",
+      "action": "deploy GomokuOnchainBaseline",
+      "hash": "0x29a79f384c1b24300326c80f48e921a3d43a772c3f6aa9efbc7e9753084ca112",
+      "blockNumber": 111,
+      "gasUsed": "2294393",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "registration",
+      "action": "register 0",
+      "hash": "0xd07746943f0a86c5f3ff134169b456ec79afb9537d801ac31a5dd50d69aa5194",
+      "blockNumber": 112,
+      "gasUsed": "89480",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "registration",
+      "action": "register 1",
+      "hash": "0x28ffbd66a2551bfe9b8265c0a2617dc14865c54b43b4637e7d00132a947943d4",
+      "blockNumber": 113,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "registration",
+      "action": "register 2",
+      "hash": "0x1426085ff901504414004549270cb10a56bc4bbe3c99650ce78b67fec372e02b",
+      "blockNumber": 114,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "open",
+      "hash": "0xa374ca33e684d2460cc6a7442e58f0ffbfa2c1165398bd5bf9082b3e5310b640",
+      "blockNumber": 115,
+      "gasUsed": "165897",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "join",
+      "hash": "0x2f0e292b72894402c412bc1de22c1e690ed918b75f53e658803fb77570ee7237",
+      "blockNumber": 116,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "channel black-win-9 settle",
+      "hash": "0x66d12936f63c26a8d9a62fc1d648dee2749d29592cf1a4e422fad746b4129bf4",
+      "blockNumber": 117,
+      "gasUsed": "224549",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "open",
+      "hash": "0x79579474a38f059a53a2175aba7695f964c48d96abba4ac35202f58c5bd1f3a4",
+      "blockNumber": 118,
+      "gasUsed": "165897",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "join",
+      "hash": "0x7a82dae1c1471f82519d32a2518199a5d9cadfd61513a48a9353a5cdab26f43b",
+      "blockNumber": 119,
+      "gasUsed": "45685",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "baseline black-win-9 move 1",
+      "hash": "0x2416aaf1b5cfc00b1597683727beba5a24c4a63d066e9cd3f68232628a606a11",
+      "blockNumber": 120,
+      "gasUsed": "89565",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "baseline black-win-9 move 2",
+      "hash": "0x48adecf4f6a3c36e8729ed1af1c698a2ac7d8cc3dfb10e1a0cc70dc1c5129955",
+      "blockNumber": 121,
+      "gasUsed": "61645",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "baseline black-win-9 move 3",
+      "hash": "0x17a0b78fa1fe2bdb3a57ed7ec8dea725f8d3132d8bee4d50e514795c27572f53",
+      "blockNumber": 122,
+      "gasUsed": "74569",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "baseline black-win-9 move 4",
+      "hash": "0x59c9bb8745065918e589ec0e3a99f95e3c65f833410387241846ee9ece1af826",
+      "blockNumber": 123,
+      "gasUsed": "88581",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "baseline black-win-9 move 5",
+      "hash": "0x59e0f76e141d91fe3bb729bf5942319841e3315cf3aaabc9e5bfe0ea286b5268",
+      "blockNumber": 124,
+      "gasUsed": "102923",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "baseline black-win-9 move 6",
+      "hash": "0xa242921a3d86c3ae771751c3df748057bf40e6b0795c38f41a66c3ed63ac34b0",
+      "blockNumber": 125,
+      "gasUsed": "118353",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "baseline black-win-9 move 7",
+      "hash": "0xb623c88a60d4eff6ee93aedc95d15648ccef4f16925147b2795044242c1ed6f2",
+      "blockNumber": 126,
+      "gasUsed": "134113",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "baseline black-win-9 move 8",
+      "hash": "0xd7ecff73bbc00b07a091c7216104d851f1c26bec94591578dbb52b0cabc84510",
+      "blockNumber": 127,
+      "gasUsed": "150961",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "baseline black-win-9 move 9",
+      "hash": "0xa83ca41d414ad3ee6a26136427e231f1a585df60cd1937bc10267d1461d52085",
+      "blockNumber": 128,
+      "gasUsed": "199188",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "open",
+      "hash": "0xc3997d726f0673ece83a3e62145cef6783ecd18aa7d323d78262cc2362f7ec65",
+      "blockNumber": 129,
+      "gasUsed": "165897",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "join",
+      "hash": "0x843d4b7d4d856b8b2a6f92206a65e66bb9cce971b3d72a34d8b25ce616b6eca2",
+      "blockNumber": 130,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "channel white-win-10 settle",
+      "hash": "0x3c2035a94771f8052aa8ccbbcc422418d95311f4c63659e705067c0e2b392b1e",
+      "blockNumber": 131,
+      "gasUsed": "236511",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "open",
+      "hash": "0xc5f8c001beb7ff2e81fca5d634b4198467b0794ab75c70cb14b7e4f37c8c4d39",
+      "blockNumber": 132,
+      "gasUsed": "165897",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "join",
+      "hash": "0xa42b34161a0001212b93bfb4cddeef6ff74775e2c9188fe0544d4044981aae93",
+      "blockNumber": 133,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "baseline white-win-10 move 1",
+      "hash": "0x046e8fbc8244e92137c861cb759869830ba0f93e218c6016003550d738df6ad8",
+      "blockNumber": 134,
+      "gasUsed": "89577",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "baseline white-win-10 move 2",
+      "hash": "0x46c726a1fad7c8c41faaeea067997028be4bfb2c7e14d40cb046f5bc90641420",
+      "blockNumber": 135,
+      "gasUsed": "61657",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "baseline white-win-10 move 3",
+      "hash": "0x652442ed2971ea360614bfeacac6c399f3184236d8250252ecbc7337abdad1cb",
+      "blockNumber": 136,
+      "gasUsed": "74581",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "baseline white-win-10 move 4",
+      "hash": "0xe527915660741d0c389a9efe691dc9d301d1fc434b0f23680a97b36c257ed223",
+      "blockNumber": 137,
+      "gasUsed": "88593",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "baseline white-win-10 move 5",
+      "hash": "0xc137128767e1fafef3bca7b461ab743833b0b3df58b5e67f0a0d81ec25e4adba",
+      "blockNumber": 138,
+      "gasUsed": "102935",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "baseline white-win-10 move 6",
+      "hash": "0x7428b3b224e0a5da4d795552be723bbfae4b2a592274b63b1c59e6be5c3ad575",
+      "blockNumber": 139,
+      "gasUsed": "118365",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "baseline white-win-10 move 7",
+      "hash": "0xd1303c58dda96bd453b2575e77b2057633d119c6ee8dd05ef5227abf5cdb35ac",
+      "blockNumber": 140,
+      "gasUsed": "134125",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "baseline white-win-10 move 8",
+      "hash": "0xe96e0457fd7db325ac0ef9266835d10ce4fa68dccb4f368511f7c0359a29211d",
+      "blockNumber": 141,
+      "gasUsed": "150973",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "baseline white-win-10 move 9",
+      "hash": "0xd50734e3fc7b6d3c1b5f1fe080e6d4bc74c973226cd42cfc357ae8d5a6414edf",
+      "blockNumber": 142,
+      "gasUsed": "162879",
+      "status": 1
+    },
+    {
+      "scenario": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
+      "category": "game",
+      "action": "baseline white-win-10 move 10",
+      "hash": "0x7945567beaed2fcaa89d90438ed4e3ffde61388e1980a4bb8d96e741768c4d87",
+      "blockNumber": 143,
+      "gasUsed": "211154",
+      "status": 1
+    }
+  ],
+  "comparisons": [
+    {
+      "label": "black-win-9",
+      "moveCount": 9,
+      "channel": {
+        "transactions": 3,
+        "gasUsed": "436143",
+        "hashes": [
+          "0xa374ca33e684d2460cc6a7442e58f0ffbfa2c1165398bd5bf9082b3e5310b640",
+          "0x2f0e292b72894402c412bc1de22c1e690ed918b75f53e658803fb77570ee7237",
+          "0x66d12936f63c26a8d9a62fc1d648dee2749d29592cf1a4e422fad746b4129bf4"
+        ]
+      },
+      "baseline": {
+        "transactions": 11,
+        "gasUsed": "1231480",
+        "hashes": [
+          "0x79579474a38f059a53a2175aba7695f964c48d96abba4ac35202f58c5bd1f3a4",
+          "0x7a82dae1c1471f82519d32a2518199a5d9cadfd61513a48a9353a5cdab26f43b",
+          "0x2416aaf1b5cfc00b1597683727beba5a24c4a63d066e9cd3f68232628a606a11",
+          "0x48adecf4f6a3c36e8729ed1af1c698a2ac7d8cc3dfb10e1a0cc70dc1c5129955",
+          "0x17a0b78fa1fe2bdb3a57ed7ec8dea725f8d3132d8bee4d50e514795c27572f53",
+          "0x59c9bb8745065918e589ec0e3a99f95e3c65f833410387241846ee9ece1af826",
+          "0x59e0f76e141d91fe3bb729bf5942319841e3315cf3aaabc9e5bfe0ea286b5268",
+          "0xa242921a3d86c3ae771751c3df748057bf40e6b0795c38f41a66c3ed63ac34b0",
+          "0xb623c88a60d4eff6ee93aedc95d15648ccef4f16925147b2795044242c1ed6f2",
+          "0xd7ecff73bbc00b07a091c7216104d851f1c26bec94591578dbb52b0cabc84510",
+          "0xa83ca41d414ad3ee6a26136427e231f1a585df60cd1937bc10267d1461d52085"
+        ]
+      },
+      "transactionReductionPercent": 72.72727272727273,
+      "gasReductionPercent": 64.58383408581544,
+      "excludes": "Deployments and registration are recorded separately; both games use open+join and automatic final-move settlement."
+    },
+    {
+      "label": "white-win-10",
+      "moveCount": 10,
+      "channel": {
+        "transactions": 3,
+        "gasUsed": "448105",
+        "hashes": [
+          "0xc3997d726f0673ece83a3e62145cef6783ecd18aa7d323d78262cc2362f7ec65",
+          "0x843d4b7d4d856b8b2a6f92206a65e66bb9cce971b3d72a34d8b25ce616b6eca2",
+          "0x3c2035a94771f8052aa8ccbbcc422418d95311f4c63659e705067c0e2b392b1e"
+        ]
+      },
+      "baseline": {
+        "transactions": 12,
+        "gasUsed": "1406433",
+        "hashes": [
+          "0xc5f8c001beb7ff2e81fca5d634b4198467b0794ab75c70cb14b7e4f37c8c4d39",
+          "0xa42b34161a0001212b93bfb4cddeef6ff74775e2c9188fe0544d4044981aae93",
+          "0x046e8fbc8244e92137c861cb759869830ba0f93e218c6016003550d738df6ad8",
+          "0x46c726a1fad7c8c41faaeea067997028be4bfb2c7e14d40cb046f5bc90641420",
+          "0x652442ed2971ea360614bfeacac6c399f3184236d8250252ecbc7337abdad1cb",
+          "0xe527915660741d0c389a9efe691dc9d301d1fc434b0f23680a97b36c257ed223",
+          "0xc137128767e1fafef3bca7b461ab743833b0b3df58b5e67f0a0d81ec25e4adba",
+          "0x7428b3b224e0a5da4d795552be723bbfae4b2a592274b63b1c59e6be5c3ad575",
+          "0xd1303c58dda96bd453b2575e77b2057633d119c6ee8dd05ef5227abf5cdb35ac",
+          "0xe96e0457fd7db325ac0ef9266835d10ce4fa68dccb4f368511f7c0359a29211d",
+          "0xd50734e3fc7b6d3c1b5f1fe080e6d4bc74c973226cd42cfc357ae8d5a6414edf",
+          "0x7945567beaed2fcaa89d90438ed4e3ffde61388e1980a4bb8d96e741768c4d87"
+        ]
+      },
+      "transactionReductionPercent": 75,
+      "gasReductionPercent": 68.13890174647494,
+      "excludes": "Deployments and registration are recorded separately; both games use open+join and automatic final-move settlement."
+    }
+  ],
+  "limitations": [
+    "Local deterministic chain only; no real assets or public-chain deployment.",
+    "Demonstration registration has no Sybil resistance.",
+    "Honest players must monitor during the dispute window."
+  ],
+  "durationMs": 61928,
+  "summary": {
+    "passed": 11,
+    "failed": 0,
+    "successfulTransactions": 131,
+    "revertedTransactions": 1
+  }
+}

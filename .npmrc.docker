@@ -1,0 +1,7 @@
+# 容器内使用的 pnpm 配置（不含 Windows 的绝对路径）
+node-linker=hoisted
+package-import-method=copy
+update-notifier=false
+fund=false
+audit=false
+registry=https://registry.npmmirror.com

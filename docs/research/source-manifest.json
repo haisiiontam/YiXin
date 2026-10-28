@@ -1,0 +1,47 @@
+[
+  {
+    "name": "openzeppelin",
+    "url": "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v5.4.0/README.md",
+    "status": 200,
+    "bytes": 8047,
+    "retrievedAt": "2026-10-27T00:52:13.606Z"
+  },
+  {
+    "name": "statechannels",
+    "url": "https://raw.githubusercontent.com/statechannels/statechannels/master/README.md",
+    "error": "404"
+  },
+  {
+    "name": "nitro",
+    "url": "https://raw.githubusercontent.com/statechannels/go-nitro/main/README.md",
+    "error": "404"
+  },
+  {
+    "name": "perun",
+    "url": "https://raw.githubusercontent.com/hyperledger-labs/go-perun/main/README.md",
+    "status": 200,
+    "bytes": 10157,
+    "retrievedAt": "2026-10-27T00:52:13.634Z"
+  },
+  {
+    "name": "mud",
+    "url": "https://raw.githubusercontent.com/latticexyz/mud/main/README.md",
+    "status": 200,
+    "bytes": 1774,
+    "retrievedAt": "2026-10-27T00:52:13.622Z"
+  },
+  {
+    "name": "ethers",
+    "url": "https://raw.githubusercontent.com/ethers-io/ethers.js/main/README.md",
+    "status": 200,
+    "bytes": 6067,
+    "retrievedAt": "2026-10-27T00:52:13.600Z"
+  },
+  {
+    "name": "eip712",
+    "url": "https://raw.githubusercontent.com/ethereum/EIPs/master/EIPS/eip-712.md",
+    "status": 200,
+    "bytes": 22637,
+    "retrievedAt": "2026-10-27T00:52:13.588Z"
+  }
+]

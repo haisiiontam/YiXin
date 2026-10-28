@@ -1,0 +1,17 @@
+{
+  "report": "《软件工程》项目报告-弈信状态通道五子棋.docx",
+  "pdf": "《软件工程》项目报告-弈信状态通道五子棋.pdf",
+  "pdfPages": 57,
+  "docxParagraphs": 278,
+  "docxTables": 23,
+  "docxInlineImagesIncludingTemplateLogo": 12,
+  "reportVisualSamplePages": [1, 4, 21, 35, 50],
+  "reportVisualChecks": "Cover fits one page; table of contents matches PDF chapter starts; sampled tables, heading hierarchy, figure caption, footer page numbers and WBS are readable.",
+  "missingFontsReported": [],
+  "defenseSlides": 12,
+  "defenseVisualSampleSlides": [1, 8, 10],
+  "defenseTitleRecheckedAfterAdjustment": true,
+  "limitations": "Sampled visual inspection, not a page-by-page review of all 57 pages; Office pagination can differ across applications. Personal identity placeholders and real user/publication records require author completion.",
+  "verifiedTests": {"contractGroups": 11, "protocolGroups": 4, "browserGroups": 8, "failedGroups": 0},
+  "realIndependentHumanUsers": 0
+}

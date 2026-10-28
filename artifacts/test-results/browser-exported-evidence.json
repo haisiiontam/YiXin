@@ -1,0 +1,87 @@
+{
+  "format": "gomoku-channel-evidence/v1",
+  "exportedAt": "2026-10-27T01:05:36.451Z",
+  "localTeachingOnly": true,
+  "domain": {
+    "name": "GomokuChannel",
+    "version": "1",
+    "chainId": 31337,
+    "verifyingContract": "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab"
+  },
+  "channelId": "0xbe8b5af30ebb011f56e07e2765711dcb30125d063c2288599bceda62c910f4f4",
+  "participants": {
+    "black": "0x5ECA6831dc7333de1d47a520D7fC87EFe69bF1e9",
+    "white": "0x9968ecbbE272A8Ea7F7F16091255D457923767a2"
+  },
+  "stake": 10,
+  "checkpoint": {
+    "moves": [
+      112,
+      97,
+      113,
+      98,
+      114,
+      99,
+      115,
+      100,
+      116
+    ],
+    "sigBlack": "0xe4f37468a2880459532556486663f0dfde5c4db13098f559bc4df2cc48680270570982057078f030409a6c8be3d50a0f0b59f1d0afdebc8d55eedc054862657a1b",
+    "sigWhite": "0xc3e3d5042d69d605edab3f0255e68a9211e177f4ccd2ae50e59131b4ec226c481d77471dfdcf9e692a426f5f220702ac095b9e66ae7071cb1c9d0adda16ae4841c"
+  },
+  "onchain": {
+    "status": "settled",
+    "moves": [
+      112,
+      97,
+      113,
+      98,
+      114,
+      99,
+      115,
+      100,
+      116
+    ],
+    "winner": 1,
+    "reason": "五子连珠",
+    "deadline": 0
+  },
+  "transactions": [
+    {
+      "label": "锁定黑方积分",
+      "hash": "0xb1f8d4603f4b4d96a098d619aa6a71e6fcaf15c1915fa5b8187dd63af4179fb7",
+      "gasUsed": "148797",
+      "blockNumber": 58,
+      "timestamp": 1793063132
+    },
+    {
+      "label": "锁定白方积分",
+      "hash": "0xe541469294b96d593e2c7a153636d16e0ad98a33511bb7efd1bdeddad9b68a7e",
+      "gasUsed": "45697",
+      "blockNumber": 59,
+      "timestamp": 1793063133
+    },
+    {
+      "label": "结算积分",
+      "hash": "0x39faa1920954d40434cf3d01aa9b80b64d1a06d4e24429db7cfe26730b5bc2ad",
+      "gasUsed": "237205",
+      "blockNumber": 60,
+      "timestamp": 1793063135
+    }
+  ],
+  "initialization": [
+    {
+      "label": "新钱包注册（每地址一次）",
+      "hash": "0x5eb9769405ae5df2aa56b729d86684324918ee9b6c522b481d5f261cf3d7cfb5",
+      "gasUsed": "72380"
+    }
+  ],
+  "metrics": {
+    "onchainTransactions": 3,
+    "offchainMoves": 9,
+    "baselineTransactions": 11,
+    "savedPercent": 72.7,
+    "totalGas": "431699"
+  },
+  "trustBoundary": "积分无现实价值；独立保管签名快照，并在挑战期内监控链；中继不可代签；本地开发RPC不适合公网。"
+}
