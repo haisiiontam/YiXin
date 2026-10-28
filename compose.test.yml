@@ -1,0 +1,27 @@
+# 测试部署配置：仅绑定本机回环 4180，数据持久化到 artifacts/runtime。
+# 用法：docker compose -p gomoku-iter2 -f compose.test.yml up -d --build
+services:
+  gomoku:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NPM_REGISTRY: https://registry.npmmirror.com
+    image: gomoku-channel-lab:iter2
+    container_name: gomoku-iter2
+    ports:
+      - "127.0.0.1:4180:4173"
+    environment:
+      PORT: "4173"
+      HOST: "0.0.0.0"
+      CHALLENGE_PERIOD: "60"
+      EXTRA_ORIGINS: "http://127.0.0.1:4180,http://localhost:4180"
+    volumes:
+      - ./artifacts/runtime:/app/artifacts/runtime
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4173/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      start_period: 60s
+      retries: 6

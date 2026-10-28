@@ -78,9 +78,9 @@ export default function App() {
     try { return analyzePosition(shownMoves); } catch { return null; }
   }, [showThreats, hintList.length, shownMoves.join(',')]);
   const threatCells = useMemo(() => {
-    if (!showThreats || !analysis || state.terminal) return null;
+    if (!showThreats || !analysis || (state.terminal && reviewIndex == null)) return null;
     return new Set([...analysis.winningCells[1], ...analysis.winningCells[2], ...analysis.mustBlock]);
-  }, [showThreats, analysis, state.terminal]);
+  }, [showThreats, analysis, state.terminal, reviewIndex]);
   const hintCells = useMemo(() => (reviewIndex == null && hintList.length ? new Set(hintList.map((h) => h.position)) : null), [hintList, reviewIndex]);
 
   // 手数变化时清掉过期提示；新落子播放音效；终局播放胜负音。

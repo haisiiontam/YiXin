@@ -4,15 +4,22 @@
 
 **工作区规则：严禁修改 Gomoku 工作区以外的任何内容。** 本机固定工作区为 `E:\Gomoku`；课程源材料只读。
 
-## 现在运行
+## 现在运行（迭代 2）
 
-本机已安装依赖且已构建。双击根目录 `启动游戏.cmd`，或运行：
+本机 Docker 版入口：**http://127.0.0.1:4180**。容器名 `gomoku-iter2`，镜像 `gomoku-channel-lab:iter2`；程序源码位于 `E:\Gomoku\app`。本轮经用户授权恢复 Docker Desktop，其他项目改动仍限定于 Gomoku 工作区。
+
+Docker 引擎运行时，从项目目录构建或恢复：
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File E:\Gomoku\scripts\start.ps1
+Set-Location E:\Gomoku\app
+docker compose -p gomoku-iter2 -f compose.test.yml up -d --build
 ```
 
-浏览器访问 **http://127.0.0.1:4173**。启动命令在前台保持运行；按Ctrl+C停止。本地链、合约部署与房间保存于 `artifacts/runtime`，重新启动继续使用同一链。若该地址已经显示健康游戏页，则使用现有服务，不重复启动。
+本机若普通终端访问 Docker 命名管道提示拒绝访问，使用管理员终端执行同一命令。停止服务：`docker compose -p gomoku-iter2 -f compose.test.yml stop`。
+
+不使用 Docker 时，从项目目录执行 `node server/index.mjs`，默认地址 **http://127.0.0.1:4173**。保持前台运行，Ctrl+C 停止。两种方式共用 `artifacts/runtime` 持久化目录，**不要同时启动并打开同一份链数据库**。
+
+新增体验：三档 AI 独立钱包对弈、时间轴复盘、形势曲线、威胁点与落子建议、SVG 对局证书、宣纸/墨色双主题、合成落子音效。已结算局可从“对局记录”导出证书；保存的证据 JSON 可导入恢复棋盘后复盘。形势评分是启发式指标，不是胜率；证书核验签名，不证明链上回执。
 
 - 快速体验：点击“运行完整自动演示”。两个本地测试钱包实际完成9手黑胜与链上结算，明确标为脚本演示。
 - 真实双人：玩家A创建对局，复制邀请链接；玩家B在**不同浏览器或独立浏览器配置/无痕上下文**中打开并加入。相同浏览器配置的普通标签页共享钱包，不能充当两位棋手。
@@ -51,7 +58,7 @@ node scripts/verify-evidence.mjs artifacts/test-results/browser-exported-evidenc
 
 ## 安装、构建与验证
 
-环境：Node.js ≥20.19（本机实测24.21.0）、pnpm（本机11.28.5），Windows PowerShell。没有全局安装或系统配置变更。
+环境：Node.js ≥20.19（本机实测24.21.0）、pnpm（本机11.28.5），Windows PowerShell。项目依赖使用工作区缓存；Docker Desktop 是用户单独授权的系统安装例外。
 
 本机托管运行时路径为：
 
@@ -67,7 +74,11 @@ $env:npm_config_cache='E:\Gomoku\.cache\npm'
 & $nodeExe $pnpmScript install --frozen-lockfile --ignore-scripts --store-dir E:\Gomoku\.cache\pnpm-store
 & $nodeExe scripts/compile.mjs
 & $nodeExe node_modules/vite/bin/vite.js build
-& $nodeExe --test --test-concurrency=1 tests/contract.test.mjs tests/protocol.test.mjs
+& $nodeExe --test --test-concurrency=1 tests/*.test.mjs
+$env:TEST_URL='http://127.0.0.1:4180'
+& $nodeExe scripts/e2e.mjs
+& $nodeExe scripts/e2e-v2.mjs
+& $nodeExe scripts/audit-ui.mjs
 ```
 
 普通已配置Node/pnpm环境可使用 `pnpm install --frozen-lockfile --ignore-scripts`、`pnpm run compile`、`pnpm run build`、`pnpm test`，同时仍设置上述工作区缓存与临时目录。`pnpm run verify`顺序运行编译、构建和自动测试；浏览器测试需游戏服务已启动，再运行 `pnpm run test:e2e`。浏览器脚本默认读取本机已有Microsoft Edge，可通过BROWSER_PATH指定已安装浏览器，测试配置与下载写在工作区。无需下载浏览器。
@@ -75,6 +86,8 @@ $env:npm_config_cache='E:\Gomoku\.cache\npm'
 Ganache在Node24下可能提示uWS原生二进制缺失并回退到JavaScript实现；这影响本地性能，真实合约执行和测试仍可运行。不要把本地耗时推断为公网吞吐率。
 
 ## 工程与报告索引
+
+迭代 2 优先阅读 `docs/iteration-2-review.md`（最终81项测试、Docker验收、演示顺序）、`docs/bug-retrospective.md`（真实Bug与修复）和 `docs/adr-iteration-2.md`（取舍与边界）。旧报告正文仍对应v1，本轮以该补充文档更新结果。
 
 - `AGENTS.md`：范围与真实性规则。
 - `docs/course-compliance.md`：8份参考材料的要求映射、格式、评分冲突与真实反馈边界。

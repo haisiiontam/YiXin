@@ -1,0 +1,49 @@
+﻿{
+    "verifiedAt":  "2026-10-28T23:02:05.6789019+08:00",
+    "url":  "http://127.0.0.1:4180",
+    "container":  "gomoku-iter2",
+    "sourceHashes":  [
+                         {
+                             "matches":  true,
+                             "sha256":  "99f7a346bc1cb21c90fd35ac49463115315b53e867e488ffd205a5163654ee4b",
+                             "file":  "web/src/App.jsx"
+                         },
+                         {
+                             "matches":  true,
+                             "sha256":  "133f2874ef4291fb4553ced168d45c0864f97fd8e9f92dab87dc2237d6a52be3",
+                             "file":  "web/src/channel-client.js"
+                         },
+                         {
+                             "matches":  true,
+                             "sha256":  "c3d16ebcbf63060d955a6b677ad96ea4a4013a5a8bc6e583bc5fd22ccc0852d2",
+                             "file":  "shared/certificate.mjs"
+                         },
+                         {
+                             "matches":  true,
+                             "sha256":  "c2f38c9d30649c11a232776d3ce0d2be551972accf4537b0eb0779ec89ab9ee1",
+                             "file":  "web/src/styles/responsive.css"
+                         }
+                     ],
+    "persistence":  {
+                        "restartPassed":  true,
+                        "blockBefore":  "0x96",
+                        "contractUnchanged":  true,
+                        "blockAfter":  "0x96"
+                    },
+    "nodeVersion":  "v22.23.4",
+    "image":  "sha256:8c813851283d5e0c15dc637d9e25ba19532972e51bf247755f9a03e7738378ab",
+    "portBindings":  {
+                         "4173/tcp":  [
+                                          {
+                                              "HostIp":  "127.0.0.1",
+                                              "HostPort":  "4180"
+                                          }
+                                      ]
+                     },
+    "health":  {
+                   "ok":  true,
+                   "chainId":  31337,
+                   "contractAddress":  "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab"
+               },
+    "restartPolicy":  "unless-stopped"
+}

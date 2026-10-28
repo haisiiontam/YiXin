@@ -69,7 +69,7 @@ export default function ReviewPanel({ moves, reviewIndex, onReview, showNumbers,
         <span className="review-count">{shown} / {moves.length}</span>
       </div>
       <p className="review-comment" role="status">{comment}</p>
-      {curve.length > 0 && <><Curve values={curve} cursor={shown - 1}/><div className="curve-caption"><span>↑ 黑方占优</span><span>当前局势：{side} {Math.round(Math.abs(advantage) * 100)}%</span><span>↓ 白方占优</span></div></>}
+      {curve.length > 0 && <><Curve values={curve} cursor={shown - 1}/><div className="curve-caption"><span>↑ 黑方占优</span><span>启发式评分：{side} {advantage.toFixed(2)}（非胜率）</span><span>↓ 白方占优</span></div></>}
       <div className="tool-row">
         <label className="switch-row"><span>显示手数</span><input type="checkbox" checked={showNumbers} onChange={(e) => onShowNumbers(e.target.checked)}/></label>
         <label className="switch-row"><span>标出威胁</span><input type="checkbox" checked={showThreats} onChange={(e) => onShowThreats(e.target.checked)}/></label>

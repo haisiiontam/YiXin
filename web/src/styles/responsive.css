@@ -17,8 +17,26 @@
 @media (max-width: 640px) {
   .workspace { grid-template-columns: 1fr; }
   .sidebar { flex-direction: row; justify-content: center; border-right: 0; border-bottom: 1px solid var(--card-line); padding: 8px; order: -1; }
-  .brand small, .network-id, .wallet small { display: none; }
-  .brand strong { font-size: 22px; }
+  .topbar { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; padding: 12px; position: relative; }
+  .brand { gap: 10px; white-space: nowrap; }
+  .brand-symbol { width: 36px; height: 36px; }
+  .brand-symbol i { width: 14px; height: 14px; top: 6px; left: 6px; }
+  .brand-symbol i + i { top: 17px; left: 17px; }
+  .brand small, .network-id, .wallet small, .wallet-icon, .wallet .copy-button { display: none; }
+  .brand strong { font-size: 22px; letter-spacing: .12em; }
+  .header-right { gap: 7px; }
+  .network-pill { font-size: 12px; padding: 4px 9px; }
+  .wallet { padding: 4px 8px; }
+  .wallet strong { font-size: 12px; }
+  .header-right .tool-button { width: 30px; height: 30px; }
+  .sidebar nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); width: 100%; gap: 4px; }
+  .nav-item { justify-content: center; gap: 6px; padding: 9px 3px; letter-spacing: 0; }
+  .nav-item > span:not(.nav-dot) { display: inline; font-size: 12px; }
+  .nav-item svg { width: 16px; height: 16px; }
+  .review-controls { flex-wrap: wrap; }
+  .review-slider { order: 2; flex-basis: 100%; width: 100%; min-width: 0; }
+  .curve-caption { flex-wrap: wrap; gap: 6px; }
+  .eyebrow { letter-spacing: .16em; }
   .main { padding: 18px 12px 0; }
   .board-card { padding: 18px 14px 0; }
   .demo-progress { margin: 0 -14px; padding: 12px 14px; }

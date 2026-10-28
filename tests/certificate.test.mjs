@@ -73,7 +73,9 @@ check('(a) 黑胜证书：结构、关键文字、无脚本/外链，且只透�
   assert.ok(svg.includes(short(black.address, 6, 4)) && svg.includes(short(white.address, 6, 4)));
   assert.ok(svg.includes(black.address) && svg.includes(white.address), '完整地址应放在 <title> 中');
   assert.ok(svg.includes('黑方') && svg.includes('9 手') && svg.includes('黑方执胜 · 共 9 手'));
-  assert.ok(svg.includes('较逐步上链减少 72.7%'));
+  assert.ok(svg.includes('交易参考 3 条（未核验回执）'));
+  assert.ok(svg.includes('不核验链上结算或回执'));
+  assert.ok(!svg.includes('较逐步上链减少'));
   assert.ok(svg.includes('锁定黑方积分'));
   assert.ok(!svg.includes('<script') && !svg.includes('foreignObject') && !svg.includes('<image') && !/href=/.test(svg));
   assert.equal(svg.split('http://').length - 1, 1, '只允许 xmlns 中的一处 http://');
@@ -134,6 +136,21 @@ check('(e) 深色主题与浅色主题不同，且包含 #16130f', async () => {
   assert.ok(dark.includes('#16130f') && !light.includes('#16130f'));
   assert.ok(light.includes('#f4efe6'));
   assertBalancedTags(dark);
+});
+
+check('篡改未签名的链上元数据不能伪装为证书已核验的结算或节省', async () => {
+  const evidence = await makeEvidence(BLACK_WIN);
+  const forged = structuredClone(evidence);
+  forged.metrics.savedPercent = 123456789;
+  forged.onchain.status = 'settled';
+  forged.onchain.winner = 2;
+  forged.stake = 999;
+  const svg = buildCertificateSvg(forged);
+  assert.ok(svg.includes('黑方执胜 · 共 9 手'), '胜负来自签名棋谱而非自述 winner');
+  assert.ok(svg.includes('积分（文件自述）') && svg.includes('未核验链上值'));
+  assert.ok(svg.includes('交易参考 3 条（未核验回执）'));
+  assert.ok(!svg.includes('123456789') && !svg.includes('较逐步上链'));
+  assert.equal(buildCertificateSvg({ ...forged, metrics: { savedPercent: -87654321 } }), svg, '未签名指标不影响证书');
 });
 
 check('(f) 证书文件名格式', async () => {

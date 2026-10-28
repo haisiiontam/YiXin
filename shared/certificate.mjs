@@ -12,7 +12,7 @@ const STONE_R = 15;                       // 棋子半径
 const STAR_POINTS = [[3, 3], [3, 11], [7, 7], [11, 3], [11, 11]]; // 五个星位（行,列）
 const SERIF = '"Songti SC","Noto Serif SC","STSong","SimSun",serif';
 const VERMILION = '#b23a2e';              // 朱砂红
-const FOOTER_LINES = ['本证书仅用于本地教学演示，积分无现实价值；', '真实性以双方 EIP-712 签名与链上回执为准，证书本身不含私钥。'];
+const FOOTER_LINES = ['本证书仅核验非空棋谱的 EIP-712 双签，不核验链上结算或回执；', '交易、积分与难度为文件自述，须另行通过可信 RPC 核对；仅用于教学。'];
 
 // ---------- 主题：浅色宣纸 / 深色墨纸 ----------
 const THEMES = {
@@ -219,7 +219,7 @@ function buildLeftColumn(t, evidence, verified, generatedAt) {
   const rows = [
     ['黑方 地址', shortAddress(verified.black), verified.black, true],
     ['白方 地址', shortAddress(verified.white), verified.white, true],
-    ['每人投入积分', `${evidence.stake} 分`, `${evidence.stake}`, false],
+    ['积分（文件自述）', `${evidence.stake} 分`, `${evidence.stake}（未核验链上值）`, false],
     ['通道 ID', shortHex(verified.channelId, 10, 8), verified.channelId, true],
     ['状态摘要 digest', shortDigest(verified.digest), verified.digest, true],
     ['生成时间', formatTime(generatedAt), String(generatedAt), false],
@@ -227,10 +227,10 @@ function buildLeftColumn(t, evidence, verified, generatedAt) {
   return rows.map(([label, shown, full, mono], i) => tableRow(t, LEFT_X, LEFT_VALUE_X, TABLE_TOP + i * ROW_STEP, label, shown, full, mono)).join('');
 }
 
-/** 右栏：链上交易（最多列 4 笔，标签与哈希均转义）与相对基线的节省比例。 */
+/** 右栏：文件自述的交易参考（最多列 4 笔）；本生成器不访问 RPC，不能证明回执或节省比例。 */
 function buildRightColumn(t, evidence, verified) {
   const txs = Array.isArray(evidence.transactions) ? evidence.transactions : [];
-  const parts = [textEl(RIGHT_X, TABLE_TOP, escapeXml(`链上交易 ${txs.length} 笔`), `font-size="13" fill="${t.muted}" font-family='${SERIF}'`)];
+  const parts = [textEl(RIGHT_X, TABLE_TOP, escapeXml(`交易参考 ${txs.length} 条（未核验回执）`), `font-size="13" fill="${t.muted}" font-family='${SERIF}'`)];
   txs.slice(0, 4).forEach((tx, i) => {
     const y = TABLE_TOP + 26 + i * 24;
     const label = escapeXml(clip(tx?.label ?? '', 14));
@@ -240,12 +240,7 @@ function buildRightColumn(t, evidence, verified) {
   if (txs.length > 4) {
     parts.push(textEl(RIGHT_X, TABLE_TOP + 26 + 4 * 24, escapeXml(`另有 ${txs.length - 4} 笔未列出`), `font-size="12" fill="${t.muted}" font-family='${SERIF}'`));
   }
-  // 节省比例：仅当 metrics 提供数值且已有落子时显示
-  const saved = evidence.metrics?.savedPercent;
-  if (typeof saved === 'number' && Number.isFinite(saved) && verified.movesCount > 0) {
-    const text = saved >= 0 ? `较逐步上链减少 ${saved}%` : `较逐步上链增加 ${Math.abs(saved)}%`;
-    parts.push(textEl(RIGHT_X, TABLE_TOP + 5 * ROW_STEP, escapeXml(text), `font-size="15" font-weight="700" fill="${VERMILION}" font-family='${SERIF}'`));
-  }
+  // Transaction lists and metrics are unsigned metadata, so do not certify their count or savings as chain facts.
   return parts.join('');
 }
 

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-28T13:05:46.678Z",
+  "generatedAt": "2026-10-28T14:41:29.494Z",
   "tests": [
     {
       "name": "(a) 黑胜证书：结构、关键文字、无脚本/外链，且只透传预期的十六进制字段",
@@ -26,6 +26,10 @@
       "status": "passed"
     },
     {
+      "name": "篡改未签名的链上元数据不能伪装为证书已核验的结算或节省",
+      "status": "passed"
+    },
+    {
       "name": "(f) 证书文件名格式",
       "status": "passed"
     },
@@ -35,7 +39,7 @@
     }
   ],
   "summary": {
-    "passed": 8,
+    "passed": 9,
     "failed": 0
   }
 }

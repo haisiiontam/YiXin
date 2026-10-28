@@ -28,7 +28,7 @@ export default function ExperimentPanel({ c }) {
         <label className="switch-row"><span>棋盘使用链上强制落子</span><input type="checkbox" checked={force} disabled={busy} onChange={(e) => setForce(e.target.checked)}/></label>
         <Button disabled={busy || !isParticipant || countdown > 0} onClick={() => act('领取超时结算', () => client.claimTimeout())}>领取超时结算</Button>
       </>}
-      {state.status === 'invited' && <Button disabled={busy || state.role !== 1 || !state.deadline || countdown > 0} onClick={() => act('取消未加入邀请', () => client.cancelUnjoined())}>到期取消未加入邀请</Button>}
+      {state.status === 'invited' && <Button disabled={busy || !(state.role === 1 || (state.mode === 'ai' && state.role === 2)) || !state.deadline || countdown > 0} onClick={() => act('取消未加入邀请', () => client.cancelUnjoined())}>到期取消未加入邀请</Button>}
       <Button icon="download" disabled={busy || !hasRoom} onClick={() => act('导出证据快照', exportEvidence)}>导出证据 JSON</Button>
       <div className="evidence-import">
         <label htmlFor="evidence-file">从文件恢复已签状态</label>

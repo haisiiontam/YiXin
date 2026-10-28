@@ -1,5 +1,5 @@
-// 界面可访问性与排版的程序化审计：我无法直接“看”截图，所以把可量化的标准写成断言。
-// 检查：正文字号 >= 13px 的比例、日/夜主题关键文字对比度 >= 4.5:1、四个页面均无横向溢出、
+// 界面可访问性与排版的程序化审计，与截图目测互补；不等同于完整 WCAG 认证。
+// 检查：可见文字 >= 12px（棋盘坐标/手数除外）、关键文字对比度 >= 4.5:1、四个页面均无横向溢出、
 // 所有按钮/输入都有可访问名称、棋盘 225 个按钮均有“落子 行,列”名称。
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -33,7 +33,7 @@ async function audit(page, label) {
       if (size < 12 && !el.closest('.board-coordinates, .stone-no')) out.smallText.push(`${text}:${size}px`);
       const fg = parse(cs.color), bg = bgOf(el);
       if (fg) {
-        const r = ratio(fg, bg), large = size >= 18 || (size >= 14 && Number(cs.fontWeight) >= 700);
+        const r = ratio(fg, bg), large = size >= 24 || (size >= 18.667 && Number(cs.fontWeight) >= 700);
         const key = `${cs.color}|${bg.r},${bg.g},${bg.b}`;
         if (r < (large ? 3 : 4.5) && !seen.has(key)) { seen.add(key); out.lowContrast.push({ text, ratio: Math.round(r * 100) / 100, size, color: cs.color }); }
       }
@@ -68,6 +68,7 @@ try {
 const failures = report.checks.flatMap((c) => [
   ...c.lowContrast.map((x) => `${c.label} 对比度 ${x.ratio} < 阈值: "${x.text}" ${x.color}`),
   ...c.unnamed.map((x) => `${c.label} 无可访问名称: ${x}`),
+  ...c.smallText.map((x) => `${c.label} 小于12px: ${x}`),
   ...(c.overflowX ? [`${c.label} 横向溢出`] : []),
 ]);
 if (report.boardButtons !== 225) failures.push(`棋盘按钮数 ${report.boardButtons} != 225`);

@@ -1,52 +1,57 @@
 {
-  "generatedAt": "2026-10-28T13:02:16.897Z",
-  "url": "http://127.0.0.1:4191",
+  "generatedAt": "2026-10-28T14:48:44.757Z",
+  "url": "http://127.0.0.1:4180",
   "browser": "Microsoft Edge via Playwright",
   "tests": [
     {
       "name": "新版首页：棋盘 225 点、主题与音效开关、人机对弈入口可见",
       "status": "passed",
-      "durationMs": 808
+      "durationMs": 1440
     },
     {
       "name": "人机对弈：人类执黑点击棋盘，AI 每手回应，全程双签，终局链上结算",
       "status": "passed",
-      "durationMs": 12295
+      "durationMs": 9494
     },
     {
       "name": "链上积分守恒：胜方 +stake、负方 -stake，且合约结果与证据一致",
       "status": "passed",
-      "durationMs": 111
+      "durationMs": 132
     },
     {
       "name": "复盘：滑块回看第 k 手的棋盘等于前 k 手，回看不产生新交易",
       "status": "passed",
-      "durationMs": 445
+      "durationMs": 903
+    },
+    {
+      "name": "威胁标记：回看终局前一手显示实际成五点，复盘棋盘不可落子",
+      "status": "passed",
+      "durationMs": 861
     },
     {
       "name": "夜间主题：切换后 data-theme=dark，刷新后偏好保持",
       "status": "passed",
-      "durationMs": 641
+      "durationMs": 1055
     },
     {
       "name": "对局证书：导出 SVG，内容含通道摘要且不含私钥字段",
       "status": "passed",
-      "durationMs": 249
+      "durationMs": 465
     },
     {
       "name": "形势提示：请求提示给出 3 个空位建议，且不发送交易",
       "status": "passed",
-      "durationMs": 1693
+      "durationMs": 2273
     },
     {
       "name": "刷新恢复：未完成的人机局重新核验本地双签证据后继续，棋谱不丢",
       "status": "passed",
-      "durationMs": 267
+      "durationMs": 237
     },
     {
       "name": "移动端 390px 无横向溢出（新版布局）",
       "status": "passed",
-      "durationMs": 832
+      "durationMs": 2102
     }
   ],
   "errors": [],
@@ -55,16 +60,18 @@
     "docs\\assets\\v2-02-ai-game-end.png",
     "docs\\assets\\v2-03-ai-settled.png",
     "docs\\assets\\v2-04-review.png",
+    "docs\\assets\\v2-08-threat-review.png",
     "docs\\assets\\v2-05-dark.png",
     "docs\\assets\\v2-06-hint.png",
-    "docs\\assets\\v2-07-mobile.png"
+    "docs\\assets\\v2-07-mobile.png",
+    "docs\\assets\\v2-09-mobile-active.png"
   ],
   "aiGame": {
-    "moves": 35,
+    "moves": 23,
     "transactions": [
       {
         "label": "锁定黑方积分",
-        "gasUsed": "148773"
+        "gasUsed": "148797"
       },
       {
         "label": "锁定白方积分",
@@ -72,24 +79,25 @@
       },
       {
         "label": "结算积分",
-        "gasUsed": "684909"
+        "gasUsed": "446417"
       }
     ],
-    "channelId": "0x84cc9c772382849df41ada5f42ce9a25da2e4911fa72a69cb4532262ce71a837",
+    "channelId": "0x17c3502b19cf1bcd8ee95a6a967576fa5898c246cb8a44854f7d790a9bc260cd",
     "winner": 1,
     "pointsBlack": 1010,
     "pointsWhite": 990
   },
   "certificate": {
     "file": "artifacts/test-results/v2-certificate.svg",
-    "bytes": 13490
+    "bytes": 12570,
+    "preview": "docs/assets/v2-certificate-preview.png"
   },
   "aiResume": {
     "movesBefore": 1,
     "movesAfter": 1
   },
   "summary": {
-    "passed": 9,
+    "passed": 10,
     "failed": 0
   }
 }

@@ -59,4 +59,16 @@
   - E2E 的“人类”一方由 master 档 AI 通过点击棋盘代操作，不是真人测试。
   - Docker：见下一条，镜像尚未用新代码重建。
 - **Docker 现状（如实）**：本轮开始时 `E:\Gomoku` 下没有 `.tools`、`.runtime`、`deploy`，`com.docker.service` 仍注册在系统中但指向不存在的 `E:\Gomoku\.tools\Docker`，因此引擎不可用。新版本只在本地 Node 服务（端口 4191）上做了浏览器验证。
+- **本段时间边界**：以上53项/9组及未部署、未目测描述为前一阶段状态，最终结果见下方“续作验收”。
 - **证据覆盖说明**：重跑原有测试时，`artifacts/test-results/` 下的 `contract-results.json`、`protocol-results.json`、`e2e-results.json` 以及 `docs/assets/01-08` 截图被新一轮结果覆盖（提交 `909a856` 中显示为修改）。交付包里的原始版本取自基线提交 `04edaa5`，另存于 `artifacts/test-results/baseline-v1/` 与 `docs/assets/baseline-v1/`。其中 `contract-results.json` 的 `generatedAt` 为 2026-10-27T11:36:08Z，与 `testing.md` 引用的 00:58:25Z 不同，说明交付包里的版本是后来重跑的；`testing.md` 的数字未据此更新，以原始 JSON 为准。
+
+## 迭代 2 续作验收（2026-10-28 晚）
+
+- 用户明确选择恢复 Docker Desktop 并部署。官方4.34.3安装包SHA-256为 `bf2c252b82c47255efc0b47ed3bd498ce8a7d329d5ea5cdfb4b0f957dbe5f49b`，Docker Inc签名有效。安装与启动需UAC，普通终端无命名管道权限，以管理员子进程执行Docker；未修改系统ACL。
+- 复核客户端恢复和证书：修复旧房间抢占、缺少身份/通道交叉核验、RPC临时失败丢失AI密钥、open/join部分失败未保存钱包、AI黑方待加入通道到期取消；证书明确标出未核验元数据，不再引用未签名节省比例。
+- 读图发现手机导航竖排/品牌折行、主题截图过渡帧与sticky顶栏错位；修复响应式布局及截图等待。曲线改为-1至1启发式评分并标非胜率；补测终局前威胁点和只读复盘。
+- 最终 `scripts/verify.mjs` 实跑：编译、构建、81/81测试通过，日志 `verify-final-iter2.log`；新增客户端27项、证书增至9项。
+- 最终镜像已构建且保留运行：`gomoku-channel-lab:iter2`，容器 `gomoku-iter2`，入口 http://127.0.0.1:4180。最终镜像ID与源码SHA-256对照见 `docker-deployment.json`。
+- 在最终镜像上原8组E2E、新10组E2E及8页/主题审计全部通过；最新人机局23手、3笔、gas 148797/45697/446417、黑白1010/990。较早35手记录仅描述此前测试，不是固定棋谱。
+- 容器重启验证通过：区块高度前后 `0x96`，合约地址不变；四个关键文件容器内外SHA-256一致。结束时容器运行，Node临时测试服务已停止。
+- 实际打开新版日间/夜间/手机/证书PNG检查；不是仅程序化审计。没有真人反馈。课程报告正文未重写，新增 `docs/iteration-2-review.md` 作为结果、边界、8分钟演示与报告补充。

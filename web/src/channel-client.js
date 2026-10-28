@@ -33,6 +33,11 @@ export class ChannelClient {
     this._emit({ ready: true, points: Number(await this.contract.points(this.wallet.address)) });
     this._log('本地测试钱包已就绪，积分由链上合约记账');
     this._timer = setInterval(() => { this._emit({ now: Math.floor(Date.now() / 1000) }); if (!this._refreshing && !this.state.busy) this.refresh().catch(e => this._log(readableError(e), 'warning')); }, 2000);
+    await this._restoreSavedGame();
+  }
+  async _restoreSavedGame() {
+    // A newer AI game must not be displaced by an older multiplayer-room bookmark.
+    if (await this._resumeAi()) return;
     const saved = localStorage.getItem(`${STORE}:active-room:${this.config.address}`);
     if (saved) { try { await this.joinRoom(saved); } catch (e) {
       this._log(`中继恢复失败：${readableError(e)}`, 'warning');
@@ -40,7 +45,6 @@ export class ChannelClient {
       const raw = activeId && localStorage.getItem(`${STORE}:evidence:${activeId}`);
       if (raw) { try { await this.importEvidence(JSON.parse(raw)); this._log('已从本地证据恢复，可直接进行链上争议', 'success'); } catch (restoreError) { this._log(readableError(restoreError), 'warning'); } }
     } }
-    else await this._resumeAi();
   }
   async _prepareWallet(wallet) {
     await this._api('/api/faucet', { address: wallet.address });
@@ -224,7 +228,21 @@ export class ChannelClient {
   }
   async forceMove(position) { return this._busy(async () => { await this._transaction(this.contract.forceMove(this.state.channelId, position), '链上强制落子'); await this.refresh(); }); }
   async claimTimeout() { return this._busy(async () => { await this._transaction(this.contract.claimTimeout(this.state.channelId), '超时结算'); await this.refresh(); }); }
-  async cancelUnjoined() { return this._busy(async () => { await this._transaction(this.contract.cancelUnjoined(this.state.channelId), '取消超时邀请'); await this.refresh(); }); }
+  async cancelUnjoined() {
+    return this._busy(async () => {
+      let signerContract = this.contract;
+      if (this.state.mode === 'ai' && this.state.role === 2) {
+        const c = await this.contract.getChannel(this.state.channelId);
+        if (Number(c.status) !== 1) throw Error('通道已不是待加入邀请');
+        if (this._ai?.humanRole !== 2 || !same(this._demoId, this.state.channelId) || !same(this._ai?.wallet?.address, c.black) || !same(this.wallet.address, c.white)) throw Error('AI 退款钱包与链上参与者不匹配');
+        const latest = await this.provider.getBlock('latest');
+        if (!latest || BigInt(latest.timestamp) < BigInt(c.deadline)) throw Error('邀请尚未到期');
+        signerContract = this.contract.connect(this._ai.wallet);
+      }
+      await this._transaction(signerContract.cancelUnjoined(this.state.channelId), '取消超时邀请');
+      await this.refresh();
+    });
+  }
   _saveHistory() {
     const record = { id: this.state.channelId, winner: this.state.winner, movesCount: this.state.moves.length, transactions: this.state.transactions.length, settledAt: new Date().toISOString(), mode: this.state.mode, gas: this.state.metrics.totalGas };
     const old = this.state.history.findIndex(h => h.id === record.id);
@@ -243,19 +261,23 @@ export class ChannelClient {
       transactions: structuredClone(this.state.transactions), initialization: structuredClone(this.state.initialization), metrics: structuredClone(this.state.metrics),
       trustBoundary: '积分无现实价值；独立保管签名快照，并在挑战期内监控链；中继不可代签；本地开发RPC不适合公网。' };
   }
+  async _verifyEvidenceTransactions(evidence) {
+    const transactions = [];
+    for (const tx of evidence.transactions || []) {
+      const receipt = await this.provider.getTransactionReceipt(tx.hash);
+      if (!receipt || receipt.status !== 1 || !same(receipt.to, this.config.address)) throw Error('证据中含无法核验的交易');
+      const belongs = receipt.logs.some(log => { try { return same(log.address, this.config.address) && same(this.contract.interface.parseLog(log)?.args.id, evidence.channelId); } catch { return false; } });
+      if (!belongs) throw Error('证据交易不属于本局');
+      transactions.push({ ...tx, gasUsed: receipt.gasUsed.toString(), blockNumber: receipt.blockNumber });
+    }
+    return transactions;
+  }
   async importEvidence(evidence) {
     return this._busy(async () => {
       const verified = verifyEvidence(evidence, { chainId: this.config.chainId, verifyingContract: this.config.address });
       const c = await this.contract.getChannel(evidence.channelId);
       if (Number(c.status) < 2 || !same(c.black, verified.black) || !same(c.white, verified.white) || Number(c.stake) !== evidence.stake) throw Error('链上通道与证据参与者或积分不匹配');
-      const transactions = [];
-      for (const tx of evidence.transactions || []) {
-        const receipt = await this.provider.getTransactionReceipt(tx.hash);
-        if (!receipt || receipt.status !== 1 || !same(receipt.to, this.config.address)) throw Error('证据中含无法核验的交易');
-        const belongs = receipt.logs.some(log => { try { return same(log.address, this.config.address) && this.contract.interface.parseLog(log)?.args.id === evidence.channelId; } catch { return false; } });
-        if (!belongs) throw Error('证据交易不属于本局');
-        transactions.push({ ...tx, gasUsed: receipt.gasUsed.toString(), blockNumber: receipt.blockNumber });
-      }
+      const transactions = await this._verifyEvidenceTransactions(evidence);
       this._closeSocket(); this._resetGame(); this._demoId = evidence.channelId;
       this._checkpoint = structuredClone(evidence.checkpoint);
       const role = same(this.wallet.address, verified.black) ? 1 : same(this.wallet.address, verified.white) ? 2 : 0;
@@ -276,10 +298,12 @@ export class ChannelClient {
   }
   async startAiGame(level = 'adept', humanRole = 1, stake = 10) {
     return this._busy(async () => {
-      if (!LEVELS[level]) throw Error('未知的 AI 难度');
-      if (!Number.isInteger(stake) || stake < 1) throw Error('对局积分须为正整数');
+      if (!Object.hasOwn(LEVELS, level)) throw Error('未知的 AI 难度');
+      if (humanRole !== 1 && humanRole !== 2) throw Error('执子方须为黑方或白方');
+      if (!Number.isSafeInteger(stake) || stake < 1) throw Error('对局积分须为正整数');
       if (['active', 'dispute', 'invited'].includes(this.state.status)) throw Error('请先完成当前对局再开始人机对弈');
       this._closeSocket(); this._resetGame();
+      localStorage.removeItem(`${STORE}:active-room:${this.config.address}`);
       const ai = Wallet.createRandom().connect(this.provider);
       this._emit({ mode: 'ai', aiLevel: level, demoProgress: '正在准备 AI 对手的本地钱包' });
       await this._prepareWallet(ai);
@@ -288,10 +312,20 @@ export class ChannelClient {
       const id = keccak256(AbiCoder.defaultAbiCoder().encode(['address', 'address', 'bytes32'], [black.address, white.address, salt]));
       this._demoId = id; this._ai = { wallet: ai, level, humanRole };
       this._emit({ channelId: id, role: humanRole, black: black.address, white: white.address, stake, status: 'invited', demoProgress: '双方锁定积分' });
-      await this._transaction(this.contract.connect(black).openChannel(white.address, stake, salt), '锁定黑方积分');
-      await this._transaction(this.contract.connect(white).joinChannel(id), '锁定白方积分');
-      this._emit({ status: 'active', connected: false, peerConnected: false, demoProgress: '' });
+      // Save recovery credentials and an empty evidence checkpoint BEFORE any funds are locked.
       localStorage.setItem(this._aiSessionKey(), JSON.stringify({ key: ai.privateKey, channelId: id, level, humanRole }));
+      this._applyCheckpoint();
+      try {
+        await this._transaction(this.contract.connect(black).openChannel(white.address, stake, salt), '锁定黑方积分');
+        this._applyCheckpoint(); // Preserve the confirmed open receipt even if the next step fails.
+        await this._transaction(this.contract.connect(white).joinChannel(id), '锁定白方积分');
+      } catch (e) {
+        this._applyCheckpoint();
+        await this.refresh().catch(refreshError => this._log(`链上状态暂不可查询：${readableError(refreshError)}`, 'warning'));
+        this._log(`人机开通未完成；通道 ${id}；本地钱包与证据已保留。请刷新核对链上状态；若待加入且你执黑，可等待期限后使用“到期取消未加入邀请”退款。不会自动重试交易。`, 'warning');
+        throw e;
+      }
+      this._emit({ status: 'active', connected: false, peerConnected: false, demoProgress: '' });
       this._applyCheckpoint(); await this.refresh();
       this._log(`人机对局开始：对手「${LEVELS[level].name}」，每手仍由双方 EIP-712 签名，链上只有开通与结算`, 'success');
       if (humanRole === 2) await this._aiReply();
@@ -320,20 +354,47 @@ export class ChannelClient {
   }
   // 刷新页面后恢复未完成的人机局：私钥只存于本地浏览器，棋谱与双签重新核验后才接受。
   async _resumeAi() {
-    const raw = localStorage.getItem(this._aiSessionKey()); if (!raw) return;
+    const raw = localStorage.getItem(this._aiSessionKey()); if (!raw) return false;
     try {
-      const s = JSON.parse(raw), c = await this.contract.getChannel(s.channelId);
-      if (Number(c.status) !== 2) { localStorage.removeItem(this._aiSessionKey()); return; }
-      const evidence = JSON.parse(localStorage.getItem(`${STORE}:evidence:${s.channelId}`) || 'null');
-      if (!evidence) throw Error('缺少本地证据');
-      verifyEvidence(evidence, { chainId: this.config.chainId, verifyingContract: this.config.address });
-      this._ai = { wallet: new Wallet(s.key, this.provider), level: s.level, humanRole: s.humanRole };
-      this._demoId = s.channelId; this._checkpoint = structuredClone(evidence.checkpoint);
-      this._emit({ mode: 'ai', aiLevel: s.level, channelId: s.channelId, role: s.humanRole, black: c.black, white: c.white, stake: Number(c.stake), status: 'active', transactions: evidence.transactions || [] });
-      this._applyCheckpoint(); await this.refresh();
-      this._log('已恢复未完成的人机对局（棋谱与双签取自本地证据并重新核验）', 'success');
-      if (!this.state.terminal && this._checkpoint.moves.length % 2 + 1 !== s.humanRole) await this._aiReply();
-    } catch (e) { localStorage.removeItem(this._aiSessionKey()); this._log(`人机对局恢复失败：${readableError(e)}`, 'warning'); }
+      return await this._busy(async () => {
+        const s = JSON.parse(raw);
+        if (!Object.hasOwn(LEVELS, s.level) || (s.humanRole !== 1 && s.humanRole !== 2)) throw Error('人机会话的难度或执子方无效');
+        const activeId = localStorage.getItem(`${STORE}:active-channel:${this.config.address}`);
+        if (activeId && !same(activeId, s.channelId)) throw Error('人机会话不是当前对局');
+        const evidence = JSON.parse(localStorage.getItem(`${STORE}:evidence:${s.channelId}`) || 'null');
+        if (!evidence) throw Error('缺少本地证据');
+        const verified = verifyEvidence(evidence, { chainId: this.config.chainId, verifyingContract: this.config.address });
+        if (!same(verified.channelId, s.channelId)) throw Error('人机会话与证据通道不匹配');
+        const c = await this.contract.getChannel(s.channelId);
+        if (![1, 2].includes(Number(c.status))) {
+          // Dispute recovery may still need this wallet. Only a finished channel makes it disposable.
+          if ([4, 5].includes(Number(c.status))) localStorage.removeItem(this._aiSessionKey());
+          return false;
+        }
+        if (!same(c.black, verified.black) || !same(c.white, verified.white) || BigInt(c.stake) !== BigInt(evidence.stake)) throw Error('链上通道与人机证据参与者或积分不匹配');
+        const ai = new Wallet(s.key, this.provider);
+        const humanAddress = s.humanRole === 1 ? c.black : c.white;
+        const aiAddress = s.humanRole === 1 ? c.white : c.black;
+        if (!same(this.wallet.address, humanAddress) || !same(ai.address, aiAddress)) throw Error('人机钱包身份与链上执子方不匹配');
+        // Verify everything before installing the session or signing any further moves.
+        const transactions = await this._verifyEvidenceTransactions(evidence);
+        this._closeSocket(); this._resetGame();
+        this._ai = { wallet: ai, level: s.level, humanRole: s.humanRole };
+        this._demoId = s.channelId; this._checkpoint = structuredClone(evidence.checkpoint);
+        this._emit({ mode: 'ai', aiLevel: s.level, channelId: s.channelId, role: s.humanRole, black: c.black, white: c.white, stake: evidence.stake, status: STATUS[Number(c.status)], deadline: Number(c.deadline || 0), transactions });
+        this._applyCheckpoint(); await this.refresh();
+        if (Number(c.status) === 1) {
+          this._log(`已恢复待加入的人机通道 ${s.channelId}，不会自动补发交易。${s.humanRole === 1 ? '你是黑方，期限届满后可使用“到期取消未加入邀请”退款。' : '开通方是本地 AI 钱包；其恢复密钥已保留，请勿清除浏览器数据。'}`, 'warning');
+        } else {
+          this._log('已恢复未完成的人机对局（已核验双签、链上参与者、双方钱包与交易回执）', 'success');
+          if (!this.state.terminal && this.state.status === 'active' && this._checkpoint.moves.length % 2 + 1 !== s.humanRole) await this._aiReply();
+        }
+        return true;
+      });
+    } catch (e) {
+      // An unavailable RPC or malformed evidence must not delete the only copy of the AI wallet.
+      this._log(`人机对局恢复失败，已保留本地会话以便重试：${readableError(e)}`, 'warning'); return false;
+    }
   }
   async runDemo() {
     return this._busy(async () => {

@@ -5,6 +5,7 @@ import path from 'node:path';
 import { chromium } from '@playwright/test';
 import { JsonRpcProvider, Contract } from 'ethers';
 import { chooseMove } from '../shared/ai.mjs';
+import { analyzePosition } from '../shared/analysis.mjs';
 import { verifyEvidence } from '../shared/evidence.mjs';
 
 const ROOT = process.cwd(), OUT = path.join(ROOT, 'artifacts/test-results'), SHOTS = path.join(ROOT, 'docs/assets');
@@ -18,7 +19,13 @@ async function check(name, fn) {
   try { await fn(); evidence.tests.push({ name, status: 'passed', durationMs: Date.now() - start }); console.log('PASS', name); }
   catch (e) { evidence.tests.push({ name, status: 'failed', error: e.message, durationMs: Date.now() - start }); throw e; }
 }
-async function shot(page, name) { await page.screenshot({ path: path.join(SHOTS, name), fullPage: true }); evidence.screenshots.push(path.join('docs/assets', name)); }
+async function shot(page, name) {
+  // 截图前回顶并等主题过渡完成，避免把 sticky 顶栏或半途颜色写成验收证据。
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(500);
+  await page.screenshot({ path: path.join(SHOTS, name), fullPage: true });
+  evidence.screenshots.push(path.join('docs/assets', name));
+}
 async function ready(page) { await page.goto(base); await page.getByText('本地链已连接', { exact: false }).waitFor({ timeout: 30000 }); }
 // 读取页面保存的当前对局证据（和 e2e.mjs 一样按 active-channel 精确取证，避免取到旧对局）。
 async function stored(page) {
@@ -110,6 +117,22 @@ try {
     await page.locator('.stone-no').first().waitFor();
     await shot(page, 'v2-04-review.png');
   });
+  await check('威胁标记：回看终局前一手显示实际成五点，复盘棋盘不可落子', async () => {
+    const prefix = finalEvidence.checkpoint.moves.slice(0, -1);
+    const a = analyzePosition(prefix);
+    const expected = [...new Set([...a.winningCells[1], ...a.winningCells[2], ...a.mustBlock])];
+    if (!expected.length) throw Error('测试前置局面应存在立即成五点');
+    await page.getByRole('slider', { name: '复盘手数' }).fill(String(prefix.length));
+    await page.getByLabel('标出威胁').check();
+    await page.waitForFunction(n => document.querySelectorAll('.intersection.is-threat').length === n, expected.length);
+    for (const p of expected) {
+      if (!(await cell(page, p).getAttribute('class')).includes('is-threat')) throw Error(`漏标成五点 ${p}`);
+    }
+    if (await page.locator('.intersection:not(:disabled)').count()) throw Error('复盘棋盘必须只读');
+    if (!(await page.locator('.curve-caption').textContent()).includes('非胜率')) throw Error('曲线必须标明非胜率');
+    await shot(page, 'v2-08-threat-review.png');
+    await page.getByRole('button', { name: '回到最新', exact: true }).click();
+  });
   await check('夜间主题：切换后 data-theme=dark，刷新后偏好保持', async () => {
     await page.getByRole('button', { name: '切换为夜间主题', exact: true }).click();
     if (await page.evaluate(() => document.documentElement.dataset.theme) !== 'dark') throw Error('主题未切换');
@@ -129,7 +152,13 @@ try {
     if (!svg.includes('人机') && !svg.includes('炉火') && !svg.includes('渐入')) { /* 难度文案可选 */ }
     if (/privateKey|mnemonic/i.test(svg)) throw Error('证书含敏感字段');
     if (/<script|foreignObject/i.test(svg)) throw Error('证书含脚本');
-    evidence.certificate = { file: 'artifacts/test-results/v2-certificate.svg', bytes: svg.length };
+    if (!svg.includes(finalEvidence.channelId)) throw Error('证书缺少通道 ID');
+    const certPage = await ctx.newPage();
+    await certPage.setViewportSize({ width: 840, height: 1188 });
+    await certPage.setContent(`<style>body{margin:0}</style>${svg}`);
+    await certPage.screenshot({ path: path.join(SHOTS, 'v2-certificate-preview.png'), fullPage: true });
+    await certPage.close();
+    evidence.certificate = { file: 'artifacts/test-results/v2-certificate.svg', bytes: Buffer.byteLength(svg), preview: 'docs/assets/v2-certificate-preview.png' };
   });
   await check('形势提示：请求提示给出 3 个空位建议，且不发送交易', async () => {
     // 上一步停留在“对局记录”页，先回大厅。
@@ -167,7 +196,16 @@ try {
     const mctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, deviceScaleFactor: 1 });
     const mp = await mctx.newPage(); await ready(mp);
     if (await mp.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1)) throw Error('移动端页面横向溢出');
+    const nav = await mp.locator('.sidebar nav').boundingBox();
+    if (!nav || nav.height > 70) throw Error('手机导航必须横向排列');
+    const brand = await mp.locator('.brand strong').boundingBox();
+    if (!brand || brand.height > 40) throw Error('手机品牌不应折行');
     await shot(mp, 'v2-07-mobile.png'); await mctx.close();
+    // 同时检查非空局面，防止只测首页遗漏复盘滑块溢出。
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.getByRole('slider', { name: '复盘手数' }).waitFor();
+    if (await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1)) throw Error('手机对弈/复盘布局横向溢出');
+    await shot(page, 'v2-09-mobile-active.png');
   });
   if (evidence.errors.length) throw Error('浏览器存在未捕获异常：' + evidence.errors.join('; '));
 } catch (e) { evidence.failure = e.message; process.exitCode = 1; console.error(e); }

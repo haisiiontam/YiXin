@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-28T13:07:11.227Z",
+  "generatedAt": "2026-10-28T14:43:16.011Z",
   "environment": {
     "node": "v24.21.0",
     "chainId": 31337,
@@ -18,57 +18,57 @@
     {
       "name": "registration, escrow, access control and invitation deadline refund conserve issuance",
       "status": "passed",
-      "durationMs": 1154
+      "durationMs": 1119
     },
     {
       "name": "join requires registered white and enough liquid points; locks across channels remain conserved",
       "status": "passed",
-      "durationMs": 875
+      "durationMs": 854
     },
     {
       "name": "full replay validates black and white wins, all directions, edge wrap, illegal histories and legal draw",
       "status": "passed",
-      "durationMs": 25702
+      "durationMs": 34028
     },
     {
       "name": "EIP712 domain, contract, channel, move order, signer identity and malformed signatures are isolated",
       "status": "passed",
-      "durationMs": 4943
+      "durationMs": 5902
     },
     {
       "name": "white victory and full-board draw settle actual locked points exactly once",
       "status": "passed",
-      "durationMs": 17211
+      "durationMs": 23077
     },
     {
       "name": "unsigned empty challenge, authorization, turn, legality and force-last-move refusal recovery",
       "status": "passed",
-      "durationMs": 3948
+      "durationMs": 4949
     },
     {
       "name": "dispute escalation rejects equal, stale and divergent checkpoints and stale terminal settlements",
       "status": "passed",
-      "durationMs": 6452
+      "durationMs": 7932
     },
     {
       "name": "deadline equality rejects moves and challenges and awards timeout to the waiting player",
       "status": "passed",
-      "durationMs": 1935
+      "durationMs": 2169
     },
     {
       "name": "terminal signed challenge immediately settles; compatible signed terminal can settle after dispute expiry",
       "status": "passed",
-      "durationMs": 5352
+      "durationMs": 6712
     },
     {
       "name": "failed on-chain transaction is recorded and preserves balances and game state",
       "status": "passed",
-      "durationMs": 601
+      "durationMs": 746
     },
     {
       "name": "normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas",
       "status": "passed",
-      "durationMs": 12528
+      "durationMs": 14089
     }
   ],
   "transactions": [
@@ -1335,7 +1335,7 @@
     "Demonstration registration has no Sybil resistance.",
     "Honest players must monitor during the dispute window."
   ],
-  "durationMs": 83591,
+  "durationMs": 104650,
   "summary": {
     "passed": 11,
     "failed": 0,
