@@ -40,6 +40,13 @@
 - 更新8份课程材料manifest的PDF提取状态和页数；原始材料只读未改。归档排除课程提取、数据库、缓存、权限恢复和密钥，只保留工程与捕获测试证据。
 - 本地Git真实提交01eca1b、4ce42fb保存实现与测试里程碑，报告图4-1对应这两个当时已有提交。报告/交付整理另作实际提交，不倒填历史。
 
+## 2026-11-01：更新答辩 PPT 并提交 GitHub
+
+- 按项目作者指示，将 `C:\Users\lenovo\Downloads\弈信答辩-V2.pptx` 替换为 `reports/弈信-8分钟课程答辩.pptx`。
+- 替换源文件和目标文件 SHA-256 相同：`a5e382c31a4817d54d62b81afff0f4a9789b9d5ed6e9c82ef5967a9f8d1fca62`；python-pptx 重开检查14页、16:9版式；LibreOffice Kit 抽查第1、7、14页渲染，未改动源PPT内容。
+- GitHub `haisiiontam/YiXin` 经API检查为公开、未归档、无分支/提交的空仓库；无需合并已有远程历史。
+- 推送操作及 commit hash 在本段之后回填。
+
 ## 迭代 2（2026-10-28）：人机对弈、复盘、证书与视觉重做
 
 计划与取舍见 `docs/iteration-2-plan.md`，决策见 `docs/adr-iteration-2.md`，问题复盘见 `docs/bug-retrospective.md`。
