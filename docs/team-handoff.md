@@ -11,7 +11,9 @@
 5. `docs/adr-iteration-2.md` 与 `docs/requirements.md`：技术决策与需求追踪。
 6. `artifacts/test-results/`：单元测试原始日志、浏览器用例结果、界面审计、部署核对。
 
-`reports/` 中已有的 DOCX/PDF/PPT 是上一版课程材料。迭代 2 的数据和补充写在 `docs/iteration-2-review.md`，不要将旧报告中的版本数据误认为本轮结果。
+原正式报告DOCX/PDF仍对应较早课程版本；迭代2以 `docs/iteration-2-review.md` 补充结果。2026-11-01已保留 [答辩PPT V2](../reports/弈信-8分钟课程答辩.pptx)，另存 [答辩PPT V3](../reports/弈信-8分钟课程答辩-V3.pptx)，并新增 [赵国豪打印讲稿PDF](../reports/弈信-赵国豪答辩讲稿-打印版.pdf) 和 [可编辑DOCX](../reports/弈信-赵国豪答辩讲稿-打印版.docx)。旧ZIP快照未重新打包，请单独带上新答辩资料。
+
+新PPT共19页（16主讲＋3备用），目标8分钟含45秒演示；讲稿13页，前8页用于台上提示与演示操作，后5页为问答、理论和依据。建议A4原尺寸、黑白、双面长边翻转打印。两人岗位细分为建议职责和答辩安排，须双方按实际贡献核实，不倒填历史。
 
 ## 运行
 

@@ -1,0 +1,33 @@
+{
+  "version": "V3 · 软件工程重点版",
+  "generatedAt": "2026-11-01",
+  "mainSlides": 16,
+  "backupSlides": 3,
+  "slideCount": 19,
+  "targetSeconds": 480,
+  "speechCharacters": 1734,
+  "speakerNotes": "19/19",
+  "nativeEditableCharts": 2,
+  "powerpoint": "E:\\Gomoku\\app\\reports\\弈信-8分钟课程答辩-V3.pptx",
+  "speakerDocx": "E:\\Gomoku\\app\\reports\\弈信-赵国豪答辩讲稿-打印版.docx",
+  "shapeBounds": "passed",
+  "comparisonSourceGeneratedAt": "2026-10-28T14:43:16.011Z",
+  "comparisons": [
+    {
+      "moves": 9,
+      "channelTransactions": 3,
+      "baselineTransactions": 11,
+      "channelGas": "436143",
+      "baselineGas": "1231480"
+    },
+    {
+      "moves": 10,
+      "channelTransactions": 3,
+      "baselineTransactions": 12,
+      "channelGas": "448105",
+      "baselineGas": "1406433"
+    }
+  ],
+  "proposedRolesNotHistorical": true,
+  "actualSoftwareRetestedToday": false
+}

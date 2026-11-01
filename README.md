@@ -87,7 +87,9 @@ Ganache在Node24下可能提示uWS原生二进制缺失并回退到JavaScript实
 
 ## 工程与报告索引
 
-迭代 2 优先阅读 `docs/iteration-2-review.md`（最终81项测试、Docker验收、演示顺序）、`docs/bug-retrospective.md`（真实Bug与修复）和 `docs/adr-iteration-2.md`（取舍与边界）。旧报告正文仍对应v1，本轮以该补充文档更新结果。
+迭代 2 优先阅读 `docs/iteration-2-review.md`（最终81项测试、Docker验收、演示顺序）、`docs/bug-retrospective.md`（真实Bug与修复）和 `docs/adr-iteration-2.md`（取舍与边界）。原正式报告正文仍对应v1，以该补充文档更新结果。
+
+2026-11-01 新答辩资料：[软件工程重点PPT V3](reports/弈信-8分钟课程答辩-V3.pptx)（16页主讲＋3页备用、8分钟含45秒演示）；V2原件保留为 `reports/弈信-8分钟课程答辩.pptx`。赵国豪讲稿：[打印PDF](reports/弈信-赵国豪答辩讲稿-打印版.pdf)与[可编辑DOCX](reports/弈信-赵国豪答辩讲稿-打印版.docx)。讲稿13页，含逐页台词、计时、重点句、演示卡和12问。两人岗位细分为建议安排，须按实际贡献核实；本次仅更新答辩材料，软件测试引用2026-10-28原始结果。
 
 - `AGENTS.md`：范围与真实性规则。
 - `docs/course-compliance.md`：8份参考材料的要求映射、格式、评分冲突与真实反馈边界。
@@ -105,4 +107,4 @@ Ganache在Node24下可能提示uWS原生二进制缺失并回退到JavaScript实
 
 本地RPC包含开发链管理能力、测试币faucet与进程内解锁测试账户，仅绑定127.0.0.1，不应直接暴露到公网。要做公开双人服务，需要独立节点、钱包授权、限制RPC、身份/反滥用、备份与更长挑战期，不能只把当前端口公开。
 
-当前不包含真实公网部署、Gitee/GitHub远程发布或真人反馈。已准备源码、启动流程、测试、报告与试用记录表；正式发布与真人反馈需项目作者使用自己的账号和真实参与者完成。课程资料提取文本含他人报告内容，仅供本地参考，公开前应排除 `docs/reference-extracts`。
+源码已于2026-11-01公开发布至 [GitHub](https://github.com/haisiiontam/YiXin)。当前没有公网在线对战服务或真人反馈，也不把GitHub等同于已完成教案的Gitee/Wiki与公开页保留期要求。已有源码、启动流程、测试、报告与试用记录表，真人反馈需实际参与者完成。课程资料提取文本含他人报告内容，仅供本地参考，公开时排除 `docs/reference-extracts`。答辩V3与新讲稿为本次本地交付，尚未另行推送远程。
