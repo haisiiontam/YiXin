@@ -45,7 +45,7 @@
 - 按项目作者指示，将 `C:\Users\lenovo\Downloads\弈信答辩-V2.pptx` 替换为 `reports/弈信-8分钟课程答辩.pptx`。
 - 替换源文件和目标文件 SHA-256 相同：`a5e382c31a4817d54d62b81afff0f4a9789b9d5ed6e9c82ef5967a9f8d1fca62`；python-pptx 重开检查14页、16:9版式；LibreOffice Kit 抽查第1、7、14页渲染，未改动源PPT内容。
 - GitHub `haisiiontam/YiXin` 经API检查为公开、未归档、无分支/提交的空仓库；无需合并已有远程历史。
-- 推送操作及 commit hash 在本段之后回填。
+- 首次完整提交 `f73ef51f49387376fd94391685c7b4df434b2ada` 已推送到 `origin/main`；GitHub API 返回的 `main` SHA 与之相同。远程 Git tree 中 PPT 为 2,317,607 字节，Git blob `079dbc5dcfe98dffe85ffd49aff7dd68e124c3fc` 与本地对象一致。
 
 ## 迭代 2（2026-10-28）：人机对弈、复盘、证书与视觉重做
 
