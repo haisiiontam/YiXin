@@ -1,0 +1,16 @@
+﻿✔ stable external connection installs the selected registered account without signing or sending (59.5108ms)
+✔ initial permission accountsChanged is accepted when the final selected account is consistent (60.9901ms)
+✔ chain change after getCode during signer acquisition rejects and clears the connection (46.5861ms)
+✔ chain change while session points RPC awaits cannot resurrect a ready session (78.2264ms)
+✔ account change after getCode during signer acquisition rejects and clears the connection (44.6649ms)
+✔ account change while session points RPC awaits cannot resurrect a ready session (62.2046ms)
+✔ rejected permission leaves no signer, contract, active timer or transaction (0.6844ms)
+✔ failed reconnection retires the previously connected signer and ready state (92.335ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3570.339

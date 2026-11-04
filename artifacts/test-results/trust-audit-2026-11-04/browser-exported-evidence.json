@@ -1,0 +1,94 @@
+{
+  "format": "gomoku-channel-evidence/v1",
+  "exportedAt": "2026-11-04T04:09:42.666Z",
+  "localTeachingOnly": true,
+  "domain": {
+    "name": "GomokuChannel",
+    "version": "1",
+    "chainId": 31337,
+    "verifyingContract": "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab"
+  },
+  "channelId": "0x298d110e9a625c36efc288023b6bd87729ee11cd7d595e79c5e5e00dc70c3c6d",
+  "participants": {
+    "black": "0x250d387dDf77C03FF10daEcf1B604187F648774B",
+    "white": "0x8C44A20b3d5aBA6dd1c2F8Ea1418D10c1e890a84"
+  },
+  "stake": 10,
+  "checkpoint": {
+    "moves": [
+      112,
+      97,
+      113,
+      98,
+      114,
+      99,
+      115,
+      100,
+      116
+    ],
+    "sigBlack": "0x519347fff55d7e78aff951049d16e502628513df4c8e52cb549f8817d31bc5e1300e08bfdfa11098c4184e5f8b958e1a441fb98b9b1b4a439c8e993bc1502de51c",
+    "sigWhite": "0x14865c9b212241650c177bb1d209ac61f3f26b3c9e13545273c0b1f653e47e9474f252b793a948a8b8a830c2bf84777512b27652ff486086e3464aa9b3f933101c"
+  },
+  "onchain": {
+    "status": "settled",
+    "moves": [
+      112,
+      97,
+      113,
+      98,
+      114,
+      99,
+      115,
+      100,
+      116
+    ],
+    "winner": 1,
+    "reason": 1,
+    "deadline": 0,
+    "proofDeadline": 0,
+    "blockNumber": 1527,
+    "blockHash": "0x810e05540ad8cc144fb54111ece36335d66df8e53e82f6f1bfed3a576f3d9f6b"
+  },
+  "transactions": [
+    {
+      "label": "锁定黑方积分",
+      "hash": "0x192c1017d3531896ede11f9d46129b14fac14917a46ae751dcbb98d6684d1f38",
+      "gasUsed": "165897",
+      "blockNumber": 1522,
+      "timestamp": 1793765376,
+      "transactionIndex": 0
+    },
+    {
+      "label": "锁定白方积分",
+      "hash": "0x109fbaf96e90745959658f9461481dbc248a71c612187b78e56f3b2adfb50549",
+      "gasUsed": "45697",
+      "blockNumber": 1523,
+      "timestamp": 1793765377,
+      "transactionIndex": 0
+    },
+    {
+      "label": "结算积分",
+      "hash": "0x0c98c797266d4830dac767692b75875043cad9303f04fac6811476b1419301ff",
+      "gasUsed": "232405",
+      "blockNumber": 1527,
+      "timestamp": 1793765381,
+      "transactionIndex": 0
+    }
+  ],
+  "transactionListComplete": true,
+  "initialization": [
+    {
+      "label": "新钱包注册（每地址一次）",
+      "hash": "0x7eee003e323b464ad4ef884a3ffdb370a31e6dad857b7bdf027db98ca1a9b5ae",
+      "gasUsed": "72380"
+    }
+  ],
+  "metrics": {
+    "onchainTransactions": 3,
+    "offchainMoves": 9,
+    "baselineTransactions": 11,
+    "savedPercent": 72.7,
+    "totalGas": "443999"
+  },
+  "trustBoundary": "积分无现实价值；独立保管签名快照，并在挑战期内监控链；中继不可代签；本地开发RPC不适合公网。"
+}

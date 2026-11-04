@@ -13,12 +13,12 @@ export default function LabPage({ c }) {
           <div><span className="section-kicker">STATE CHANNEL INSIGHTS</span><h2>把每一步，留在链下</h2></div>
           <span className="status-chip">{state.status === 'settled' ? '已结算数据' : '当前快照'}</span>
         </div>
-        <p className="section-description">以下数字来自当前客户端的真实交易与已确认棋谱。未完局会随开通、争议和结算继续变化。</p>
+        <p className="section-description">交易清单完整性由当前节点的通道事件核对；未完成核对时只显示已观测子集，不计算节省比例。统计涵盖成功交易，未包含无成功事件的失败尝试。</p>
         <div className="metrics-grid">
           <Metric label="已确认落子 m" value={moves.length} note="完整已确认棋谱"/>
-          <Metric label="本局实际链上交易" value={txs.length} note="open / join / 结算 / 争议" tone="accent"/>
+          <Metric label={state.transactionListComplete ? '本局成功链上交易' : '本局已观测交易'} value={txs.length} note="open / join / 结算 / 争议" tone="accent"/>
           <Metric label="逐步上链基线" value={hasRoom ? baseline : '—'} note="m + 2：开通 + 加入 + 每手"/>
-          <Metric label="相对基线减少" value={hasRoom && moves.length ? `${savings}%` : '—'} note={state.status === 'settled' ? '已结算快照对照' : '当前快照，非最终结果'}/>
+          <Metric label="相对基线减少" value={state.transactionListComplete && hasRoom && moves.length ? `${savings}%` : '待完整核验'} note={state.status === 'settled' ? '已结算快照对照' : '当前快照，非最终结果'}/>
         </div>
         {hasRoom ? (
           <div className="comparison">
@@ -50,7 +50,7 @@ export default function LabPage({ c }) {
             <dt>网络</dt><dd>{state.networkName}</dd>
             <dt>Chain ID</dt><dd>{state.chainId}</dd>
             <dt>合约</dt><dd className="break-all">{state.contractAddress || '等待初始化'}{state.contractAddress && <CopyButton compact value={state.contractAddress} label="复制合约地址" onCopy={copy}/>}</dd>
-            <dt>本局累计 gas</dt><dd>{state.metrics.totalGas ?? '—'}</dd>
+            <dt>{state.transactionListComplete ? '本局成功交易累计 gas' : '已观测交易 gas'}</dt><dd>{state.metrics.totalGas ?? '—'}</dd>
           </dl>
         </section>
         <details className="panel raw-state">

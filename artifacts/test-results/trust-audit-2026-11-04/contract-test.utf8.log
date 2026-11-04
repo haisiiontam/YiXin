@@ -1,0 +1,31 @@
+This version of µWS is not compatible with your Node.js build:
+
+Error: Cannot find module '../binaries/uws_win32_x64_137.node'
+Require stack:
+- E:\Gomoku\app\node_modules\.pnpm\@trufflesuite+uws-js-unofficial@20.30.0-unofficial.0\node_modules\@trufflesuite\uws-js-unofficial\src\uws.js
+- E:\Gomoku\app\node_modules\.pnpm\ganache@7.9.2\node_modules\ganache\dist\node\core.js
+Falling back to a NodeJS implementation; performance may be degraded.
+
+
+✔ compile exposes immutable references that account for deployed runtime substitutions (2962.9527ms)
+✔ registration, escrow, access control and invitation deadline refund conserve issuance (1131.4396ms)
+✔ join requires registered white and enough liquid points; locks across channels remain conserved (864.3737ms)
+✔ full replay validates black and white wins, all directions, edge wrap, illegal histories and legal draw (22472.3051ms)
+✔ EIP712 domain, contract, channel, move order, signer identity and malformed signatures are isolated (5211.5377ms)
+✔ white victory and full-board draw settle actual locked points exactly once (19628.2788ms)
+✔ unsigned empty challenge protects proof collection; forced continuations renew only response deadlines (3594.0695ms)
+✔ refused ninth signature recovers from an eight-move checkpoint only after the proof window (3186.355ms)
+✔ stale one-move challenge cannot force an immediate fork that excludes an already dual-signed nine-move win (2325.7673ms)
+✔ dispute escalation rejects equal, stale and divergent checkpoints and stale terminal settlements (6191.0935ms)
+✔ deadline equality rejects moves and challenges and awards timeout to the waiting player (2200.0286ms)
+✔ terminal signed challenge immediately settles; compatible signed terminal can settle after dispute expiry (4960.7016ms)
+✔ failed on-chain transaction is recorded and preserves balances and game state (650.416ms)
+✔ normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas (11091.1261ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 91029.7587

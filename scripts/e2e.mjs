@@ -3,7 +3,9 @@ import path from 'node:path';
 import { chromium } from '@playwright/test';
 import { JsonRpcProvider, Contract } from 'ethers';
 import { BLACK_WIN } from '../shared/gomoku.mjs';
-const ROOT = process.cwd(), OUT = path.join(ROOT, 'artifacts/test-results'), SHOTS = path.join(ROOT, 'docs/assets');
+const ROOT = process.cwd();
+const OUT = path.resolve(ROOT, process.env.TEST_RESULTS_DIR || 'artifacts/test-results');
+const SHOTS = path.resolve(ROOT, process.env.TEST_SCREENSHOTS_DIR || 'docs/assets');
 await fs.mkdir(OUT, { recursive: true }); await fs.mkdir(SHOTS, { recursive: true });
 const base = process.env.TEST_URL || 'http://127.0.0.1:4173';
 const evidence = { generatedAt: new Date().toISOString(), url: base, browser: 'Microsoft Edge via Playwright', tests: [], errors: [], screenshots: [] };
@@ -18,6 +20,32 @@ async function storedEvidence(page) { return page.evaluate(() => {
   const values = Object.keys(localStorage).filter(k => k.startsWith('gomoku-channel-v1:evidence:')).map(k => JSON.parse(localStorage.getItem(k)));
   return values.sort((a, b) => b.checkpoint.moves.length - a.checkpoint.moves.length)[0] || null;
 }); }
+async function waitForStoredSettlement(page, count) {
+  await page.waitForFunction(expected => {
+    const key = Object.keys(localStorage).find(k => k.startsWith('gomoku-channel-v1:active-channel:'));
+    const game = key && localStorage.getItem(key);
+    const raw = game && localStorage.getItem(`gomoku-channel-v1:evidence:${game}`);
+    if (!raw) return false;
+    const value = JSON.parse(raw);
+    return value.onchain?.status === 'settled' && value.transactionListComplete === true && value.transactions.length === expected;
+  }, count, { timeout: 30000 });
+}
+async function waitForProofDeadline(channelId) {
+  const config = await (await fetch(base + '/api/config')).json();
+  const rpc = new JsonRpcProvider(base + '/rpc', undefined, { cacheTimeout: -1 });
+  try {
+    const contract = new Contract(config.address, config.abi, rpc);
+    const channel = await contract.getChannel(channelId);
+    const until = Date.now() + (Number(config.challengePeriod) + 30) * 1000;
+    // Observe mined chain time through public read RPC; no test-only time mutation is exposed.
+    while (Date.now() < until) {
+      const latest = await rpc.send('eth_getBlockByNumber', ['latest', false]);
+      if (BigInt(latest.timestamp) >= channel.proofDeadline) return;
+      await new Promise(resolve => setTimeout(resolve, 200));
+    }
+    throw Error('等待链上举证期结束超时，请确认测试链持续出块');
+  } finally { rpc.destroy(); }
+}
 try {
   browser = await chromium.launch({ executablePath: process.env.BROWSER_PATH || 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe', headless: true, downloadsPath: path.join(ROOT, 'artifacts/playwright/downloads'), args: ['--disable-breakpad', '--disable-crash-reporter', '--disable-component-update', '--disable-sync', '--no-first-run'], env: { ...process.env, TEMP: path.join(ROOT, '.tmp'), TMP: path.join(ROOT, '.tmp'), LOCALAPPDATA: path.join(ROOT, '.tmp/browser-local'), APPDATA: path.join(ROOT, '.tmp/browser-app') } });
   const a = await browser.newContext({ viewport: { width: 1536, height: 1100 }, acceptDownloads: true });
@@ -60,6 +88,7 @@ try {
     await black.getByRole('button', { name: '链上结算本局', exact: true }).click();
     await black.getByText('已完成结算', { exact: true }).waitFor({ timeout: 30000 });
     await white.getByText('已完成结算', { exact: true }).waitFor({ timeout: 15000 });
+    await waitForStoredSettlement(black, 3);
     const after = await storedEvidence(black); evidence.afterSettlement = after;
     if (after.transactions.length !== 3) throw Error(`正常局事务不是3笔：${after.transactions.length}`);
     const config = await (await fetch(base + '/api/config')).json(); const rpc = new JsonRpcProvider(base + '/rpc', undefined, { cacheTimeout: -1 });
@@ -94,9 +123,11 @@ try {
     const details = black.locator('details.experiment-panel'); if (!await details.getAttribute('open')) await black.getByText('签名与异常实验', { exact: true }).click();
     await black.getByRole('button', { name: '提交最新快照挑战', exact: true }).click();
     await black.getByText('链上争议中', { exact: true }).first().waitFor({ timeout: 30000 });
+    await waitForProofDeadline((await storedEvidence(black)).channelId);
     await black.getByRole('checkbox', { name: '棋盘使用链上强制落子', exact: true }).check();
     await black.getByRole('button', { name: '落子 8,12', exact: true }).click();
     await black.getByText('已完成结算', { exact: true }).waitFor({ timeout: 30000 });
+    await waitForStoredSettlement(black, 4);
     const proof = await storedEvidence(black);
     if (proof.checkpoint.moves.length !== 8 || proof.onchain.moves.length !== 9 || proof.onchain.winner !== 1 || proof.transactions.length !== 4) throw Error('拒签争议证据或4笔事务结果不符');
     evidence.refusalRecovery = proof; await screenshot(black, '07-refusal-recovery.png');
@@ -105,6 +136,7 @@ try {
     const ctx = await browser.newContext({ viewport: { width: 1536, height: 1100 } }); const page = await ctx.newPage(); await ready(page);
     await page.getByRole('button', { name: '运行完整自动演示', exact: true }).click();
     await page.getByText('已完成结算', { exact: true }).waitFor({ timeout: 60000 });
+    await waitForStoredSettlement(page, 3);
     const demo = await storedEvidence(page); if (demo.transactions.length !== 3 || demo.checkpoint.moves.length !== 9) throw Error('自动演示交易/棋谱错误');
     evidence.demo = { channelId: demo.channelId, transactions: demo.transactions, metrics: demo.metrics };
     await screenshot(page, '05-auto-demo.png');

@@ -5,6 +5,9 @@ node_modules/
 web/dist/
 artifacts/contracts/
 artifacts/runtime/
+artifacts/runtime-*/
+artifacts/test-results/**/runtime-tests-*/
+artifacts/test-results/**/tmp/
 artifacts/permission-recovery/
 artifacts/playwright/
 *.log

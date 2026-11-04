@@ -6,7 +6,8 @@ import { evaluate, movesHex, requireExtension, fromHex, metrics, BLACK_WIN, STAT
 import { verifyEvidence } from '../shared/evidence.mjs';
 const results=[];
 function check(name,fn){test(name,async()=>{try{await fn();results.push({name,status:'passed'});}catch(e){results.push({name,status:'failed',error:e.message});throw e;}});}
-process.on('exit',()=>{fs.mkdirSync('artifacts/test-results',{recursive:true});fs.writeFileSync('artifacts/test-results/protocol-results.json',JSON.stringify({generatedAt:new Date().toISOString(),tests:results,summary:{passed:results.filter(t=>t.status==='passed').length,failed:results.filter(t=>t.status==='failed').length}},null,2));});
+const outputDir = process.env.TEST_RESULTS_DIR || 'artifacts/test-results';
+process.on('exit',()=>{fs.mkdirSync(outputDir,{recursive:true});fs.writeFileSync(`${outputDir}/protocol-results.json`,JSON.stringify({generatedAt:new Date().toISOString(),tests:results,summary:{passed:results.filter(t=>t.status==='passed').length,failed:results.filter(t=>t.status==='failed').length}},null,2));});
 check('JS规则拒绝非法类型、越界、占位、分叉和终局后落子',()=>{
   for(const moves of [null,Array(226).fill(0),[225],[-1],[1.5],[0,0],[...BLACK_WIN,1]]) assert.throws(()=>evaluate(moves));
   assert.throws(()=>requireExtension([0,15],[0,16,1]));assert.throws(()=>requireExtension([0],[0,15,1]));

@@ -1,0 +1,135 @@
+{
+  "generatedAt": "2026-11-04T04:19:59.643Z",
+  "node": "v24.21.0",
+  "scope": "Real local Ganache EVM, standalone HTTP RPC integration and Edge browser automation; injected wallet is an EIP-1193 test fixture, not a live extension/human/public-chain acceptance test.",
+  "unitAndIntegration": {
+    "passed": 144,
+    "failed": 0
+  },
+  "browserScenarios": {
+    "passed": 14,
+    "failed": 0
+  },
+  "finalSuites": [
+    {
+      "name": "contract",
+      "file": "contract-results.json",
+      "generatedAt": "2026-11-04T03:32:14.161Z",
+      "passed": 14,
+      "failed": 0,
+      "sha256": "95e0a68113035819c99ea5fbd385384434e301fcaafcf85c868568c7f030f919"
+    },
+    {
+      "name": "dispute-security",
+      "file": "dispute-security-results.json",
+      "generatedAt": "2026-11-04T03:43:54.728Z",
+      "passed": 3,
+      "failed": 0,
+      "sha256": "30b638b29d33f43cce28a1c6c86e0bf77e71de52d9c335d027c1f646eb973bd8"
+    },
+    {
+      "name": "protocol",
+      "file": "protocol-results.json",
+      "generatedAt": "2026-11-04T03:43:55.262Z",
+      "passed": 4,
+      "failed": 0,
+      "sha256": "52fd66e4b1b38cb17900c43b6d2c02ff9994c2eb126194ef8c004e536715701b"
+    },
+    {
+      "name": "ai",
+      "file": "ai-results.json",
+      "generatedAt": "2026-11-04T03:43:41.805Z",
+      "passed": 30,
+      "failed": 0,
+      "sha256": "248a04cf44cf16f4d4e8aac2aa3a1e9d1880d2811a08e67ec4f995e1d8d221cb"
+    },
+    {
+      "name": "certificate",
+      "file": "certificate-results.json",
+      "generatedAt": "2026-11-04T04:06:27.939Z",
+      "passed": 9,
+      "failed": 0,
+      "sha256": "97a93a8ef08146ad831f42422d87cec81c44ad2ceefa9a25223b999cb26eeb17"
+    },
+    {
+      "name": "client-recovery-receipts",
+      "file": "channel-client-ai-reconnect-refresh-results.json",
+      "generatedAt": "2026-11-04T04:05:42.740Z",
+      "passed": 47,
+      "failed": 0,
+      "sha256": "95688f8b599c98763f88757ba7e4718f6287a7f2139f1a4397054f45ce59b6ee"
+    },
+    {
+      "name": "client-external-network",
+      "file": "channel-client-network-results.json",
+      "generatedAt": "2026-11-04T04:06:34.818Z",
+      "passed": 7,
+      "failed": 0,
+      "sha256": "6bb25844ef9757061f37da2466dd127960196ee29df3acf2dedaddc3d53bbce2"
+    },
+    {
+      "name": "client-connect-race",
+      "file": "connect-race-after-fix/channel-client-connect-race-results.json",
+      "generatedAt": "2026-11-04T04:04:37.031Z",
+      "passed": 8,
+      "failed": 0,
+      "sha256": "c69ddb1459806ddf4ab6839af4ddbc98ee31ec5ae2b6aa46a9fb1db8b92f1983"
+    },
+    {
+      "name": "evidence-real-chain",
+      "file": "evidence-chain-results.json",
+      "generatedAt": "2026-11-04T03:31:30.464Z",
+      "passed": 9,
+      "failed": 0,
+      "sha256": "05fca0f967b4c35ba78a73f1c4434fe1593be96eb2d405d155881d61fbb87915"
+    },
+    {
+      "name": "chain-runtime-http",
+      "file": "chain-runtime-results.json",
+      "generatedAt": "2026-11-04T03:59:46.501Z",
+      "passed": 13,
+      "failed": 0,
+      "sha256": "a95667cb238a5e79b557033a3bfcaf05990041355b02fea6fbbe4bbfe915b033"
+    },
+    {
+      "name": "browser-local",
+      "file": "e2e-results.json",
+      "generatedAt": "2026-11-04T04:09:33.838Z",
+      "passed": 8,
+      "failed": 0,
+      "sha256": "7714029eb58b27a71f7bd374669b226530cf5a65f312c49ba865f00caa82a39f"
+    },
+    {
+      "name": "browser-external",
+      "file": "e2e-external-results.json",
+      "generatedAt": "2026-11-04T04:09:03.589Z",
+      "passed": 6,
+      "failed": 0,
+      "sha256": "91638874c3e12556b5f5842b2d7e51f8a87e71c8ba40535977eb3b2d7633ec28"
+    }
+  ],
+  "sourceSha256": {
+    "contracts/GomokuChannel.sol": "0c50da4018f0b8638f333b48f557908f105e9fada511ed4848762735e0d1044b",
+    "scripts/compile.mjs": "f5ab2f8290c5a88f238e145e81fae6b6c07a2bd4d5621d022ce15c76cb506c10",
+    "shared/evidence.mjs": "85f809b699e0a72613142a00b2316b83e87756dc181d049323eb78a1c827c2fc",
+    "shared/evidence-chain.mjs": "76ad3f1964b33c4abc95abf2bef2125c7e964cf529ed909b89750b0e1e957ee4",
+    "server/index.mjs": "6ce7ea6220182a11b81ad98ef312faa7f6250d1fcd66ef0f10b26bc488c9766a",
+    "server/chain-runtime.mjs": "3734b74cac4e624381fe46db2a9638ddb5f33a12884c549effb61181264e231c",
+    "web/src/channel-client.js": "b6b81671e0166eef6ccc78eb24c3fc845a957aa3f5e447dd386d2e774a7f198c",
+    "web/src/App.jsx": "aee97d243b80b47bd4c7516e0ce521294b0d79479985f2212d49470143221c7e",
+    "web/src/components/ExperimentPanel.jsx": "90079ff89a21281b9b84f0b0b69f8dc869adc1cd353eca88686a9a0a102ae60f",
+    "web/src/components/LabPage.jsx": "2f726e73a8a323a22b8a9a321ba65bc8f3bedd5c5976c79c10cbf122c0583a17",
+    "scripts/verify-evidence.mjs": "2e7358f97449de88cbfab6fa76dd83756008497e79041bb5f02880252a281487",
+    "scripts/deploy-external.mjs": "5b5448d8e1dd25b4866c13d9a7c8255e8290ab142cbe8bbc3b3b0e7d0a439bcb",
+    "scripts/e2e.mjs": "b40f280c1186bc2d4f0d12deb80f86ecfa791695c5536687c17bbeb556adff0f",
+    "scripts/e2e-external.mjs": "7f14606d7410720f174781c8d4d2c98f38f40f19101a5a3a172375a94e1d1ac0",
+    "scripts/verify.mjs": "97e8a2763c3d95b076cf99253f7beabdb92837553a7962a25f7ed3d198ccee5a",
+    "pnpm-lock.yaml": "2e23f036e3b79c0bd1442c07e132708186d7e05ee2f3717ead270507b18a198a"
+  },
+  "builtIndexSha256": "f82c27ca68ce24ebaf619a8c53615edc35a27e18dc96ce4bdbf8bda92de1d678",
+  "historicalResultsPreserved": true,
+  "publicDeployment": false,
+  "paidTransactions": false,
+  "independentThirdPartyAudit": false,
+  "evidenceAccounting": "Successful lifecycle transactions only; expected reverted attempts separately recorded in contract results."
+}

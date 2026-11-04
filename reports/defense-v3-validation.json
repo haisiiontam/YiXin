@@ -1,33 +1,72 @@
 {
-  "version": "V3 · 软件工程重点版",
-  "generatedAt": "2026-11-01",
+  "version": "V3 · 可信协作与工程证据版",
+  "generatedAt": "2026-11-04",
   "mainSlides": 16,
   "backupSlides": 3,
   "slideCount": 19,
   "targetSeconds": 480,
-  "speechCharacters": 1734,
+  "speechCharacters": 2087,
   "speakerNotes": "19/19",
   "nativeEditableCharts": 2,
   "powerpoint": "E:\\Gomoku\\app\\reports\\弈信-8分钟课程答辩-V3.pptx",
   "speakerDocx": "E:\\Gomoku\\app\\reports\\弈信-赵国豪答辩讲稿-打印版.docx",
   "shapeBounds": "passed",
-  "comparisonSourceGeneratedAt": "2026-10-28T14:43:16.011Z",
+  "comparisonSourceGeneratedAt": "2026-11-04T03:32:14.161Z",
+  "auditSummary": "E:\\Gomoku\\app\\artifacts\\test-results\\trust-audit-2026-11-04\\audit-summary.json",
+  "automaticTests": 144,
+  "browserScenarios": 14,
+  "publicDeployment": false,
+  "liveWalletExtensionAcceptance": false,
+  "v2Sha256": "a5e382c31a4817d54d62b81afff0f4a9789b9d5ed6e9c82ef5967a9f8d1fca62",
   "comparisons": [
     {
       "moves": 9,
       "channelTransactions": 3,
       "baselineTransactions": 11,
-      "channelGas": "436143",
-      "baselineGas": "1231480"
+      "channelGas": "436155",
+      "baselineGas": "1231600"
     },
     {
       "moves": 10,
       "channelTransactions": 3,
       "baselineTransactions": 12,
-      "channelGas": "448105",
+      "channelGas": "448093",
       "baselineGas": "1406433"
     }
   ],
   "proposedRolesNotHistorical": true,
-  "actualSoftwareRetestedToday": false
+  "actualSoftwareRetestedToday": true,
+  "speakerPdf": "E:\\Gomoku\\app\\reports\\弈信-赵国豪答辩讲稿-打印版.pdf",
+  "pdfPages": 13,
+  "officeGenerationRerunsSoftwareTests": false,
+  "sourceHashesVerified": 16,
+  "resultHashesVerified": 12,
+  "visualReview": {
+    "slidesReviewed": 19,
+    "pdfPagesReviewed": 13,
+    "recheckedSlides": [
+      2,
+      10,
+      11,
+      13
+    ],
+    "recheckedPdfPages": [
+      1,
+      8,
+      12
+    ],
+    "status": "passed",
+    "missingFonts": [],
+    "exportFontSubstitution": [
+      "Courier"
+    ],
+    "finalPrintTableWidths": "explicit grid widths; verified visually"
+  },
+  "deliverableSha256": {
+    "reports/弈信-8分钟课程答辩-V3.pptx": "61d51d6b5b9c35f3c1b02994f0c5ae7599157885da94d54951b569f74c27eb25",
+    "reports/弈信-赵国豪答辩讲稿-打印版.docx": "6d151283817cdc97464aab92f016d02cf7550cbad2d45262e7a25dbd4be93c15",
+    "reports/弈信-赵国豪答辩讲稿-打印版.pdf": "8ed99c45377bf6035e1db89f8c1c637ec77934751e891cdad3c6a4a1c8c99a26",
+    "docs/defense-v3-content.json": "5c0b5dca43aae09c082b5813ca859bedc9a7aa05c865f85b7547055b9a0a3152",
+    "scripts/build_defense_v3.py": "beac7809e29c91083059192bf1b48f222240b5e8b6caad74e9ac4d505a787d9c"
+  }
 }

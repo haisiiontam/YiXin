@@ -13,6 +13,7 @@ contract GomokuChannel is EIP712 {
         uint256 stake;
         State status;
         uint256 deadline;
+        uint256 proofDeadline;
         bytes moves;
         uint8 winner;
         uint8 reason;
@@ -124,7 +125,7 @@ contract GomokuChannel is EIP712 {
         _member(c);
         require(c.status == State.Active || c.status == State.Dispute, "not live");
         if (c.status == State.Dispute) {
-            require(block.timestamp < c.deadline, "challenge expired");
+            require(block.timestamp < c.proofDeadline, "proof window expired");
             require(moves.length > c.moves.length, "not newer");
             _prefix(c.moves, moves);
         }
@@ -133,13 +134,18 @@ contract GomokuChannel is EIP712 {
         c.moves = moves;
         if (terminal) { _finish(id, winner, winner == 0 ? 2 : 1); return; }
         c.status = State.Dispute;
-        c.deadline = block.timestamp + challengePeriod;
+        // First reserve a full proof window for newer compatible signed checkpoints.
+        // Otherwise an old snapshot could immediately force a fork and exclude a signed win.
+        // Only after proof collection ends does the next player get a full response window.
+        c.proofDeadline = block.timestamp + challengePeriod;
+        c.deadline = c.proofDeadline + challengePeriod;
         emit CheckpointChallenged(id, moves.length, c.deadline);
     }
 
     function forceMove(bytes32 id, uint8 position) external {
         Channel storage c = _channels[id];
         require(c.status == State.Dispute, "not disputed");
+        require(block.timestamp >= c.proofDeadline, "proof window pending");
         require(block.timestamp < c.deadline, "challenge expired");
         _applyMove(id, position);
     }
@@ -152,6 +158,7 @@ contract GomokuChannel is EIP712 {
         c.moves = next;
         emit ForcedMove(id, position);
         if (terminal) _finish(id, winner, winner == 0 ? 2 : 1);
+        // Forced continuations renew the response window without reopening proof collection.
         else c.deadline = block.timestamp + challengePeriod;
     }
 

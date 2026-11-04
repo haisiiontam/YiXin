@@ -10,8 +10,9 @@ import { buildCertificateSvg, certificateFileName, escapeXml } from '../shared/c
 const results = [];
 function check(name, fn) { test(name, async () => { try { await fn(); results.push({ name, status: 'passed' }); } catch (e) { results.push({ name, status: 'failed', error: e.message }); throw e; } }); }
 process.on('exit', () => {
-  fs.mkdirSync('artifacts/test-results', { recursive: true });
-  fs.writeFileSync('artifacts/test-results/certificate-results.json', JSON.stringify({ generatedAt: new Date().toISOString(), tests: results, summary: { passed: results.filter(t => t.status === 'passed').length, failed: results.filter(t => t.status === 'failed').length } }, null, 2));
+  const outputDir = process.env.TEST_RESULTS_DIR || 'artifacts/test-results';
+  fs.mkdirSync(outputDir, { recursive: true });
+  fs.writeFileSync(`${outputDir}/certificate-results.json`, JSON.stringify({ generatedAt: new Date().toISOString(), tests: results, summary: { passed: results.filter(t => t.status === 'passed').length, failed: results.filter(t => t.status === 'failed').length } }, null, 2));
 });
 
 const domain = { name: 'GomokuChannel', version: '1', chainId: 31337, verifyingContract: '0x0000000000000000000000000000000000000001' };
@@ -161,7 +162,8 @@ check('(f) 证书文件名格式', async () => {
 
 check('示例证书写入 artifacts/samples（浅色与深色）', async () => {
   const evidence = await makeEvidence(BLACK_WIN);
-  fs.mkdirSync('artifacts/samples', { recursive: true });
-  fs.writeFileSync('artifacts/samples/certificate-sample-light.svg', buildCertificateSvg(evidence, { levelName: '示例 · 九手速胜' }));
-  fs.writeFileSync('artifacts/samples/certificate-sample-dark.svg', buildCertificateSvg(evidence, { theme: 'dark', levelName: '示例 · 九手速胜' }));
+  const sampleDir = process.env.TEST_RESULTS_DIR ? `${process.env.TEST_RESULTS_DIR}/samples` : 'artifacts/samples';
+  fs.mkdirSync(sampleDir, { recursive: true });
+  fs.writeFileSync(`${sampleDir}/certificate-sample-light.svg`, buildCertificateSvg(evidence, { levelName: '示例 · 九手速胜' }));
+  fs.writeFileSync(`${sampleDir}/certificate-sample-dark.svg`, buildCertificateSvg(evidence, { theme: 'dark', levelName: '示例 · 九手速胜' }));
 });

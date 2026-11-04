@@ -1,31 +1,31 @@
 import fs from 'node:fs/promises';
 import { JsonRpcProvider, Contract } from 'ethers';
 import { verifyEvidence } from '../shared/evidence.mjs';
+import { verifyEvidenceOnchain } from '../shared/evidence-chain.mjs';
 const file = process.argv[2];
-if (!file) { console.error('用法: node scripts/verify-evidence.mjs <evidence.json> [--rpc http://127.0.0.1:4173/rpc]'); process.exitCode = 1; }
+if (!file) { console.error('用法: node scripts/verify-evidence.mjs <evidence.json> [--rpc <可信RPC URL>] [--contract <可信部署地址>] [--code-hash <可信运行时代码hash>] [--from-block <部署区块，默认0>]'); process.exitCode = 1; }
 else {
   let provider;
   try {
+    const option = name => {
+      const index = process.argv.indexOf(name);
+      if (index < 0) return undefined;
+      const value = process.argv[index + 1];
+      if (!value || value.startsWith('--')) throw Error(name + '缺少参数');
+      return value;
+    };
     const evidence = JSON.parse(await fs.readFile(file, 'utf8'));
-    const result = verifyEvidence(evidence);
-    const index = process.argv.indexOf('--rpc');
-    if (index >= 0) {
-      provider = new JsonRpcProvider(process.argv[index + 1], undefined, { cacheTimeout: -1 });
-      const network = await provider.getNetwork();
-      if (network.chainId !== BigInt(evidence.domain.chainId)) throw Error('RPC链ID与证据不符');
+    const fromBlock = option('--from-block');
+    if (fromBlock !== undefined && (!/^\d+$/.test(fromBlock) || !Number.isSafeInteger(Number(fromBlock)))) throw Error('--from-block须为非负安全整数');
+    // On a long-lived chain, supply the trusted deployment block to avoid scanning from genesis.
+    const expected = { verifyingContract: option('--contract'), runtimeCodeHash: option('--code-hash'), deploymentBlock: fromBlock === undefined ? undefined : Number(fromBlock) };
+    let result = verifyEvidence(evidence, expected);
+    const rpc = option('--rpc');
+    if (rpc) {
+      provider = new JsonRpcProvider(rpc, undefined, { cacheTimeout: -1 });
       const abi = JSON.parse(await fs.readFile(new URL('../artifacts/contracts/GomokuChannel.json', import.meta.url), 'utf8')).abi;
-      const c = new Contract(evidence.domain.verifyingContract, abi, provider);
-      const channel = await c.getChannel(evidence.channelId);
-      if (channel.black !== result.black || channel.white !== result.white || channel.stake !== BigInt(evidence.stake)) throw Error('链上通道参与者或积分与证据不符');
-      let verifiedTransactions = 0;
-      for (const tx of evidence.transactions || []) {
-        const receipt = await provider.getTransactionReceipt(tx.hash);
-        if (!receipt || receipt.status !== 1 || receipt.to.toLowerCase() !== evidence.domain.verifyingContract.toLowerCase()) throw Error('交易receipt无效：'+tx.hash);
-        if (!receipt.logs.some(log => { try { return log.address.toLowerCase() === evidence.domain.verifyingContract.toLowerCase() && c.interface.parseLog(log)?.args.id === evidence.channelId; } catch { return false; } })) throw Error('交易不属于该通道');
-        verifiedTransactions++;
-      }
-      result.chain = { verified: true, status: Number(channel.status), winner: Number(channel.winner), reason: Number(channel.reason), transactions: verifiedTransactions };
-      result.cryptographicOnly = false;
+      const contract = new Contract(evidence.domain.verifyingContract, abi, provider);
+      result = await verifyEvidenceOnchain(evidence, { provider, contract, expected });
     }
     console.log(JSON.stringify(result, null, 2));
   } catch (e) { console.error('证据核验失败:', e.shortMessage || e.message); process.exitCode = 1; }

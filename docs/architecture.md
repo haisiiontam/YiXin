@@ -1,12 +1,12 @@
 # 五子棋通道系统：架构、协议与关键设计
 
-版本：0.1；状态：依据当前源码静态阅读形成的架构说明，不是执行验证或安全审计报告。本文作者阅读了[本地服务](../server/index.mjs)、[共享规则](../shared/gomoku.mjs)、[客户端控制器](../web/src/channel-client.js)、[证据核验](../shared/evidence.mjs)、[证据命令](../scripts/verify-evidence.mjs)、[合约](../contracts/GomokuChannel.sol)、[编译脚本](../scripts/compile.mjs)、[依赖声明](../package.json)、[协议设计](protocol-spec.md)与[Web接口](app-interface.md)。代码存在、接口设计、实际运行结果必须分别记录；已读取[合约原始结果](../artifacts/test-results/contract-results.json)的环境/11组用例段、[JS及证据结果](../artifacts/test-results/protocol-results.json)全部，以及2026-10-27T01:05:31.385Z生成的[最终浏览器结果](../artifacts/test-results/e2e-results.json)用例、拒签恢复、导入与汇总片段：8通过、0失败。本文不代替[测试报告](testing.md)，未运行场景仍不应据此标通过。
+版本：0.2；2026-11-04 修订增加独立 RPC/注入钱包、部署身份、两阶段争议及完整事件计量，实测见[专项记录](trust-audit-2026-11-04.md)。本文件引用的2026-10-27/28测试数字为历史，不代表当前实现；当前协议以[修订约定](protocol-spec.md)为准。原0.1部分依据静态阅读形成，不是独立安全审计报告。本文作者阅读了[本地服务](../server/index.mjs)、[共享规则](../shared/gomoku.mjs)、[客户端控制器](../web/src/channel-client.js)、[证据核验](../shared/evidence.mjs)、[证据命令](../scripts/verify-evidence.mjs)、[合约](../contracts/GomokuChannel.sol)、[编译脚本](../scripts/compile.mjs)、[依赖声明](../package.json)、[协议设计](protocol-spec.md)与[Web接口](app-interface.md)。代码存在、接口设计、实际运行结果必须分别记录；已读取[合约原始结果](../artifacts/test-results/contract-results.json)的环境/11组用例段、[JS及证据结果](../artifacts/test-results/protocol-results.json)全部，以及2026-10-27T01:05:31.385Z生成的[最终浏览器结果](../artifacts/test-results/e2e-results.json)用例、拒签恢复、导入与汇总片段：8通过、0失败。本文不代替[测试报告](testing.md)，未运行场景仍不应据此标通过。
 
 需求与课程依据见[需求规格](requirements.md)和[课程合规](course-compliance.md)，外部研究与复用边界见[研究文档](research.md)。实施持续变化时应校对本文与最终版本，不将本次阅读时的缺口冒称永久缺陷或已修复。
 
 ## 1. 架构选择与部署边界
 
-当前采用单机教学部署：React前端经Vite构建为静态资源；Express以同一端口提供页面、REST、WebSocket和JSON-RPC代理；进程内Ganache执行真实EVM交易并持久化链数据；Solidity合约独立维护邀请、锁分、争议与结算。WebSocket中继仅协调链下双签消息，不持有玩家私钥、不决定链上积分。
+当前有两种运行模式：local 使用进程内 Ganache 和浏览器测试钱包；external 使用[独立链初始化模块](../server/chain-runtime.mjs)连接既有 HTTP(S) RPC 合约，浏览器通过 EIP-1193 钱包签名和发交易。React/Vite、Express、WebSocket 中继保持相同应用接口。外部模式关闭 faucet、自动部署、AI/脚本双钱包演示；连接与注册是分开的用户操作。服务启动校验链 ID、代码指纹、部署块、构造周期、域/摘要和新九字段布局，旧 manifest/旧 ABI 不会静默复用。WebSocket 中继不持有玩家私钥；本地教学单节点由运行者控制，不具备公网多验证者信任性质。下图描述 local 分支，external 配置与边界见[接入指南](external-chain.md)。
 
 | 层/文件 | 静态可确认的职责 | 需求关联 |
 | --- | --- | --- |
@@ -146,6 +146,7 @@ classDiagram
 | stake | uint256；房间API限制1..1000整数 | 每方锁定教学积分；合约本身要求正数且足额，不把API上限误写成合约上限 |
 | status | 0..5枚举 | None、Invited、Active、Dispute、Settled、Cancelled |
 | deadline | uint256链时间秒 | Invited为加入截止；Dispute为响应截止；Active置0；终局后的字段不表示仍有活跃争议 |
+| proofDeadline | uint256链时间秒 | Dispute 双签证据提交截止；该时刻起冻结 challenge 更新并开放 forceMove，后续链上落子不重新开放证据期 |
 | winner/reason | uint8 | winner 0和/未定、1黑、2白；reason 0未定、1五连、2满盘、3超时 |
 | points/registered | address映射 | 每地址一次领取1000教学分；仅合约规则可转移可用/锁定积分 |
 | totalIssued/totalLocked | uint256 | 已注册发行总量与所有未结束邀请/对局锁定总量 |
@@ -271,8 +272,8 @@ sequenceDiagram
   actor Q as 对手
   P->>C: challenge(最后双签快照 或 空谱)
   C->>C: 权限/双签/规则/前缀验证
-  C-->>P: Dispute + deadline=链时间+Δ
-  alt 轮到P且对手拒签
+  C-->>P: Dispute + proofDeadline=链时间+Δ, deadline=链时间+2Δ
+  alt 证据期结束且轮到P、对手拒签
     P->>C: forceMove(合法位置)
     C->>C: 当前方/规则/截止检查
     alt 该手终局
@@ -282,14 +283,14 @@ sequenceDiagram
     end
   else Q持有更新双签快照
     Q->>C: challenge(更长且保留原前缀)
-    C-->>P: 更新状态，非终局重置Δ
+    C-->>P: 仅证据期内接受；非终局重置证据期与响应期
   else 当前轮玩家未行动
     P->>C: 到期后claimTimeout
     C-->>P: 当前应行动方负，分配2stake
   end
 ```
 
-约束：chain timestamp < deadline才能更新challenge或forceMove；>=deadline可claimTimeout。无效/同序/旧/非前缀快照不延长；有效更长状态或强制合法落子才重新给完整Δ。seq上限225，合法推进有界，避免无效消息无限拖延。仍不能保证永久离线玩家公平：玩家须在窗口内监控链并能提交交易，本项目未实现watchtower。
+约束：challenge 更新须 chain timestamp<proofDeadline；forceMove 须 proofDeadline≤timestamp<deadline；timestamp≥deadline 才可 claimTimeout。证据期内有效更长且兼容的双签更新重置两期限；强制合法非终局落子仅给完整Δ响应期。无效/同序/旧/非前缀快照不延长期限，最多225手合法推进。该两阶段修复阻止旧快照在诚实方提交新双签前立即分叉；诚实方仍须在证据期内监控并能上链，本项目未实现 watchtower。
 
 客户端目前state.now采用浏览器墙钟近似倒计时，合约判断采用block.timestamp。两者可能偏离；UI必须以提示方式呈现，交易是否可执行由链决定，不能把浏览器时间当共识时间。若需要精确链上倒计时，应读取最新块timestamp并标记数据新鲜度。
 
@@ -390,7 +391,29 @@ metrics采用baselineTransactions=moves.length+2（m>0），onchainTransactions=
 
 验证：初始空谱挑战、旧状态修正、非前缀拒绝、错误轮次forceMove、胜棋拒签、deadline-1/deadline/deadline+1、有效推进重置期、已结算拒绝。
 
-## 8. 已核验记录范围与后续边界
+### ADR-004（2026-11-04）：先收集双签证据，再允许强制续走
+
+状态：已实现，替代 ADR-003 中允许 challenge 后立即 forceMove 的时序。
+
+背景：真实本地 EVM 复现旧一手双签 challenge 后立即走分叉，可挡住已有九手终局双签，原前缀检查不足以保护诚实方。
+
+决策：新增 proofDeadline；非终局 challenge 设置完整证据期和随后完整响应期。证据期内可更新严格更长兼容快照；期满后才可 forceMove。强制续走只延响应期；兼容双签终局仍可 settle。保留 enum，ABI 改变须新部署。
+
+验证：[合约14组](../artifacts/test-results/trust-audit-2026-11-04/contract-results.json)含实际攻击交易 status=0、最新九手 settle status=1、等号边界、拒签及基线；[专项安全3组](../artifacts/test-results/trust-audit-2026-11-04/dispute-security-results.json)独立复核。代价是拒签路径多等完整证据期；仍要求诚实方监控。
+
+### ADR-005（2026-11-04）：独立 RPC、用户钱包与明确部署身份
+
+决策：独立链模式必填链 ID、合约地址、部署块和经独立核实的 runtime hash；启动核验域、摘要、构造周期和新九字段布局。私钥由外部钱包保管，连接不自动发交易，注册单独确认；RPC 仅白名单读取/估算及原始签名交易广播。旧运行目录保留并拒绝漂移，不自动清链或部署替代合约。
+
+验证：[13项 HTTP/部署集成](../artifacts/test-results/trust-audit-2026-11-04/chain-runtime-results.json)、[连接竞态8项](../artifacts/test-results/trust-audit-2026-11-04/connect-race-after-fix/channel-client-connect-race-results.json)及[外部浏览器6组](../artifacts/test-results/trust-audit-2026-11-04/e2e-external-results.json)。限制：运行时代码 hash 是配置的信任锚，单 RPC 仍可能提供虚假视图；本轮底层为独立本机节点、钱包为 EIP-1193 测试装置，无公网部署和真人插件验收。
+
+### ADR-006（2026-11-04）：证据授权、链状态、计量分别核验
+
+决策：严格匹配合约域及签名表示；导入和中继恢复均保护持久化最新双签及参与者/stake。checkpoint 与真实 getChannel/区块分别导出。固定区块分页扫描通道事件并重建全部成功回执，不能依赖文件/中继自报清单；结算历史在完整扫描成功后保存，失败保留证据并可重试。状态不变时缓存扫描，降低 RPC 负载。清单未核对时只显示已观测交易，不计算节省。
+
+验证：[证据真实链9项](../artifacts/test-results/trust-audit-2026-11-04/evidence-chain-results.json)、[恢复和计量47项](../artifacts/test-results/trust-audit-2026-11-04/channel-client-ai-reconnect-refresh-results.json)及[独立 CLI RPC结果](../artifacts/test-results/trust-audit-2026-11-04/cli-live-rpc.json)。限制：成功事件清单不包含无成功日志的失败交易，预期 revert 在合约实测另列；离线签名不能证明 RPC 或实现身份。
+
+## 8. 历史核验记录范围与后续边界（原0.1）
 
 最终[浏览器结果](../artifacts/test-results/e2e-results.json)8组通过、0失败，覆盖独立上下文钱包/225点棋盘、邀请开通、9手双签而仅2笔开通、终局结算/积分/导出/刷新、拒签胜棋救济、明确脚本身份的自动演示、观察钱包导入/篡改拒绝、390像素移动宽度无横向溢出。拒签场景实际持有8手双签checkpoint，第9手用forceMove形成黑胜，4笔为open+join+challenge+forceMove，总gas=619199；这是单个本地场景，不外推为所有争议恒定4笔。自动演示9手3笔，总gas=431699；与合约对照测试不同运行实例，不混用其gas数字。
 

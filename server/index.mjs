@@ -4,45 +4,23 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomBytes } from 'node:crypto';
-import ganache from 'ganache';
 import { WebSocketServer, WebSocket } from 'ws';
-import { BrowserProvider, Contract, ContractFactory, AbiCoder, keccak256, verifyTypedData, verifyMessage, getAddress } from 'ethers';
-import { compile } from '../scripts/compile.mjs';
+import { AbiCoder, keccak256, verifyTypedData, verifyMessage, getAddress } from 'ethers';
+import { initializeChain } from './chain-runtime.mjs';
 import { STATE_TYPES, movesHex, requireExtension, relayAuthText } from '../shared/gomoku.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const RUNTIME = path.join(ROOT, 'artifacts/runtime');
-await fs.mkdir(RUNTIME, { recursive: true });
-const CHAIN_ID = 31337, PORT = Number(process.env.PORT || 4173);
+export async function createApplication({ env = process.env, artifact } = {}) {
+const runtime = await initializeChain({ env, artifact });
+const { provider, contract, domain, deployment, chainId: CHAIN_ID, runtimeDir: RUNTIME } = runtime;
+const PORT = Number(env.PORT || 4173);
 // 默认只监听回环；容器里需要设 HOST=0.0.0.0 才能被端口映射到。
-const HOST = process.env.HOST || '127.0.0.1';
+const HOST = env.HOST || '127.0.0.1';
 const ALLOWED_ORIGINS = new Set([
   `http://127.0.0.1:${PORT}`,
   `http://localhost:${PORT}`,
-  ...(process.env.EXTRA_ORIGINS || '').split(',').map(s => s.trim()).filter(Boolean),
+  ...(env.EXTRA_ORIGINS || '').split(',').map(s => s.trim()).filter(Boolean),
 ]);
-const challengePeriod = Number(process.env.CHALLENGE_PERIOD || 60);
-const chain = ganache.provider({
-  database: { dbPath: path.join(RUNTIME, 'chain') },
-  chain: { chainId: CHAIN_ID, hardfork: 'shanghai' },
-  wallet: { deterministic: true, totalAccounts: 2 },
-  miner: { blockGasLimit: 30000000 }, logging: { quiet: true },
-});
-const provider = new BrowserProvider(chain, undefined, { cacheTimeout: -1 });
-provider.pollingInterval = 100;
-const artifact = await compile();
-let deployment;
-try { deployment = JSON.parse(await fs.readFile(path.join(RUNTIME, 'deployment.json'), 'utf8')); } catch {}
-if (!deployment || await provider.getCode(deployment.address) === '0x') {
-  const c = await new ContractFactory(artifact.abi, artifact.bytecode, await provider.getSigner(0)).deploy(challengePeriod, 300);
-  await c.waitForDeployment();
-  const receipt = await c.deploymentTransaction().wait();
-  deployment = { address: await c.getAddress(), chainId: CHAIN_ID, deploymentHash: receipt.hash,
-    deploymentGas: receipt.gasUsed.toString(), createdAt: new Date().toISOString() };
-  await fs.writeFile(path.join(RUNTIME, 'deployment.json'), JSON.stringify(deployment, null, 2));
-}
-const contract = new Contract(deployment.address, artifact.abi, provider);
-const domain = { name: 'GomokuChannel', version: '1', chainId: CHAIN_ID, verifyingContract: deployment.address };
 let rooms = new Map();
 try { rooms = new Map(JSON.parse(await fs.readFile(path.join(RUNTIME, 'rooms.json'), 'utf8')).map(r => [r.roomId, r])); } catch {}
 let saveQueue = Promise.resolve();
@@ -66,23 +44,19 @@ app.use((req, res, next) => {
   if (req.headers.origin && !ALLOWED_ORIGINS.has(req.headers.origin)) return res.status(403).json({ error: '仅允许本地应用来源' });
   next();
 });
-// 开发链管理接口不对浏览器暴露：这些方法能改余额、解锁账户、篡改链状态。
-const DENIED_RPC_PREFIX = /^(personal_|debug_|admin_|miner_|txpool_|evm_|ganache_)/i;
-const DENIED_RPC_EXACT = new Set(['eth_accounts', 'eth_sign', 'eth_sendtransaction', 'eth_signtransaction']);
-function rpcDenied(method) {
-  const name = String(method || '');
-  return DENIED_RPC_PREFIX.test(name) || DENIED_RPC_EXACT.has(name.toLowerCase());
-}
+// Only explicitly listed read calls and client-signed raw transactions reach the chain.
 app.post('/rpc', async (req, res) => {
   async function execute(item) {
-    if (rpcDenied(item?.method)) return { jsonrpc: '2.0', id: item?.id, error: { code: -32601, message: `方法 ${item?.method} 已按本地安全策略禁用` } };
-    try { return { jsonrpc: '2.0', id: item.id, result: await chain.request({ method: item.method, params: item.params || [] }) }; }
-    catch (e) { return { jsonrpc: '2.0', id: item.id, error: { code: e.code || -32000, message: e.message, data: e.data } }; }
+    const id = typeof item?.id === 'string' || typeof item?.id === 'number' || item?.id === null ? item.id : null;
+    if (!item || item.jsonrpc !== '2.0' || typeof item.method !== 'string' || (item.params !== undefined && !Array.isArray(item.params))) return { jsonrpc: '2.0', id, error: { code: -32600, message: 'JSON-RPC 请求格式无效' } };
+    try { return { jsonrpc: '2.0', id, result: await runtime.rpcRequest(item.method, item.params || []) }; }
+    catch (e) { return { jsonrpc: '2.0', id, error: { code: e.code || -32000, message: runtime.publicError(e) } }; }
   }
+  if (Array.isArray(req.body) && (!req.body.length || req.body.length > 50)) return res.status(400).json({ jsonrpc: '2.0', id: null, error: { code: -32600, message: 'RPC 批量请求须为 1 至 50 项' } });
   res.json(Array.isArray(req.body) ? await Promise.all(req.body.map(execute)) : await execute(req.body));
 });
-app.get('/api/config', async (req, res) => res.json({ ...deployment, abi: artifact.abi, challengePeriod: Number(await contract.challengePeriod()), invitePeriod: Number(await contract.invitePeriod()), networkName: 'Gomoku Local EVM', pointsInitial: 1000, mode: 'local-teaching' }));
-app.get('/api/health', (req, res) => res.json({ ok: true, chainId: CHAIN_ID, contractAddress: deployment.address }));
+app.get('/api/config', (req, res) => res.json(runtime.config));
+app.get('/api/health', (req, res) => res.json({ ok: true, mode: runtime.config.mode, chainId: CHAIN_ID, contractAddress: deployment.address }));
 // 水龙头限流：同一地址 10 秒内不重复注资（返回当前余额，幂等不影响客户端初始化），
 // 同一来源 IP 每小时最多 120 次新注资，挡掉批量脚本刷地址的女巫行为。
 const FAUCET_ADDRESS_MS = 10 * 1000;
@@ -96,6 +70,7 @@ function faucetIpAllowed(ip, now) {
   return rec.count < FAUCET_IP_LIMIT;
 }
 app.post('/api/faucet', async (req, res, next) => {
+  if (runtime.mode !== 'local') return res.status(403).json({ error: 'external 模式不提供测试币水龙头', mode: 'external' });
   try {
     const address = getAddress(req.body.address);
     const now = Date.now();
@@ -106,7 +81,7 @@ app.post('/api/faucet', async (req, res, next) => {
     if (!cooling) {
       if (!faucetIpAllowed(ip, now)) return res.status(429).json({ error: '测试币领取过于频繁，请稍后再试' });
       // Local EVM testing RPC, no real funds and no hidden funding transaction.
-      if (await provider.getBalance(address) < 10n ** 18n) await chain.request({ method: 'evm_setAccountBalance', params: [address, '0x56bc75e2d63100000'] });
+      await runtime.fundLocalAddress(address);
       FAUCET_IP_RECORDS.get(ip).count += 1;
       faucetLastByAddress.set(address, now);
       funded = true;
@@ -130,7 +105,7 @@ app.get('/api/rooms/:id', (req, res) => {
 });
 app.use(express.static(path.join(ROOT, 'web/dist')));
 app.get('/', (req, res) => res.sendFile(path.join(ROOT, 'web/dist/index.html')));
-app.use((err, req, res, next) => { console.error('Request:', err.message); res.status(400).json({ error: err.shortMessage || err.message || '请求失败' }); });
+app.use((err, req, res, next) => { const message = runtime.publicError(err); console.error('Request:', message); res.status(400).json({ error: message }); });
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server, path: '/ws', maxPayload: 32768 });
 function broadcast(roomId) {
@@ -196,10 +171,40 @@ wss.on('connection', (socket, req) => {
       }
     } else throw Error('未知消息类型');
     await saveRooms(); broadcast(socket.roomId);
-  }).catch(e => { if (socket.readyState === WebSocket.OPEN) socket.send(JSON.stringify({ type: 'error', message: e.shortMessage || e.message })); }); });
+  }).catch(e => { if (socket.readyState === WebSocket.OPEN) socket.send(JSON.stringify({ type: 'error', message: runtime.publicError(e) })); }); });
   socket.on('close', () => { clearTimeout(authTimer); if (socket.roomId) broadcast(socket.roomId); });
 });
-server.listen(PORT, HOST, () => console.log(`Gomoku Channel Lab: http://${HOST === '0.0.0.0' ? '127.0.0.1' : HOST}:${PORT}\nLocal EVM chain ${CHAIN_ID}; contract ${deployment.address}\nAll mutable data: ${RUNTIME}`));
 let shuttingDown = false;
-async function shutdown() { if (shuttingDown) return; shuttingDown = true; for (const c of wss.clients) c.close(); await saveQueue; server.close(); await chain.disconnect(); process.exit(0); }
-process.on('SIGINT', shutdown); process.on('SIGTERM', shutdown);
+return {
+  app, server, runtime,
+  async listen(port = PORT, host = HOST) {
+    await new Promise((resolve, reject) => { server.once('error', reject); server.listen(port, host, () => { server.removeListener('error', reject); resolve(); }); });
+    const address = server.address();
+    ALLOWED_ORIGINS.add(`http://127.0.0.1:${address.port}`);
+    ALLOWED_ORIGINS.add(`http://localhost:${address.port}`);
+    return address;
+  },
+  async close() {
+    if (shuttingDown) return;
+    shuttingDown = true;
+    for (const c of wss.clients) c.terminate();
+    try {
+      await Promise.all([
+        saveQueue,
+        new Promise(resolve => wss.close(resolve)),
+        server.listening ? new Promise(resolve => server.close(resolve)) : Promise.resolve(),
+      ]);
+    } finally { await runtime.close(); }
+  },
+};
+}
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  let application;
+  try {
+    application = await createApplication();
+    const address = await application.listen();
+    console.log(`Gomoku Channel Lab: http://127.0.0.1:${address.port}\n${application.runtime.config.mode} chain ${application.runtime.chainId}; contract ${application.runtime.deployment.address}\nAll mutable data: ${application.runtime.runtimeDir}`);
+    const shutdown = async () => { await application.close(); process.exit(0); };
+    process.on('SIGINT', shutdown); process.on('SIGTERM', shutdown);
+  } catch (error) { console.error(application ? application.runtime.publicError(error) : error.message); await application?.close(); process.exitCode = 1; }
+}

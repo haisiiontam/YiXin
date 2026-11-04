@@ -27,7 +27,7 @@ after(async () => {
   evidence.generatedAt = new Date().toISOString();
   evidence.durationMs = Date.now() - started;
   evidence.summary = { passed: evidence.tests.filter(t => t.status === 'passed').length, failed: evidence.tests.filter(t => t.status === 'failed').length, successfulTransactions: evidence.transactions.filter(t => t.status === 1).length, revertedTransactions: evidence.transactions.filter(t => t.status === 0).length };
-  const destination = path.join(root, 'artifacts/test-results');
+  const destination = path.resolve(root, process.env.TEST_RESULTS_DIR || 'artifacts/test-results');
   fs.mkdirSync(destination, { recursive: true });
   fs.writeFileSync(path.join(destination, 'contract-results.json'), JSON.stringify(evidence, null, 2) + '\n');
   await provider?.destroy();
@@ -79,6 +79,25 @@ async function at(timestamp) {
   assert.equal(BigInt(block.timestamp), BigInt(timestamp));
 }
 
+check('compile exposes immutable references that account for deployed runtime substitutions', async () => {
+  const artifact = compile();
+  assert.ok(artifact.settings.outputSelection['*']['*'].includes('evm.deployedBytecode.immutableReferences'));
+  const references = Object.values(artifact.immutableReferences).flat();
+  assert.ok(references.length > 0);
+  const c = await fixture();
+  const runtime = await provider.getCode(await c.getAddress());
+  assert.notEqual(runtime, artifact.deployedBytecode);
+  const normalize = code => {
+    const bytes = Buffer.from(code.slice(2), 'hex');
+    for (const { start, length } of references) {
+      assert.ok(Number.isSafeInteger(start) && start >= 0 && length > 0 && start + length <= bytes.length);
+      bytes.fill(0, start, start + length);
+    }
+    return bytes.toString('hex');
+  };
+  assert.equal(normalize(runtime), normalize(artifact.deployedBytecode));
+});
+
 check('registration, escrow, access control and invitation deadline refund conserve issuance', async () => {
   const c = await fixture();
   const artifact = compile();
@@ -91,6 +110,7 @@ check('registration, escrow, access control and invitation deadline refund conse
   await rejects(c.cancelUnjoined.staticCall(missing));
   await rejects(c.claimTimeout.staticCall(missing));
   await rejects(c.forceMove.staticCall(missing, 0));
+  assert.equal((await c.getChannel(missing)).proofDeadline, 0n);
   assert.equal(await c.totalIssued(), 3000n);
   await rejects(c.register.staticCall());
   await rejects(c.openChannel.staticCall(ZeroAddress, 1, hashId('zero')));
@@ -216,35 +236,90 @@ check('white victory and full-board draw settle actual locked points exactly onc
   }
 });
 
-check('unsigned empty challenge, authorization, turn, legality and force-last-move refusal recovery', async () => {
+check('unsigned empty challenge protects proof collection; forced continuations renew only response deadlines', async () => {
   const c = await fixture(), id = await open(c);
+  assert.equal((await c.getChannel(id)).proofDeadline, 0n);
   await rejects(c.connect(signers[2]).challenge.staticCall(id, '0x', '0x', '0x'));
   await rejects(c.challenge.staticCall(id, movesHex([0]), '0x', '0x'));
   await rejects(c.forceMove.staticCall(id, 0));
-  await receipt('empty unsigned challenge', c.challenge(id, '0x', '0x', '0x'));
-  assert.equal((await c.getChannel(id)).status, 3n);
+  const challenged = await receipt('empty unsigned challenge', c.challenge(id, '0x', '0x', '0x'));
+  const initial = await c.getChannel(id);
+  const block = await provider.getBlock(challenged.blockNumber);
+  assert.equal(initial.status, 3n);
+  assert.equal(initial.proofDeadline, BigInt(block.timestamp) + 30n);
+  assert.equal(initial.deadline, initial.proofDeadline + 30n);
+  await rejects(c.forceMove.staticCall(id, 0));
+  await at(initial.proofDeadline - 1n);
+  await rejects(c.forceMove.staticCall(id, 0));
+  await rejects(c.claimTimeout.staticCall(id));
+  await at(initial.proofDeadline);
+  await rejects(c.challenge.staticCall(...await signed(c, id, [0])));
   await rejects(c.connect(signers[1]).forceMove.staticCall(id, 0));
   await rejects(c.connect(signers[2]).forceMove.staticCall(id, 0));
   await rejects(c.forceMove.staticCall(id, 225));
-  const previousDeadline = (await c.getChannel(id)).deadline;
-  await at(previousDeadline - 1n);
-  await receipt('black forced first move', c.forceMove(id, 0));
-  assert.equal((await c.getChannel(id)).deadline, previousDeadline + 29n);
-  await at(previousDeadline);
-  await rejects(c.claimTimeout.staticCall(id));
+  await receipt('black forced first move at exact proof deadline', c.forceMove(id, 0));
+  assert.equal((await c.getChannel(id)).proofDeadline, initial.proofDeadline);
+  assert.equal((await c.getChannel(id)).deadline, initial.deadline);
   await rejects(c.forceMove.staticCall(id, 1));
   await rejects(c.connect(signers[1]).forceMove.staticCall(id, 0));
-  const checkpoint = blackWin.slice(0, 8);
-  await receipt('new signed prefix', c.connect(signers[1]).challenge(...await signed(c, id, checkpoint)));
+  await at(initial.deadline - 1n);
+  await receipt('white forced response before response deadline', c.connect(signers[1]).forceMove(id, 15));
+  const continued = await c.getChannel(id);
+  assert.equal(continued.deadline, initial.deadline + 29n);
+  assert.equal(continued.proofDeadline, initial.proofDeadline);
+  assert.equal(continued.moves, movesHex([0, 15]));
+  await at(initial.deadline);
+  await rejects(c.claimTimeout.staticCall(id));
+  await c.forceMove.staticCall(id, 1);
+  await rejects(c.challenge.staticCall(...await signed(c, id, blackWin.slice(0, 8))));
+  await receipt('compatible signed settlement during forced continuation', c.settle(...await signed(c, id, blackWin)));
+  await conservation(c);
+});
+
+check('refused ninth signature recovers from an eight-move checkpoint only after the proof window', async () => {
+  const c = await fixture(), id = await open(c);
+  await receipt('eight-move signed refusal checkpoint', c.challenge(...await signed(c, id, blackWin.slice(0, 8))));
+  const initial = await c.getChannel(id);
+  await rejects(c.forceMove.staticCall(id, 4));
+  await at(initial.proofDeadline - 1n);
+  await rejects(c.forceMove.staticCall(id, 4));
+  await rejects(c.claimTimeout.staticCall(id));
+  await at(initial.proofDeadline);
+  await rejects(c.challenge.staticCall(...await signed(c, id, blackWin)));
   await rejects(c.connect(signers[1]).forceMove.staticCall(id, 4));
-  await receipt('black wins despite refused last signature', c.forceMove(id, 4));
+  await receipt('black wins despite refused last signature at exact proof deadline', c.forceMove(id, 4));
   const state = await c.getChannel(id);
+  assert.equal(state.status, 4n);
+  assert.equal(state.proofDeadline, initial.proofDeadline);
   assert.equal(state.winner, 1n);
   assert.equal(state.reason, 1n);
   assert.equal(state.moves, movesHex(blackWin));
   assert.equal(await c.points(wallets[0].address), 1100n);
   await rejects(c.forceMove.staticCall(id, 5));
   await rejects(c.claimTimeout.staticCall(id));
+  await conservation(c);
+});
+
+check('stale one-move challenge cannot force an immediate fork that excludes an already dual-signed nine-move win', async () => {
+  const c = await fixture(), id = await open(c);
+  // Both signatures exist before the loser challenges an older, genuine checkpoint.
+  const latestWin = await signed(c, id, blackWin);
+  const oldCheckpoint = await signed(c, id, [0]);
+  await receipt('loser challenges stale one-move checkpoint', c.connect(signers[1]).challenge(...oldCheckpoint));
+  const before = await c.getChannel(id);
+  await rejects(c.connect(signers[1]).forceMove.staticCall(id, 100));
+  const attack = await receipt('loser immediate fork rejected on chain', c.connect(signers[1]).forceMove(id, 100, { gasLimit: 500000 }), 'reverted');
+  assert.equal(attack.status, 0);
+  assert.deepEqual(Array.from(await c.getChannel(id)), Array.from(before));
+  assert.equal(before.moves, movesHex([0]));
+  await receipt('latest already-signed nine-move win remains settleable', c.settle(...latestWin));
+  const settled = await c.getChannel(id);
+  assert.equal(settled.status, 4n);
+  assert.equal(settled.moves, movesHex(blackWin));
+  assert.equal(settled.winner, 1n);
+  assert.equal(settled.reason, 1n);
+  assert.equal(await c.points(wallets[0].address), 1100n);
+  assert.equal(await c.points(wallets[1].address), 900n);
   await conservation(c);
 });
 
@@ -255,18 +330,23 @@ check('dispute escalation rejects equal, stale and divergent checkpoints and sta
   for (const moves of [[], [0, 15], prefix, [0, 15, 2, 16, 3]]) {
     await rejects(c.challenge.staticCall(...await signed(c, id, moves)));
   }
-  const oldDeadline = (await c.getChannel(id)).deadline;
-  await at(oldDeadline - 1n);
-  await receipt('escalate before deadline', c.connect(signers[1]).challenge(...await signed(c, id, blackWin.slice(0, 8))));
-  const newDeadline = (await c.getChannel(id)).deadline;
-  assert.equal(newDeadline, oldDeadline + 29n);
-  await at(oldDeadline);
+  const oldState = await c.getChannel(id);
+  await at(oldState.proofDeadline - 1n);
+  await receipt('escalate before proof deadline', c.connect(signers[1]).challenge(...await signed(c, id, blackWin.slice(0, 8))));
+  const updated = await c.getChannel(id);
+  assert.equal(updated.proofDeadline, oldState.proofDeadline + 29n);
+  assert.equal(updated.deadline, oldState.deadline + 29n);
+  assert.equal(updated.deadline, updated.proofDeadline + 30n);
+  await at(oldState.proofDeadline);
+  await rejects(c.forceMove.staticCall(id, 4));
   await rejects(c.claimTimeout.staticCall(id));
   // Valid terminal history from a different branch cannot displace the committed prefix.
   await rejects(c.settle.staticCall(...await signed(c, id, [30, 15, 31, 16, 32, 17, 33, 18, 34])));
   await rejects(c.settle.staticCall(...await signed(c, id, prefix)));
   await rejects(c.challenge.staticCall(id, '0x', '0x', '0x'));
-  await receipt('compatible white terminal settlement', c.settle(...await signed(c, id, whiteWin)));
+  await at(updated.proofDeadline);
+  await rejects(c.challenge.staticCall(...await signed(c, id, whiteWin)));
+  await receipt('compatible white terminal settlement at proof deadline', c.settle(...await signed(c, id, whiteWin)));
   assert.equal((await c.getChannel(id)).winner, 2n);
   const longer = await open(c);
   await receipt('longer nonterminal checkpoint', c.challenge(...await signed(c, longer, drawMoves().slice(0, 10))));
@@ -280,10 +360,16 @@ check('deadline equality rejects moves and challenges and awards timeout to the 
   for (const initial of [[], [0]]) {
     const id = await open(c, 50n);
     await receipt('start deadline dispute', c.challenge(...await signed(c, id, initial)));
-    const deadline = (await c.getChannel(id)).deadline;
+    const { proofDeadline, deadline } = await c.getChannel(id);
+    const current = initial.length % 2;
+    await at(proofDeadline - 1n);
+    await rejects(c.connect(signers[current]).forceMove.staticCall(id, initial.length ? 15 : 0));
+    await at(proofDeadline);
+    await rejects(c.claimTimeout.staticCall(id));
+    await rejects(c.challenge.staticCall(...await signed(c, id, initial.length ? [0, 15] : [0])));
+    await c.connect(signers[current]).forceMove.staticCall(id, initial.length ? 15 : 0);
     await at(deadline - 1n);
     await rejects(c.claimTimeout.staticCall(id));
-    const current = initial.length % 2;
     await c.connect(signers[current]).forceMove.staticCall(id, initial.length ? 15 : 0);
     await at(deadline);
     await rejects(c.connect(signers[current]).forceMove.staticCall(id, initial.length ? 15 : 0));
@@ -335,6 +421,7 @@ check('normal channel versus every-move on-chain baseline uses equal escrow and 
     const baseId = await open(baseline, 10n);
     for (let i = 0; i < moves.length; i++) {
       await receipt(`baseline ${label} move ${i + 1}`, baseline.connect(signers[i % 2]).playMove(baseId, moves[i], { gasLimit: 20000000 }));
+      assert.equal((await baseline.getChannel(baseId)).proofDeadline, 0n);
       if (i === 0 && label === 'black-win-9') {
         await rejects(baseline.challenge.staticCall(baseId, '0x', '0x', '0x'));
         await rejects(baseline.settle.staticCall(...await signed(baseline, baseId, [30, 15, 31, 16, 32, 17, 33, 18, 34])));

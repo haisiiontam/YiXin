@@ -1,0 +1,213 @@
+{
+  "generatedAt": "2026-11-04T03:23:37.835Z",
+  "environment": {
+    "chainId": 31337,
+    "transport": "Ganache in-memory EIP1193",
+    "realAssets": false
+  },
+  "tests": [
+    {
+      "name": "离线校验拒绝带salt/额外字段域、compact64以及v=0/1签名",
+      "status": "passed"
+    },
+    {
+      "name": "空谱免签明确signed=false；真实空谱双签可验；垃圾签名被拒绝",
+      "status": "passed"
+    },
+    {
+      "name": "真实结算从RPC返回胜负并重建完整三笔交易，空清单不能制造0交易",
+      "status": "passed"
+    },
+    {
+      "name": "遗漏、重复回执和伪造gas/区块/时间/标签不能改变RPC重建计量",
+      "status": "passed"
+    },
+    {
+      "name": "不存在、其他通道和实际执行失败的交易hash被拒绝",
+      "status": "passed"
+    },
+    {
+      "name": "RPC实际分叉棋谱不能被文件自述的兼容链谱掩盖",
+      "status": "passed"
+    },
+    {
+      "name": "forceMove后的链上扩展允许原双签前缀，末手双事件只计一笔交易",
+      "status": "passed"
+    },
+    {
+      "name": "验证链ID/部署地址/可选可信代码hash，并拒绝无代码地址",
+      "status": "passed"
+    },
+    {
+      "name": "实际部署的伪实现虽返回相同参与者和积分，错误stateDigest仍被拒绝",
+      "status": "passed"
+    }
+  ],
+  "transactions": [
+    {
+      "label": "deploy GomokuChannel",
+      "hash": "0x046d75846a5d8ed17d0d034e9dc9801a18086fac3ec4e1dca925fbcb66713a0f",
+      "blockNumber": 1,
+      "gasUsed": "2258206",
+      "status": 1
+    },
+    {
+      "label": "register",
+      "hash": "0x3165f698ffb1d956736b7e2bbb4b1d073b8fec2a66fef82e1e0a86573b35b080",
+      "blockNumber": 2,
+      "gasUsed": "89480",
+      "status": 1
+    },
+    {
+      "label": "register",
+      "hash": "0x759624d1d6a320872b8766adfb1a820c8d7908abb79826a9d8c264345aca0d29",
+      "blockNumber": 3,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "label": "open",
+      "hash": "0x47c0716fd3a816c13ac00c3ea6d46d37886b76125cca59e78ac24e436bc9f089",
+      "blockNumber": 4,
+      "gasUsed": "165873",
+      "status": 1
+    },
+    {
+      "label": "join",
+      "hash": "0x2bde5e528f92a96325b0905b98a174a74c113032d8074ca28631cd36ae8935e7",
+      "blockNumber": 5,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "label": "settle",
+      "hash": "0x658104e7b9356244dc195b25237dd966e634db5a89ae06e8f6260f017041eec6",
+      "blockNumber": 6,
+      "gasUsed": "232405",
+      "status": 1
+    },
+    {
+      "label": "open",
+      "hash": "0x3afaf1e2193fb46675248a81debe070c930f8231326d0f8631e1d45b993d6772",
+      "blockNumber": 7,
+      "gasUsed": "165897",
+      "status": 1
+    },
+    {
+      "label": "join",
+      "hash": "0x7d706961fd92862283608cb7fa4e60af3c006e43c7fb0a72d73828a1cd44cd80",
+      "blockNumber": 8,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "label": "open",
+      "hash": "0x3c005af16e392473a31fb8793a02d0da1baf6cac1b90b2b84287bb7b67d9c585",
+      "blockNumber": 9,
+      "gasUsed": "148797",
+      "status": 1
+    },
+    {
+      "label": "join",
+      "hash": "0xc481230a6d4a3a7b654fb0c712e45c7281d42acb880679989f337627397d2a04",
+      "blockNumber": 10,
+      "gasUsed": "45685",
+      "status": 1
+    },
+    {
+      "label": "open",
+      "hash": "0x3a386fe1aa5b29e7b6cebbdb81ad72317352d9e1cfa702c1fa2ef1ff8f943116",
+      "blockNumber": 11,
+      "gasUsed": "148797",
+      "status": 1
+    },
+    {
+      "label": "join",
+      "hash": "0x4e4d9aec8b8bd94f2d5c76874578588e849627d2230f5bbd96330a04787e1642",
+      "blockNumber": 12,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "label": "failed timeout",
+      "hash": "0x2b6010b4769148295b3825ab49433a03ef9d2151afbb51578f595322ab939856",
+      "blockNumber": 13,
+      "gasUsed": "26376",
+      "status": 0
+    },
+    {
+      "label": "open",
+      "hash": "0x344aae82413f7a9ada9fa7b88f601320437900cdfb33ddadd547156bd2875f43",
+      "blockNumber": 14,
+      "gasUsed": "148797",
+      "status": 1
+    },
+    {
+      "label": "join",
+      "hash": "0xf392df7804932e135101ca0d1272eb5e481934528a353494edf76d53e9a81119",
+      "blockNumber": 15,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "label": "challenge fork",
+      "hash": "0x86c3d0738b52b9e64c351219a0d1300d443db6a6a3047bec9977a8ac0addbce8",
+      "blockNumber": 16,
+      "gasUsed": "115922",
+      "status": 1
+    },
+    {
+      "label": "open",
+      "hash": "0xf50ee333ed7183be92393114d2fcba3516233b4c32783d0baa3826cb668b862b",
+      "blockNumber": 17,
+      "gasUsed": "148797",
+      "status": 1
+    },
+    {
+      "label": "join",
+      "hash": "0x6ba6cd8ab7bad8e4b6770401ea822cf1ac069ff2553300023c24e6dbaf8cb931",
+      "blockNumber": 18,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "label": "challenge",
+      "hash": "0x39a99fad64f14624ceba0c5ffa48980c7ffbf8737a2a7d7da27c4b358502fc07",
+      "blockNumber": 19,
+      "gasUsed": "213142",
+      "status": 1
+    },
+    {
+      "label": "force winning move",
+      "hash": "0x2ca88371e0a7b4dc5b076130925445e1f4887ce910c96c26e56d915d1b5d4ba4",
+      "blockNumber": 20,
+      "gasUsed": "211551",
+      "status": 1
+    },
+    {
+      "label": "open",
+      "hash": "0x1326b4b68ce74c2e3d72092fa045346d216601fc5f20762a4b30c9907e315b85",
+      "blockNumber": 21,
+      "gasUsed": "148797",
+      "status": 1
+    },
+    {
+      "label": "join",
+      "hash": "0x51adc72533a5e8637b40079a6974222f73242b8e13a832a3949a8224b71e84c0",
+      "blockNumber": 22,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "label": "deploy spoof",
+      "hash": "0xc7d23c87ee61b7e8a9ccbc133f580889d67f595bf147ee53e18bc0738196fd13",
+      "blockNumber": 23,
+      "gasUsed": "391593",
+      "status": 1
+    }
+  ],
+  "summary": {
+    "passed": 9,
+    "failed": 0
+  }
+}

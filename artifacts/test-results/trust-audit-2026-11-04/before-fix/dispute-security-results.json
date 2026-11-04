@@ -1,0 +1,79 @@
+{
+  "generatedAt": "2026-11-04T03:21:34.953Z",
+  "environment": {
+    "node": "v24.19.0",
+    "chainId": 31337,
+    "challengePeriod": 30,
+    "transport": "in-memory Ganache only; no external chain",
+    "solc": "0.8.30+commit.73712a01.Emscripten.clang",
+    "sourceSha256": "e03aa1e644fd46d552dce149c88b6e4d3c12c9519644f627f1cfa2d689faec95"
+  },
+  "tests": [
+    {
+      "name": "old one-move challenge cannot fork away a newer jointly signed nine-move terminal state",
+      "status": "failed",
+      "error": "Old checkpoint plus immediate divergent forceMove suppresses the latest jointly signed terminal state"
+    }
+  ],
+  "transactions": [
+    {
+      "label": "deploy GomokuChannel",
+      "hash": "0x046d75846a5d8ed17d0d034e9dc9801a18086fac3ec4e1dca925fbcb66713a0f",
+      "blockNumber": 1,
+      "gasUsed": "2258206",
+      "status": 1
+    },
+    {
+      "label": "register",
+      "hash": "0x3165f698ffb1d956736b7e2bbb4b1d073b8fec2a66fef82e1e0a86573b35b080",
+      "blockNumber": 2,
+      "gasUsed": "89480",
+      "status": 1
+    },
+    {
+      "label": "register",
+      "hash": "0x759624d1d6a320872b8766adfb1a820c8d7908abb79826a9d8c264345aca0d29",
+      "blockNumber": 3,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "label": "open",
+      "hash": "0x0643a24df249c974f59647b02b2f0ccd755655842b78e46cafc42551c4410a73",
+      "blockNumber": 4,
+      "gasUsed": "165897",
+      "status": 1
+    },
+    {
+      "label": "join",
+      "hash": "0xbfa9796cb49c12af5033b9abce35d97f3f38091f6c09d69ea47c708860b4c64d",
+      "blockNumber": 5,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "label": "losing white challenges old one-move checkpoint",
+      "hash": "0xa34b491f302cc395977d5a369a841421dec24487eea947619fd6cae86560874d",
+      "blockNumber": 6,
+      "gasUsed": "104122",
+      "status": 1
+    },
+    {
+      "label": "attempt immediate divergent white forced move",
+      "hash": "0xac16c2555f543a31e8daed8e5366f6b270976a3212b688f2fbd1f8bc96fc802b",
+      "blockNumber": 7,
+      "gasUsed": "62360",
+      "status": 1
+    }
+  ],
+  "attacks": [
+    {
+      "immediateForkAccepted": true,
+      "latestSignedTerminalRejected": true
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 1
+  }
+}

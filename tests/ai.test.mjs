@@ -18,10 +18,11 @@ function check(name, fn) {
   });
 }
 process.on('exit', () => {
-  fs.mkdirSync('artifacts/test-results', { recursive: true });
+  const outputDir = process.env.TEST_RESULTS_DIR || 'artifacts/test-results';
+  fs.mkdirSync(outputDir, { recursive: true });
   const passed = results.filter(t => t.status === 'passed').length;
   const failed = results.filter(t => t.status === 'failed').length;
-  fs.writeFileSync('artifacts/test-results/ai-results.json', JSON.stringify({
+  fs.writeFileSync(`${outputDir}/ai-results.json`, JSON.stringify({
     generatedAt: new Date().toISOString(), tests: results, measurements, summary: { passed, failed },
   }, null, 2));
 });

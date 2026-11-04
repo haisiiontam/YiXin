@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import solc from 'solc';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const settings = { optimizer: { enabled: true, runs: 200 }, evmVersion: 'shanghai', outputSelection: { '*': { '*': ['abi', 'evm.bytecode.object', 'evm.deployedBytecode.object'] } } };
+const settings = { optimizer: { enabled: true, runs: 200 }, evmVersion: 'shanghai', outputSelection: { '*': { '*': ['abi', 'evm.bytecode.object', 'evm.deployedBytecode.object', 'evm.deployedBytecode.immutableReferences'] } } };
 let compiled;
 
 export function compile(contractName = 'GomokuChannel') {
@@ -22,7 +22,7 @@ export function compile(contractName = 'GomokuChannel') {
   }
   const result = compiled[contractName];
   if (!result) throw new Error(`Unknown contract: ${contractName}`);
-  return { contractName, sourceName: 'contracts/GomokuChannel.sol', compiler: solc.version(), settings, abi: result.abi, bytecode: `0x${result.evm.bytecode.object}`, deployedBytecode: `0x${result.evm.deployedBytecode.object}` };
+  return { contractName, sourceName: 'contracts/GomokuChannel.sol', compiler: solc.version(), settings, abi: result.abi, bytecode: `0x${result.evm.bytecode.object}`, deployedBytecode: `0x${result.evm.deployedBytecode.object}`, immutableReferences: result.evm.deployedBytecode.immutableReferences };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

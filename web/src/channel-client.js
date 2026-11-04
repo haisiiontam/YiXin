@@ -1,6 +1,7 @@
-import { Wallet, JsonRpcProvider, Contract, AbiCoder, keccak256, randomBytes, TypedDataEncoder, verifyTypedData } from 'ethers';
+import { Wallet, BrowserProvider, JsonRpcProvider, Contract, AbiCoder, keccak256, randomBytes, TypedDataEncoder, verifyTypedData } from 'ethers';
 import { STATE_TYPES, BLACK_WIN, evaluate, movesHex, fromHex, isPrefix, requireExtension, metrics, relayAuthText } from '../../shared/gomoku.mjs';
 import { verifyEvidence } from '../../shared/evidence.mjs';
+import { verifyEvidenceOnchain } from '../../shared/evidence-chain.mjs';
 import { chooseMove, LEVELS } from '../../shared/ai.mjs';
 const STATUS = ['idle', 'invited', 'active', 'dispute', 'settled', 'cancelled'];
 const STORE = 'gomoku-channel-v1';
@@ -22,22 +23,104 @@ export class ChannelClient {
     const data = await res.json(); if (!res.ok) throw Error(data.error || '服务请求失败'); return data;
   }
   async init() {
+    clearInterval(this._timer);
     this.config = await this._api('/api/config');
+    this.domain = { name: 'GomokuChannel', version: '1', chainId: this.config.chainId, verifyingContract: this.config.address };
+    this._emit({ ready: false, walletConnected: false, networkMode: this.config.mode, networkName: this.config.networkName, chainId: this.config.chainId, contractAddress: this.config.address, challengePeriod: this.config.challengePeriod });
+    // External mode never creates a private key, funds an account, or submits a transaction on page load.
+    if (this.config.mode === 'external') return;
     this.provider = new JsonRpcProvider(`${location.origin}/rpc`, undefined, { cacheTimeout: -1 }); this.provider.pollingInterval = 150;
+    await this._checkNetwork(this.provider);
     let key = localStorage.getItem(`${STORE}:local-test-key`);
     if (!key) { key = Wallet.createRandom().privateKey; localStorage.setItem(`${STORE}:local-test-key`, key); }
     this.wallet = new Wallet(key, this.provider); this.contract = new Contract(this.config.address, this.config.abi, this.wallet);
-    this.domain = { name: 'GomokuChannel', version: '1', chainId: this.config.chainId, verifyingContract: this.config.address };
-    this._emit({ address: this.wallet.address, chainId: this.config.chainId, contractAddress: this.config.address, challengePeriod: this.config.challengePeriod });
     await this._prepareWallet(this.wallet);
-    this._emit({ ready: true, points: Number(await this.contract.points(this.wallet.address)) });
-    this._log('本地测试钱包已就绪，积分由链上合约记账');
+    await this._startSession();
+    this._log('本地测试钱包已就绪，积分由链上合约记账；节点由本机控制');
+  }
+  async _checkNetwork(provider) {
+    let network;
+    try { network = await provider.getNetwork(); } catch (error) {
+      if (error.code === 'NETWORK_ERROR') throw Error(`钱包网络不符，请切换到链 ${this.config.chainId}`);
+      throw error;
+    }
+    if (network.chainId !== BigInt(this.config.chainId)) throw Error(`钱包网络不符，请切换到链 ${this.config.chainId}`);
+    const code = await provider.getCode(this.config.address);
+    if (code === '0x') throw Error('目标地址没有合约代码');
+    if (this.config.runtimeCodeHash && !same(keccak256(code), this.config.runtimeCodeHash)) throw Error('合约代码与已配置的部署指纹不符');
+  }
+  async connectExternalWallet(injected = globalThis.ethereum) {
+    if (this.config?.mode !== 'external') throw Error('当前不是外部节点模式');
+    await this._busy(async () => {
+      if (!injected?.request) throw Error('请先安装兼容 EIP-1193 的浏览器钱包');
+      this._removeWalletListeners(); this._closeSocket(); clearInterval(this._timer);
+      this.provider?.destroy();
+      this._walletEpoch = (this._walletEpoch || 0) + 1;
+      this._injected = injected;
+      this.wallet = null; this.contract = null;
+      this._walletChanged = () => {
+        this._walletEpoch++;
+        clearInterval(this._timer); this._closeSocket(); this.contract = null; this.wallet = null;
+        this._emit({ ready: false, walletConnected: false, error: '钱包账户或网络已变化，请重新连接；原签名证据已保留' });
+      };
+      injected.on?.('accountsChanged', this._walletChanged); injected.on?.('chainChanged', this._walletChanged);
+      try {
+        // Permission may legitimately emit accountsChanged; bind the session only after it resolves.
+        const accounts = await injected.request({ method: 'eth_requestAccounts', params: [] });
+        const epoch = this._walletEpoch;
+        if (!accounts?.length) throw Error('钱包没有授权账户');
+        this.provider = new BrowserProvider(injected, this.config.chainId, { cacheTimeout: -1 });
+        await this._checkNetwork(this.provider);
+        const signer = await this.provider.getSigner(accounts[0]);
+        const current = await injected.request({ method: 'eth_accounts', params: [] });
+        const chainId = await injected.request({ method: 'eth_chainId', params: [] });
+        if (epoch !== this._walletEpoch || !same(current?.[0], signer.address) || BigInt(chainId) !== BigInt(this.config.chainId)) throw Error('连接期间钱包账户或网络已变化，请重新连接');
+        this.wallet = signer;
+        this.contract = new Contract(this.config.address, this.config.abi, signer);
+        await this._startSession(epoch);
+        this._log('已连接外部钱包；私钥由钱包保管，交易与签名需在钱包确认');
+      } catch (error) {
+        clearInterval(this._timer); this.wallet = null; this.contract = null;
+        this._emit({ ready: false, walletConnected: false });
+        this._removeWalletListeners();
+        throw error;
+      }
+    });
+    if (this.state.ready) await this._restoreSavedGame();
+  }
+  _removeWalletListeners() {
+    if (this._injected && this._walletChanged) {
+      this._injected.removeListener?.('accountsChanged', this._walletChanged);
+      this._injected.removeListener?.('chainChanged', this._walletChanged);
+    }
+    this._injected = null; this._walletChanged = null;
+  }
+  async registerExternalWallet() {
+    if (this.config?.mode !== 'external' || !this.wallet || !this.state.walletConnected) throw Error('请先连接外部钱包');
+    await this._busy(async () => {
+      if (!await this.contract.registered(this.wallet.address)) {
+        const tx = await this.contract.register(), receipt = await tx.wait();
+        if (receipt.status !== 1) throw Error('注册交易失败');
+        this.state.initialization.push({ label: '钱包注册', hash: receipt.hash, gasUsed: receipt.gasUsed.toString() });
+      }
+    });
+    await this._startSession();
+  }
+  async _startSession(epoch = this._walletEpoch) {
+    const wallet = this.wallet, contract = this.contract;
+    if (!wallet || !contract) throw Error('钱包连接已失效，请重新连接');
+    const registered = await contract.registered(wallet.address);
+    const points = Number(await contract.points(wallet.address));
+    if (this.config.mode === 'external' && (epoch !== this._walletEpoch || wallet !== this.wallet || contract !== this.contract)) throw Error('连接期间钱包账户或网络已变化，请重新连接');
+    this._emit({ address: wallet.address, walletConnected: true, ready: registered, points });
+    clearInterval(this._timer);
     this._timer = setInterval(() => { this._emit({ now: Math.floor(Date.now() / 1000) }); if (!this._refreshing && !this.state.busy) this.refresh().catch(e => this._log(readableError(e), 'warning')); }, 2000);
-    await this._restoreSavedGame();
+    // Restoration acquires its own lock, so finish the explicit connect action first.
+    if (registered && !this.state.busy) await this._restoreSavedGame();
   }
   async _restoreSavedGame() {
     // A newer AI game must not be displaced by an older multiplayer-room bookmark.
-    if (await this._resumeAi()) return;
+    if (this.config.mode !== 'external' && await this._resumeAi()) return;
     const saved = localStorage.getItem(`${STORE}:active-room:${this.config.address}`);
     if (saved) { try { await this.joinRoom(saved); } catch (e) {
       this._log(`中继恢复失败：${readableError(e)}`, 'warning');
@@ -47,6 +130,7 @@ export class ChannelClient {
     } }
   }
   async _prepareWallet(wallet) {
+    if (this.config.mode === 'external') throw Error('外部模式不提供本地注资或代管测试钱包');
     await this._api('/api/faucet', { address: wallet.address });
     const c = this.contract.connect(wallet);
     if (!await c.registered(wallet.address)) {
@@ -62,8 +146,9 @@ export class ChannelClient {
     finally { this._emit({ busy: false }); }
   }
   _resetGame() {
+    this._onchainSnapshot = null; this._transactionScanKey = null;
     this._checkpoint = { moves: [], sigBlack: '', sigWhite: '' }; this._room = null; this._demoId = null;
-    this._emit({ mode: 'player', channelId: '', inviteUrl: '', role: 0, black: '', white: '', stake: 10, status: 'idle', moves: [], pending: null, winner: 0, terminal: false, reason: '', nextPlayer: 1, deadline: 0, signatures: { black: '', white: '' }, digest: '', transactions: [], events: [], demoProgress: '', aiLevel: '', aiThinking: false, peerConnected: false });
+    this._emit({ mode: 'player', channelId: '', inviteUrl: '', role: 0, black: '', white: '', stake: 10, status: 'idle', moves: [], pending: null, winner: 0, terminal: false, reason: '', nextPlayer: 1, deadline: 0, proofDeadline: 0, signatures: { black: '', white: '' }, digest: '', transactions: [], transactionListComplete: false, events: [], demoProgress: '', aiLevel: '', aiThinking: false, peerConnected: false });
     this._ai = null;
   }
   async createRoom(stake = 10) {
@@ -107,8 +192,8 @@ export class ChannelClient {
   _verifyCheckpoint(checkpoint, room) {
     evaluate(checkpoint.moves);
     if (!checkpoint.moves.length) return;
-    const value = { channelId: room.channelId, movesHash: keccak256(movesHex(checkpoint.moves)) };
-    if (!same(verifyTypedData(this.domain, STATE_TYPES, value, checkpoint.sigBlack), room.black) || !same(verifyTypedData(this.domain, STATE_TYPES, value, checkpoint.sigWhite), room.white)) throw Error('中继提供的双签快照验证失败');
+    verifyEvidence({ format: 'gomoku-channel-evidence/v1', domain: this.domain, channelId: room.channelId,
+      participants: { black: room.black, white: room.white }, stake: room.stake, checkpoint });
   }
   async _onRoom({ room, peers }) {
     const role = same(this.wallet.address, room.black) ? 1 : 2;
@@ -118,10 +203,21 @@ export class ChannelClient {
     }
     this._verifyCheckpoint(room.checkpoint, room);
     if (!isPrefix(this._checkpoint.moves, room.checkpoint.moves)) throw Error('拒绝中继回退或分叉已确认快照');
-    this._room = room; this._checkpoint = room.checkpoint;
-    localStorage.setItem(`${STORE}:active-room:${this.config.address}`, room.roomId);
+    if (room.channelId) this._protectCheckpoint({ format: 'gomoku-channel-evidence/v1', domain: this.domain,
+      channelId: room.channelId, participants: { black: room.black, white: room.white }, stake: room.stake, checkpoint: room.checkpoint },
+      { allowChannelTransition: same(this._room?.roomId, room.roomId) && !this._room?.channelId && same(this.state.channelId, room.roomId) });
     const url = new URL(location.href); url.search = ''; url.searchParams.set('room', room.roomId);
-    const merged = [...this.state.transactions]; for (const tx of room.transactions) if (!merged.some(t => t.hash === tx.hash)) merged.push(tx);
+    const merged = [...this.state.transactions];
+    for (const tx of room.transactions) if (!merged.some(t => same(t.hash, tx.hash))) {
+      const receipt = await this.provider.getTransactionReceipt(tx.hash);
+      if (!receipt || receipt.status !== 1 || !same(receipt.to, this.config.address) || !receipt.logs.some(log => {
+        try { return same(log.address, this.config.address) && same(this.contract.interface.parseLog(log)?.args.id, room.channelId); } catch { return false; }
+      })) throw Error('中继交易无法通过当前节点核验');
+      const block = await this.provider.getBlock(receipt.blockNumber);
+      merged.push({ ...tx, hash: receipt.hash, gasUsed: receipt.gasUsed.toString(), blockNumber: receipt.blockNumber, timestamp: block.timestamp });
+    }
+    this._room = structuredClone(room); this._checkpoint = structuredClone(room.checkpoint);
+    localStorage.setItem(`${STORE}:active-room:${this.config.address}`, room.roomId);
     this._emit({ role, black: room.black, white: room.white, stake: room.stake, channelId: room.channelId || room.roomId, inviteUrl: url.toString(), peerConnected: peers.some(p => !same(p, this.wallet.address)), transactions: merged });
     this._applyCheckpoint();
     if (room.channelId) await this._lifecycle();
@@ -166,15 +262,31 @@ export class ChannelClient {
       const id = this._room?.channelId || this._demoId;
       const points = Number(await this.contract.points(this.wallet.address));
       if (!id) { this._emit({ points }); return; }
-      const c = await this.contract.getChannel(id), status = STATUS[Number(c.status)];
+      const block = await this.provider.getBlock('latest');
+      if (!block) throw Error('无法读取链上快照区块');
+      const c = await this.contract.getChannel(id, { blockTag: block.number }), status = STATUS[Number(c.status)];
+      this._onchainSnapshot = { status, moves: fromHex(c.moves), winner: Number(c.winner), reason: Number(c.reason), deadline: Number(c.deadline), proofDeadline: Number(c.proofDeadline || 0), blockNumber: block.number, blockHash: block.hash };
+      this._emit({ now: block.timestamp });
       if (Number(c.status) === 0) { this._emit({ points, status: 'invited' }); return; }
       if (this._room && (!same(c.black, this._room.black) || !same(c.white, this._room.white) || Number(c.stake) !== this._room.stake)) throw Error('链上参与者或积分与房间约定不符');
       if (Number(c.status) >= 3) {
         const moves = fromHex(c.moves), result = evaluate(moves);
         this._emit({ moves, winner: Number(c.winner), terminal: status === 'settled' || result.terminal, nextPlayer: result.nextPlayer, pending: null });
       }
-      this._emit({ points, status, black: c.black, white: c.white, deadline: Number(c.deadline), reason: ['', '五子连珠', '满盘和棋', '超时判负'][Number(c.reason)] || '' });
-      if (status === 'settled') this._saveHistory();
+      this._emit({ points, status, black: c.black, white: c.white, deadline: Number(c.deadline), proofDeadline: Number(c.proofDeadline || 0), reason: ['', '五子连珠', '满盘和棋', '超时判负'][Number(c.reason)] || '' });
+      const scanKey = `${id}:${c.status}:${c.moves}:${c.deadline}:${c.proofDeadline || 0}`;
+      if (!this.state.transactionListComplete || this._transactionScanKey !== scanKey) {
+        this._emit({ transactionListComplete: false });
+        const verified = await verifyEvidenceOnchain({ ...this.exportEvidence(), transactions: [] }, { provider: this.provider, contract: this.contract,
+          expected: { chainId: this.config.chainId, verifyingContract: this.config.address, runtimeCodeHash: this.config.runtimeCodeHash, deploymentBlock: this.config.deploymentBlock } });
+        const chain = verified.chain, verifiedStatus = STATUS[chain.status];
+        this._transactionScanKey = `${id}:${chain.status}:${movesHex(chain.moves)}:${chain.deadline}:${chain.proofDeadline || 0}`;
+        this._onchainSnapshot = { ...this._onchainSnapshot, status: verifiedStatus, moves: [...chain.moves], winner: chain.winner, reason: chain.reason,
+          deadline: chain.deadline, proofDeadline: chain.proofDeadline || 0, blockNumber: chain.blockNumber, blockHash: chain.blockHash };
+        this._emit({ transactions: verified.transactions, transactionListComplete: true, status: verifiedStatus, deadline: chain.deadline, proofDeadline: chain.proofDeadline || 0,
+          ...(chain.status >= 3 ? { moves: [...chain.moves], winner: chain.winner, terminal: verifiedStatus === 'settled' || evaluate(chain.moves).terminal, nextPlayer: evaluate(chain.moves).nextPlayer } : {}) });
+      }
+      if (this.state.status === 'settled') this._saveHistory();
       if (this._room && (Number(c.status) === 0 && this.state.role === 1 || Number(c.status) === 1 && this.state.role === 2) && !this._lifecycleBusy) queueMicrotask(() => this._lifecycle().catch(e => this._log(readableError(e), 'warning')));
     } finally { this._refreshing = false; }
   }
@@ -183,7 +295,7 @@ export class ChannelClient {
     const receipt = await tx.wait(); if (receipt.status !== 1) throw Error('链上交易执行失败');
     const block = await this.provider.getBlock(receipt.blockNumber);
     const record = { label, hash: receipt.hash, gasUsed: receipt.gasUsed.toString(), blockNumber: receipt.blockNumber, timestamp: block.timestamp };
-    if (!this.state.transactions.some(t => t.hash === record.hash)) this.state.transactions.push(record);
+    if (!this.state.transactions.some(t => t.hash === record.hash)) { this.state.transactions.push(record); this.state.transactionListComplete = false; }
     this._log(`${label}已确认 · gas ${record.gasUsed}`, 'success');
     if (this._room && this.ws?.readyState === WebSocket.OPEN) this._send({ type: 'tx', hash: receipt.hash });
     return receipt;
@@ -223,10 +335,14 @@ export class ChannelClient {
     return this._busy(async () => {
       const cp = this._checkpoint;
       await this._transaction(this.contract.challenge(this.state.channelId, movesHex(cp.moves), cp.sigBlack || '0x', cp.sigWhite || '0x'), '提交争议快照');
-      await this.refresh(); this._log('已进入链上争议。下一位棋手须在截止前落子，每次有效更新重置响应期限', 'warning');
+      await this.refresh(); this._log('已进入证据提交期，先保留完整窗口接收最新双签；期满后才允许链上强制落子，随后另有一轮响应期限', 'warning');
     });
   }
-  async forceMove(position) { return this._busy(async () => { await this._transaction(this.contract.forceMove(this.state.channelId, position), '链上强制落子'); await this.refresh(); }); }
+  async forceMove(position) { return this._busy(async () => {
+    const block = await this.provider.getBlock('latest');
+    if (block.timestamp < Number(this.state.proofDeadline || 0)) throw Error('证据提交期尚未结束，请先提交最新双签状态');
+    await this._transaction(this.contract.forceMove(this.state.channelId, position), '链上强制落子'); await this.refresh();
+  }); }
   async claimTimeout() { return this._busy(async () => { await this._transaction(this.contract.claimTimeout(this.state.channelId), '超时结算'); await this.refresh(); }); }
   async cancelUnjoined() {
     return this._busy(async () => {
@@ -253,37 +369,45 @@ export class ChannelClient {
     localStorage.setItem(`${STORE}:evidence:${record.id}`, JSON.stringify(this.exportEvidence())); this._emit();
   }
   exportEvidence() {
-    return { format: 'gomoku-channel-evidence/v1', exportedAt: new Date().toISOString(), localTeachingOnly: true,
+    return { format: 'gomoku-channel-evidence/v1', exportedAt: new Date().toISOString(), localTeachingOnly: this.config?.mode !== 'external',
       domain: this.domain, channelId: this.state.channelId, participants: { black: this.state.black, white: this.state.white }, stake: this.state.stake,
       // 人机局标注对手类型（说明性字段，不参与签名核验）。
       opponent: this.state.mode === 'ai' ? { type: 'local-ai', level: this.state.aiLevel, levelName: LEVELS[this.state.aiLevel]?.name || '' } : undefined,
-      checkpoint: structuredClone(this._checkpoint), onchain: { status: this.state.status, moves: this.state.moves, winner: this.state.winner, reason: this.state.reason, deadline: this.state.deadline },
-      transactions: structuredClone(this.state.transactions), initialization: structuredClone(this.state.initialization), metrics: structuredClone(this.state.metrics),
+      checkpoint: structuredClone(this._checkpoint), onchain: this._onchainSnapshot ? structuredClone(this._onchainSnapshot) : null,
+      transactions: structuredClone(this.state.transactions), transactionListComplete: Boolean(this.state.transactionListComplete), initialization: structuredClone(this.state.initialization), metrics: structuredClone(this.state.metrics),
       trustBoundary: '积分无现实价值；独立保管签名快照，并在挑战期内监控链；中继不可代签；本地开发RPC不适合公网。' };
   }
   async _verifyEvidenceTransactions(evidence) {
-    const transactions = [];
-    for (const tx of evidence.transactions || []) {
-      const receipt = await this.provider.getTransactionReceipt(tx.hash);
-      if (!receipt || receipt.status !== 1 || !same(receipt.to, this.config.address)) throw Error('证据中含无法核验的交易');
-      const belongs = receipt.logs.some(log => { try { return same(log.address, this.config.address) && same(this.contract.interface.parseLog(log)?.args.id, evidence.channelId); } catch { return false; } });
-      if (!belongs) throw Error('证据交易不属于本局');
-      transactions.push({ ...tx, gasUsed: receipt.gasUsed.toString(), blockNumber: receipt.blockNumber });
+    const verified = await verifyEvidenceOnchain(evidence, { provider: this.provider, contract: this.contract,
+      expected: { chainId: this.config.chainId, verifyingContract: this.config.address, runtimeCodeHash: this.config.runtimeCodeHash, deploymentBlock: this.config.deploymentBlock } });
+    return verified.transactions;
+  }
+  _protectCheckpoint(evidence, { allowChannelTransition = false } = {}) {
+    const sameChannel = same(this.state.channelId, evidence.channelId);
+    if (!sameChannel && !allowChannelTransition && ['invited', 'active', 'dispute'].includes(this.state.status)) throw Error('请先完成当前对局，不能用其他局证据替换活动状态');
+    const previous = [];
+    if (sameChannel && this._checkpoint?.moves?.length) previous.push(this._checkpoint);
+    const stored = localStorage.getItem(`${STORE}:evidence:${evidence.channelId}`);
+    if (stored) {
+      const old = JSON.parse(stored);
+      verifyEvidence(old, { chainId: this.config.chainId, verifyingContract: this.config.address });
+      if (!same(old.participants.black, evidence.participants.black) || !same(old.participants.white, evidence.participants.white) || old.stake !== evidence.stake) throw Error('通道参与者或积分与已保存证据不符；原证据已保留');
+      previous.push(old.checkpoint);
     }
-    return transactions;
+    for (const cp of previous) if (!isPrefix(cp.moves, evidence.checkpoint.moves)) throw Error('拒绝回退或分叉本地已保存的双签快照；原证据已保留');
   }
   async importEvidence(evidence) {
     return this._busy(async () => {
-      const verified = verifyEvidence(evidence, { chainId: this.config.chainId, verifyingContract: this.config.address });
-      const c = await this.contract.getChannel(evidence.channelId);
-      if (Number(c.status) < 2 || !same(c.black, verified.black) || !same(c.white, verified.white) || Number(c.stake) !== evidence.stake) throw Error('链上通道与证据参与者或积分不匹配');
-      const transactions = await this._verifyEvidenceTransactions(evidence);
+      const verified = await verifyEvidenceOnchain(evidence, { provider: this.provider, contract: this.contract,
+        expected: { chainId: this.config.chainId, verifyingContract: this.config.address, runtimeCodeHash: this.config.runtimeCodeHash, deploymentBlock: this.config.deploymentBlock } });
+      if (verified.chain.status < 2) throw Error('链上通道尚未开通');
+      this._protectCheckpoint(evidence);
       this._closeSocket(); this._resetGame(); this._demoId = evidence.channelId;
       this._checkpoint = structuredClone(evidence.checkpoint);
       const role = same(this.wallet.address, verified.black) ? 1 : same(this.wallet.address, verified.white) ? 2 : 0;
-      this._emit({ mode: 'player', channelId: evidence.channelId, role, black: verified.black, white: verified.white, stake: evidence.stake, transactions, status: STATUS[Number(c.status)] });
+      this._emit({ mode: 'player', channelId: evidence.channelId, role, black: verified.black, white: verified.white, stake: evidence.stake, transactions: verified.transactions, status: STATUS[verified.chain.status] });
       this._applyCheckpoint(); await this.refresh();
-      this._log(`证据双签和${transactions.length}笔交易已核验；当前为独立证据恢复模式`, 'success');
+      this._log(`${verified.signed ? '快照双签已核验' : '空棋谱无双签'}；已从节点重建${verified.transactions.length}笔本局真实交易，原文件的统计不作依据`, 'success');
       return verified;
     });
   }
@@ -298,6 +422,7 @@ export class ChannelClient {
   }
   async startAiGame(level = 'adept', humanRole = 1, stake = 10) {
     return this._busy(async () => {
+      if (this.config.mode === 'external') throw Error('外部钱包模式仅支持两位独立玩家，不启用本地AI代签');
       if (!Object.hasOwn(LEVELS, level)) throw Error('未知的 AI 难度');
       if (humanRole !== 1 && humanRole !== 2) throw Error('执子方须为黑方或白方');
       if (!Number.isSafeInteger(stake) || stake < 1) throw Error('对局积分须为正整数');
@@ -398,6 +523,7 @@ export class ChannelClient {
   }
   async runDemo() {
     return this._busy(async () => {
+      if (this.config.mode === 'external') throw Error('外部钱包模式禁止脚本双钱包自动演示，请创建双人对局');
       if (['active', 'dispute'].includes(this.state.status)) throw Error('请先完成当前对局');
       this._closeSocket(); this._resetGame(); this._emit({ mode: 'demo', demoProgress: '准备两位本地测试棋手' });
       const black = this.wallet, white = Wallet.createRandom().connect(this.provider); await this._prepareWallet(white);
@@ -423,5 +549,5 @@ export class ChannelClient {
     });
   }
   disconnect() { this._closeSocket(); this._log('已断开中继，仍保留本地签名快照，可发起链上争议', 'warning'); }
-  destroy() { clearInterval(this._timer); this._closeSocket(); this.provider?.destroy(); this.listeners.clear(); }
+  destroy() { clearInterval(this._timer); this._removeWalletListeners(); this._closeSocket(); this.provider?.destroy(); this.listeners.clear(); }
 }

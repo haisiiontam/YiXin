@@ -1,0 +1,113 @@
+﻿✔ stable external connection installs the selected registered account without signing or sending (79.6917ms)
+✔ initial permission accountsChanged is accepted when the final selected account is consistent (107.3288ms)
+✖ chain change after getCode during signer acquisition rejects and clears the connection (110.5834ms)
+✖ chain change while session points RPC awaits cannot resurrect a ready session (107.73ms)
+✖ account change after getCode during signer acquisition rejects and clears the connection (94.4931ms)
+✖ account change while session points RPC awaits cannot resurrect a ready session (107.1946ms)
+✔ rejected permission leaves no signer, contract, active timer or transaction (15.0225ms)
+✖ failed reconnection retires the previously connected signer and ready state (155.4932ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 3
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 785.2243
+
+✖ failing tests:
+
+test at tests\channel-client-connect-race.test.mjs:133:3
+✖ chain change after getCode during signer acquisition rejects and clears the connection (110.5834ms)
+  AssertionError [ERR_ASSERTION]: a connection changed after permission must be rejected
+  
+  true !== false
+  
+      at assertInvalidated (file:///E:/Gomoku/app/tests/channel-client-connect-race.test.mjs:123:10)
+      at file:///E:/Gomoku/app/tests/channel-client-connect-race.test.mjs:178:7
+      at async TestContext.<anonymous> (file:///E:/Gomoku/app/tests/channel-client-connect-race.test.mjs:135:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\channel-client-connect-race.test.mjs:133:3
+✖ chain change while session points RPC awaits cannot resurrect a ready session (107.73ms)
+  AssertionError [ERR_ASSERTION]: a connection changed after permission must be rejected
+  
+  true !== false
+  
+      at assertInvalidated (file:///E:/Gomoku/app/tests/channel-client-connect-race.test.mjs:123:10)
+      at file:///E:/Gomoku/app/tests/channel-client-connect-race.test.mjs:192:7
+      at async TestContext.<anonymous> (file:///E:/Gomoku/app/tests/channel-client-connect-race.test.mjs:135:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\channel-client-connect-race.test.mjs:133:3
+✖ account change after getCode during signer acquisition rejects and clears the connection (94.4931ms)
+  AssertionError [ERR_ASSERTION]: a connection changed after permission must be rejected
+  
+  true !== false
+  
+      at assertInvalidated (file:///E:/Gomoku/app/tests/channel-client-connect-race.test.mjs:123:10)
+      at file:///E:/Gomoku/app/tests/channel-client-connect-race.test.mjs:178:7
+      at async TestContext.<anonymous> (file:///E:/Gomoku/app/tests/channel-client-connect-race.test.mjs:135:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\channel-client-connect-race.test.mjs:133:3
+✖ account change while session points RPC awaits cannot resurrect a ready session (107.1946ms)
+  AssertionError [ERR_ASSERTION]: a connection changed after permission must be rejected
+  
+  true !== false
+  
+      at assertInvalidated (file:///E:/Gomoku/app/tests/channel-client-connect-race.test.mjs:123:10)
+      at file:///E:/Gomoku/app/tests/channel-client-connect-race.test.mjs:192:7
+      at async TestContext.<anonymous> (file:///E:/Gomoku/app/tests/channel-client-connect-race.test.mjs:135:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\channel-client-connect-race.test.mjs:133:3
+✖ failed reconnection retires the previously connected signer and ready state (155.4932ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at assertInvalidated (file:///E:/Gomoku/app/tests/channel-client-connect-race.test.mjs:124:10)
+      at file:///E:/Gomoku/app/tests/channel-client-connect-race.test.mjs:211:5
+      at async TestContext.<anonymous> (file:///E:/Gomoku/app/tests/channel-client-connect-race.test.mjs:135:11)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

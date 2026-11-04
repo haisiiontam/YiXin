@@ -1,5 +1,7 @@
 # 测试计划与实测报告
 
+**2026-11-04 当前修订：** 合约新增两阶段争议 proofDeadline、独立 RPC/钱包接入、部署身份与完整事件计量。最新结果为144项自动测试及本地8组/外部6组浏览器场景全部通过，分批实跑；见[专项报告](trust-audit-2026-11-04.md)及[源文件/结果汇总](../artifacts/test-results/trust-audit-2026-11-04/audit-summary.json)。下面10月结果作为历史保留，其旧 ABI、时序及 Gas 不替代新版证据。本次外部验收为独立本机 HTTP Ganache 与 EIP-1193 测试装置，没有公网或真人插件验收。
+
 本报告区分合约验证、浏览器系统验证与尚未执行的验收。合约最终数据来自 [合约原始结果](../artifacts/test-results/contract-results.json)，生成时间为 2026-10-27T00:58:25.014Z（北京时间08:58:25），11组通过、0组失败，总耗时91571ms。该次运行记录131笔成功交易与1笔预期revert交易，不代表131个独立用户或131局游戏。
 
 最终 [浏览器原始结果](../artifacts/test-results/e2e-results.json) 生成于2026-10-27T01:05:31.385Z（北京时间09:05:31），8组通过、0组失败，errors为空；环境为Microsoft Edge via Playwright，访问http://127.0.0.1:4173。另已复核 [协议与证据原始结果](../artifacts/test-results/protocol-results.json)，生成于2026-10-27T01:01:16.484Z，4组通过、0组失败。三层测试分别保留原始证据，早期浏览器失败及取证/定位器修复保留于D-05，不以最终通过覆盖失败过程。

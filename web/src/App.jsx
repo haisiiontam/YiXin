@@ -61,10 +61,11 @@ export default function App() {
   useEffect(() => { setSoundEnabled(sound); store.set('gomoku-sound', sound ? 'on' : 'off'); }, [sound]);
 
   const busy = Boolean(state.busy || localBusy), moves = state.moves || [], txs = state.transactions || [], history = state.history || [];
+  const external = state.networkMode === 'external';
   const hasRoom = Boolean(state.channelId), finished = state.status === 'settled' || state.status === 'cancelled';
   const isMyTurn = state.role === state.nextPlayer, isParticipant = state.role === 1 || state.role === 2;
   const canMove = !busy && !state.aiThinking && !state.terminal && state.mode !== 'demo' && reviewIndex == null && isMyTurn
-    && ((state.status === 'active' && !state.pending && (state.mode === 'ai' || (state.connected && state.peerConnected))) || (state.status === 'dispute' && force && Number(state.deadline) > Number(state.now)));
+    && ((state.status === 'active' && !state.pending && (state.mode === 'ai' || (state.connected && state.peerConnected))) || (state.status === 'dispute' && force && Number(state.now) >= Number(state.proofDeadline || 0) && Number(state.deadline) > Number(state.now)));
   const inviteCode = state.inviteUrl ? new URL(state.inviteUrl, window.location.href).searchParams.get('room') || state.channelId : state.channelId;
   const role = state.role ? playerName(state.role) : '访客';
   const result = state.terminal ? state.winner ? `${playerName(state.winner)}获胜` : '本局和棋' : '';
@@ -150,7 +151,7 @@ export default function App() {
       catch { throw new Error('证据文件不是有效的 JSON，请选择导出的证据文件。'); }
       const verified = await client.importEvidence(evidence);
       if (!verified?.valid) throw new Error('证据未通过验证，未确认恢复结果。');
-      setImportResult({ ...verified, fileName: file.name, receiptCount: Array.isArray(evidence.transactions) ? evidence.transactions.length : 0 });
+      setImportResult({ ...verified, fileName: file.name, receiptCount: verified.transactions.length });
       setForce(false);
       announce('证据已验证并恢复，可查看棋盘与链上状态');
     });
@@ -174,8 +175,8 @@ export default function App() {
     <header className="topbar">
       <a className="brand" href="#" onClick={(e) => { e.preventDefault(); setTab('lobby'); }} aria-label="弈信 对局大厅"><span className="brand-symbol"><i/><i/></span><span><strong>弈<span>·</span>信</strong><small>GOMOKU CHANNEL LAB</small></span></a>
       <div className="header-right">
-        <span className={`network-pill ${state.ready ? 'online' : ''}`}><i/>{state.ready ? '本地链已连接' : '本地链未连接'}<span className="network-id"> · {state.chainId || 31337}</span></span>
-        <div className="wallet"><span className="wallet-icon"><Icon name="wallet"/></span><div><strong>{state.address ? short(state.address) : '本地测试钱包'}</strong><small>{state.ready ? `${state.points ?? 0} 演示积分` : '等待本地服务'}</small></div>{state.address && <CopyButton value={state.address} label="复制钱包地址" compact onCopy={copy}/>}</div>
+        <span className={`network-pill ${state.ready ? 'online' : ''}`}><i/>{external ? (state.ready ? '外部钱包已连接' : '等待外部钱包') : (state.ready ? '本地链已连接' : '本地链未连接')}<span className="network-id"> · {state.chainId || 31337}</span></span>
+        <div className="wallet"><span className="wallet-icon"><Icon name="wallet"/></span><div><strong>{state.address ? short(state.address) : external ? '浏览器钱包' : '本地测试钱包'}</strong><small>{state.ready ? `${state.points ?? 0} 演示积分` : external ? '连接钱包并注册' : '等待本地服务'}</small></div>{state.address && <CopyButton value={state.address} label="复制钱包地址" compact onCopy={copy}/>}</div>
         <button type="button" className="tool-button" aria-pressed={sound} aria-label={sound ? '关闭音效' : '开启音效'} title={sound ? '关闭音效' : '开启音效'} onClick={() => setSound(!sound)}><Icon name={sound ? 'volume' : 'mute'} size={18}/></button>
         <button type="button" className="tool-button" aria-label={theme === 'dark' ? '切换为日间主题' : '切换为夜间主题'} title={theme === 'dark' ? '日间主题' : '夜间主题'} onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}><Icon name={theme === 'dark' ? 'sun' : 'moon'} size={18}/></button>
       </div>
@@ -184,12 +185,18 @@ export default function App() {
       <aside className="sidebar">
         <div className="sidebar-label">开始探索</div>
         <nav aria-label="主导航">{NAV.map((item) => <button key={item.id} className={`nav-item ${tab === item.id ? 'active' : ''}`} onClick={() => setTab(item.id)} aria-current={tab === item.id ? 'page' : undefined}><Icon name={item.icon}/><span>{item.text}</span>{tab === item.id && <span className="nav-dot"/>}</button>)}</nav>
-        <div className="sidebar-note"><span className="note-icon"><Icon name="shield" size={24}/></span><strong>每一步，皆有凭据。</strong><p>链下对弈 · 双方签名<br/>链上结算 · 可验证结果</p><span className="local-tag">仅本地测试链</span></div>
-        <div className="sidebar-bottom"><span className="tiny-dot"/> LOCAL EVM / 开源实验</div>
+        <div className="sidebar-note"><span className="note-icon"><Icon name="shield" size={24}/></span><strong>每一步，皆有凭据。</strong><p>链下对弈 · 双方签名<br/>链上结算 · 可验证结果</p><span className="local-tag">{external ? '独立节点 · 外部钱包' : '本地单节点教学链'}</span></div>
+        <div className="sidebar-bottom"><span className="tiny-dot"/> {external ? 'EXTERNAL RPC / 用户钱包' : 'LOCAL EVM / 开源实验'}</div>
       </aside>
       <main className="main">
-        <div className="page-heading"><div><div className="eyebrow">PLAY WITH TRUST. SETTLE ON CHAIN.</div><h1>{headline}</h1><p>{subline}</p></div><span className="environment"><Icon name="bolt" size={15}/> 本地测试链 · 演示积分</span></div>
+        <div className="page-heading"><div><div className="eyebrow">PLAY WITH TRUST. SETTLE ON CHAIN.</div><h1>{headline}</h1><p>{subline}</p></div><span className="environment"><Icon name="bolt" size={15}/> {external ? `${state.networkName || '外部节点'} · 无资产价值积分` : '本地单节点 EVM · 演示积分'}</span></div>
         {error && <div className="error-banner" role="alert"><Icon name="info" size={19}/><div><strong>操作未完成</strong><p>{error}</p></div><button aria-label="关闭错误提示" onClick={() => setError('')}>×</button></div>}
+        {external && !state.ready && <section className="panel">
+          <h2>连接你的钱包</h2>
+          <p>请在钱包切换至链 {state.chainId}。私钥由钱包保管；连接不会自动发交易。首次注册会发起合约交易，需钱包确认并支付该网络的 gas。</p>
+          <Button disabled={busy} onClick={() => act('连接外部钱包', () => client.connectExternalWallet())}>连接浏览器钱包</Button>
+          {state.walletConnected && <Button disabled={busy} onClick={() => act('注册演示积分', () => client.registerExternalWallet())}>确认注册演示积分</Button>}
+        </section>}
         {tab === 'lobby' && <div className="play-layout">
           <div className="game-panel">
             <section className="board-card">
@@ -197,27 +204,27 @@ export default function App() {
               <div className={`turn-banner ${state.terminal && reviewIndex == null ? 'is-result' : ''}`} role="status"><span className={`turn-stone ${state.nextPlayer === 2 ? 'white' : ''}`}/><strong>{turnText}</strong><span>{moves.length ? `第 ${moves.length} 手已确认` : '黑棋先行 · 连五获胜'}</span>{(busy || state.aiThinking) && <span className="spinner"/>}</div>
               <Board moves={shownMoves} pending={state.pending} force={force && state.status === 'dispute'} canMove={canMove} busy={busy} onMove={onBoardMove} winnerShown={Boolean(state.winner && state.terminal && reviewIndex == null)} hints={hintCells} threats={threatCells} showNumbers={showNumbers} reviewing={reviewIndex != null}/>
               <div className="board-footer"><span><i className="legend-dot"/> 最近一步</span><span><Icon name="shield" size={14}/>{state.mode === 'demo' ? '自动演示 · 双本地钱包' : state.mode === 'ai' ? `人机对弈 · ${LEVELS[state.aiLevel]?.name || 'AI'}` : '双方签名后确认棋子'}</span><span>{moves.length} / 225 手</span></div>
-              {!hasRoom && <div className="board-empty-note"><span>棋盘已就绪</span> 在右侧创建双人对局、与 AI 对弈，或运行完整自动演示。</div>}
+              {!hasRoom && <div className="board-empty-note"><span>棋盘已就绪</span> {external ? '请连接外部钱包，并邀请另一位玩家创建双人对局。' : '在右侧创建双人对局、与 AI 对弈，或运行完整自动演示。'}</div>}
               {state.mode === 'demo' && <div className="demo-progress" role="status"><Icon name="play" size={15}/><span>{state.demoProgress || '此局由两个本地演示钱包自动执棋，交易由本地测试链实际执行。'}</span></div>}
             </section>
             {moves.length > 0 && <ReviewPanel moves={moves} reviewIndex={reviewIndex} onReview={setReviewIndex} showNumbers={showNumbers} onShowNumbers={setShowNumbers} showThreats={showThreats} onShowThreats={setShowThreats} canHint={canHint} onHint={requestHint} hintList={hintList}/>}
           </div>
           <aside className="game-panel">
             <MatchPanel c={c}/>
-            {(!hasRoom || finished) && <AiPanel level={aiLevel} onLevel={setAiLevel} side={aiSide} onSide={setAiSide} stake={stake} disabled={aiBusyStart || !Number.isInteger(Number(stake)) || Number(stake) <= 0} onStart={() => act('正在准备人机对局', () => client.startAiGame(aiLevel, aiSide, Number(stake)))}/>}
-            <section className="demo-card">
+            {!external && (!hasRoom || finished) && <AiPanel level={aiLevel} onLevel={setAiLevel} side={aiSide} onSide={setAiSide} stake={stake} disabled={aiBusyStart || !Number.isInteger(Number(stake)) || Number(stake) <= 0} onStart={() => act('正在准备人机对局', () => client.startAiGame(aiLevel, aiSide, Number(stake)))}/>}
+            {!external && <section className="demo-card">
               <div className="demo-heading"><span className="demo-icon"><Icon name="play" size={19}/></span><div><h3>先看一局，理解全部</h3><p>双本地钱包 · 9 手黑胜 · 真实结算</p></div></div>
               <Button kind="dark" icon="play" disabled={!state.ready || busy || ['active', 'dispute'].includes(state.status)} onClick={() => act('完整自动演示运行中', () => client.runDemo())}>运行完整自动演示</Button>
               <p>{['active', 'dispute'].includes(state.status) && state.mode !== 'demo' ? '请先完成当前对局，再开启独立演示。' : '独立演示局，由脚本执黑与执白。'}<br/>实际发送本地链交易，可在实验室核验。</p>
-            </section>
+            </section>}
             {state.status === 'settled' && moves.length > 0 && <section className="demo-card"><div className="demo-heading"><span className="demo-icon"><Icon name="stamp" size={19}/></span><div><h3>对局证书</h3><p>棋谱 · 摘要 · 交易，一页留念</p></div></div><Button icon="download" disabled={busy} onClick={exportCertificate}>导出对局证书（SVG）</Button></section>}
             <ExperimentPanel c={c}/>
           </aside>
         </div>}
         {tab === 'lab' && <LabPage c={c}/>}
         {tab === 'history' && <HistoryPage c={c}/>}
-        {tab === 'about' && <AboutPage onBack={() => setTab('lobby')}/>}
-        <footer className="page-footer"><span>弈·信 <span className="footer-dot">/</span> 每一步信任，都有迹可循。</span><span>本地运行 · 证据可导出 · 结果可验证</span></footer>
+        {tab === 'about' && <AboutPage external={external} onBack={() => setTab('lobby')}/>}
+        <footer className="page-footer"><span>弈·信 <span className="footer-dot">/</span> 每一步信任，都有迹可循。</span><span>{external ? '外部钱包确认 · 独立节点核验' : '本地运行 · 证据可导出 · 结果可验证'}</span></footer>
       </main>
     </div>
     {toast && <div className="toast" role="status"><Icon name="check" size={18}/>{toast}</div>}

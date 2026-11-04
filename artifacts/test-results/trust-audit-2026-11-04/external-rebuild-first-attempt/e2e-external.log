@@ -1,0 +1,62 @@
+2026-11-04T04:06:59.165Z Preparing independent external-mode fixture; existing app and chain are untouched
+2026-11-04T04:07:04.676Z Real contract deployed 0xf1282a20554df3Ce58a5776f80476fb61B0bf22e; independent external application http://127.0.0.1:4192; RPC http://127.0.0.1:54230
+2026-11-04T04:07:05.523Z START 1. External landing: honest badge, no local key/AI/demo, no wallet request or transaction
+2026-11-04T04:07:06.340Z PASS 1. External landing: honest badge, no local key/AI/demo, no wallet request or transaction
+2026-11-04T04:07:06.341Z START 2. Read-only wallet connect; separate UI registration and test-wallet approval yield real receipts and 1000 points
+2026-11-04T04:07:06.699Z WALLET black: register submitted 0x5c300097681dbf6d6cc7046870f2fb958c57006e2f28ce70128738a3c3890fec
+2026-11-04T04:07:11.510Z WALLET white: register submitted 0xedb45a791a551c92629d27f748abb7bfa68a3e1340e8eb401c9244e087ebd842
+2026-11-04T04:07:15.965Z PASS 2. Read-only wallet connect; separate UI registration and test-wallet approval yield real receipts and 1000 points
+2026-11-04T04:07:15.966Z START 3. Two isolated contexts authenticate using personal_sign and open/join a real points channel
+2026-11-04T04:07:16.241Z WALLET black: openChannel submitted 0x84a5f90e3582eebe26988f1f01c44e0b3546a1ea60e3b10d229093dde4d3338b
+2026-11-04T04:07:17.866Z WALLET white: joinChannel submitted 0xfa514ae8df1c333bcb8db9999183f0d934b5a0ccbf7ec28f21ee76b2c1cff754
+2026-11-04T04:07:20.639Z PASS 3. Two isolated contexts authenticate using personal_sign and open/join a real points channel
+2026-11-04T04:07:20.640Z START 4. Nine alternating UI moves auto-ACK with both EIP-712 signatures; independent RPC still finds only open+join
+2026-11-04T04:07:21.051Z MOVE 1: both EIP-712 signatures verified; no move transaction
+2026-11-04T04:07:21.326Z MOVE 2: both EIP-712 signatures verified; no move transaction
+2026-11-04T04:07:21.587Z MOVE 3: both EIP-712 signatures verified; no move transaction
+2026-11-04T04:07:21.849Z MOVE 4: both EIP-712 signatures verified; no move transaction
+2026-11-04T04:07:22.096Z MOVE 5: both EIP-712 signatures verified; no move transaction
+2026-11-04T04:07:22.361Z MOVE 6: both EIP-712 signatures verified; no move transaction
+2026-11-04T04:07:22.619Z MOVE 7: both EIP-712 signatures verified; no move transaction
+2026-11-04T04:07:22.879Z MOVE 8: both EIP-712 signatures verified; no move transaction
+2026-11-04T04:07:23.153Z MOVE 9: both EIP-712 signatures verified; no move transaction
+2026-11-04T04:07:23.532Z PASS 4. Nine alternating UI moves auto-ACK with both EIP-712 signatures; independent RPC still finds only open+join
+2026-11-04T04:07:23.533Z START 5. Real settlement: three game receipts, 1010/990 points, signed checkpoint and complete independent RPC event inventory
+2026-11-04T04:07:23.862Z WALLET black: settle submitted 0x44c45b980931b2323a29d95649ca2cdb0b5c27309bf7bc462a9130cfc19798e1
+2026-11-04T04:07:28.248Z FAIL 5. Real settlement: three game receipts, 1010/990 points, signed checkpoint and complete independent RPC event inventory: Expected values to be strictly deep-equal:
++ actual - expected
+
++ []
+- [
+-   112,
+-   97,
+-   113,
+-   98,
+-   114,
+-   99,
+-   115,
+-   100,
+-   116
+- ]
+
+2026-11-04T04:07:28.249Z ERROR Expected values to be strictly deep-equal:
++ actual - expected
+
++ []
+- [
+-   112,
+-   97,
+-   113,
+-   98,
+-   114,
+-   99,
+-   115,
+-   100,
+-   116
+- ]
+
+2026-11-04T04:07:28.979Z CLEANUP browser: closed
+2026-11-04T04:07:28.981Z CLEANUP applicationHttpAndRuntimeProvider: closed
+2026-11-04T04:07:28.982Z CLEANUP independentRpcProvider: closed
+2026-11-04T04:07:28.992Z CLEANUP ganacheHttpAndEvm: closed
+2026-11-04T04:07:29.010Z RESULT 4 passed, 1 failed; artifacts\test-results\trust-audit-2026-11-04\e2e-external-results.json

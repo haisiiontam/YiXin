@@ -1,0 +1,90 @@
+{
+  "format": "gomoku-channel-evidence/v1",
+  "exportedAt": "2026-11-04T03:57:59.612Z",
+  "localTeachingOnly": false,
+  "domain": {
+    "name": "GomokuChannel",
+    "version": "1",
+    "chainId": 43124,
+    "verifyingContract": "0x34c2A578Bc46ce9B4d3EC77821bf2F10D85cB91f"
+  },
+  "channelId": "0xa0bab6d5d962e3472068fe7144b4db5c282c7338a4b32a60c1a0cb936f021432",
+  "participants": {
+    "black": "0x78E2612509709C0180380b6cEB6EC2E117Be96Aa",
+    "white": "0xFfC4d42bBE51570f6DA7f2F0eA8033505Ba3AF58"
+  },
+  "stake": 10,
+  "checkpoint": {
+    "moves": [
+      112,
+      97,
+      113,
+      98,
+      114,
+      99,
+      115,
+      100,
+      116
+    ],
+    "sigBlack": "0x1de2ff53bc2437cda094b3af6e7c4748576a5d31402ac42365a56d6042d3240f48ac94a7c5ef3e599f5636a9e00f2cc060cf700112a7ed57b16a379e83868d5d1b",
+    "sigWhite": "0x4b1c58d1279d6b77244ba3d303ba13225bf1aba73ccad7d932d0c536059d1eaf4ea8292cec8b6d27ebe7b7bb2b08048355675faaccb9acc04b821c6c9e52dd781c"
+  },
+  "onchain": {
+    "status": "settled",
+    "moves": [
+      112,
+      97,
+      113,
+      98,
+      114,
+      99,
+      115,
+      100,
+      116
+    ],
+    "winner": 1,
+    "reason": 1,
+    "deadline": 0,
+    "proofDeadline": 0,
+    "blockNumber": 26,
+    "blockHash": "0x0152579412b0f5b8a1e1643855ac310f4e7c1fb59fc403624816cf1897b079f4"
+  },
+  "transactions": [
+    {
+      "label": "锁定黑方积分",
+      "hash": "0x9d02d3b391089c45420c2c65f548aadfbb3194ed261de289166c40c3ffebcdc3",
+      "gasUsed": "165897",
+      "blockNumber": 14,
+      "timestamp": 1793764666
+    },
+    {
+      "label": "锁定白方积分",
+      "hash": "0x05d1942de03aa59b166e751e7b05e78f9deef19aad2b743f24a3234a9ca8f768",
+      "gasUsed": "45697",
+      "blockNumber": 15,
+      "timestamp": 1793764667
+    },
+    {
+      "label": "结算积分",
+      "hash": "0x48d9b35596bd599ae4e5a06cfbbb4832999a427b579fc02b54613254467f8a99",
+      "gasUsed": "232405",
+      "blockNumber": 23,
+      "timestamp": 1793764675
+    }
+  ],
+  "initialization": [
+    {
+      "label": "钱包注册",
+      "hash": "0xa70ba81ef6abed727a158c8ac41b10e3b5532c40f586230cb989c6380c9a1fa9",
+      "gasUsed": "89480"
+    }
+  ],
+  "metrics": {
+    "onchainTransactions": 3,
+    "offchainMoves": 9,
+    "baselineTransactions": 11,
+    "savedPercent": 72.7,
+    "totalGas": "443999"
+  },
+  "trustBoundary": "积分无现实价值；独立保管签名快照，并在挑战期内监控链；中继不可代签；本地开发RPC不适合公网。"
+}
