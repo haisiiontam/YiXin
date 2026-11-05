@@ -1,0 +1,50 @@
+{
+  "version": "V4 可靠恢复与人本设计",
+  "generatedAt": "2026-11-05",
+  "slides": 21,
+  "mainSlides": 16,
+  "backupSlides": 5,
+  "targetSeconds": 480,
+  "notes": "21/21",
+  "nativeCharts": 2,
+  "speakerDocx": "E:\\Gomoku\\app\\reports\\弈信-赵国豪答辩讲稿-V4.docx",
+  "powerpoint": "E:\\Gomoku\\app\\reports\\弈信-8分钟课程答辩-V4.pptx",
+  "automaticTests": 163,
+  "browserScenarios": 20,
+  "shapeBounds": "passed",
+  "newWorkAssignedTo": "谭海翔",
+  "aiAssistanceDisclosed": true,
+  "templateSha256": "61d51d6b5b9c35f3c1b02994f0c5ae7599157885da94d54951b569f74c27eb25",
+  "productSourceHashesVerified": 24,
+  "finalResultHashesVerified": 15,
+  "visualReview": {
+    "slidesReviewed": 21,
+    "printPagesReviewed": 14,
+    "status": "passed",
+    "renderer": "Installed Office COM native read-only export",
+    "recheckedSlides": [
+      6,
+      13,
+      15,
+      16,
+      17,
+      20,
+      21
+    ],
+    "sourceRenderHashVerified": true
+  },
+  "speakerPdf": "E:\\Gomoku\\app\\reports\\弈信-赵国豪答辩讲稿-V4.pdf",
+  "pdfPages": 14,
+  "scriptNotesAndPrintTextMatch": "16/16",
+  "originalNativeChartDataPreserved": true,
+  "deliverableSha256": {
+    "reports/弈信-8分钟课程答辩-V4.pptx": "44fe4801094a3e2772f8ee24aadf6ee1cd2749c2083757d0619851454df28c49",
+    "reports/弈信-赵国豪答辩讲稿-V4.docx": "94ec2b109bf81a2a9b52700170ceb50b8e3915020c06e2c8d0aca9206ed79bf5",
+    "reports/弈信-赵国豪答辩讲稿-V4.pdf": "f19373c9252e574a544beb482b13805eef60c78709ad98975a0f2585caedcc0e",
+    "docs/defense-v4-content.json": "7c25f09809f1e3d83838879f72a51a8d76ffa12de59a1483b130bc6589b899be",
+    "scripts/build_defense_v4.py": "525bfd5e1ab34e30f85b89d678ba9c6830cef178582c31b176f1c333313a62c5",
+    "scripts/verify_defense_v4.py": "cf5f2fe796f87218aa4b6651d53385bc1b4f90e9e4f26dce68f1078bbabe0994",
+    "scripts/render-defense.ps1": "a216771f7c286c558f6187239ce05a0eabe28bdf592d9d0dd6821cdcb8b56717"
+  },
+  "artifactBuildRerunsProductTests": false
+}

@@ -1,0 +1,25 @@
+{
+  "generatedAt": "2026-11-05T15:05:44.644Z",
+  "tests": [
+    {
+      "name": "JS规则拒绝非法类型、越界、占位、分叉和终局后落子",
+      "status": "passed"
+    },
+    {
+      "name": "合法长连、4方向及边缘不能跨行连接",
+      "status": "passed"
+    },
+    {
+      "name": "事务指标对0手、正常局、争议额外事务和gas进行精确计量",
+      "status": "passed"
+    },
+    {
+      "name": "证据双签可独立核验，篡改棋谱、身份、签名域与积分格式被拒绝",
+      "status": "passed"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0
+  }
+}

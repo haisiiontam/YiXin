@@ -1,0 +1,6 @@
+PASS keyboard grid has one tab stop, clamps edges and allows read-only cell inspection
+PASS coordinate preview is cancellable before any move proposal or signature is sent
+PASS quota fault preserves newest real double signatures for download and blocks further play until save retry
+PASS same-room reconnect preserves signed progress, sends no chain transaction and requires manual proposal approval
+PASS recovered match completes a legal nine-move settlement and read-only keyboard review
+PASS touch layout defaults to confirmation and fits at 390 pixels with accessible keyboard grid

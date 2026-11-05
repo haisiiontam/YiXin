@@ -1,0 +1,415 @@
+{
+  "generatedAt": "2026-11-05T15:06:47.363Z",
+  "command": "Set TEMP/TMP to app/.tmp; run bundled node scripts/e2e-external.mjs from app",
+  "environment": {
+    "chain": "Fresh Ganache server on loopback; real EVM execution, HTTP RPC and application CHAIN_MODE=external",
+    "wallet": "Two independent EIP-1193 test emulators bridged with page.exposeBinding; offline Node Wallet signs personal messages and EIP-712; eth_sendTransaction forwards to each assigned Ganache unlocked account and returns only its transaction hash",
+    "limitation": "This EIP-1193 test fixture is not MetaMask extension acceptance or a real user wallet approval test. Fixture approvals are scripted. No public-network connectivity, asset fees, or server-custodied application wallet mode is exercised.",
+    "browser": "Microsoft Edge via Playwright",
+    "chainId": 43124,
+    "challengePeriod": 6,
+    "invitePeriod": 300,
+    "writesConfinedToWorkspace": true,
+    "runDirectory": ".tmp\\e2e-external-ddgxhA",
+    "url": "http://127.0.0.1:4192",
+    "rpcUrl": "http://127.0.0.1:58370",
+    "browserVersion": "156.0.4314.58"
+  },
+  "tests": [
+    {
+      "name": "1. External landing: honest badge, no local key/AI/demo, no wallet request or transaction",
+      "status": "passed",
+      "durationMs": 1019
+    },
+    {
+      "name": "2. Read-only wallet connect; separate UI registration and test-wallet approval yield real receipts and 1000 points",
+      "status": "passed",
+      "durationMs": 9722
+    },
+    {
+      "name": "3. Two isolated contexts authenticate using personal_sign and open/join a real points channel",
+      "status": "passed",
+      "durationMs": 4752
+    },
+    {
+      "name": "4. Nine alternating UI moves auto-ACK with both EIP-712 signatures; independent RPC still finds only open+join",
+      "status": "failed",
+      "error": "Expected values to be strictly equal:\n\n10 !== 9\n",
+      "durationMs": 2987
+    }
+  ],
+  "errors": [],
+  "blockedNetworkRequests": [],
+  "screenshots": [
+    "artifacts\\test-results\\recovery-2026-11-05\\final\\external-screenshots\\01-external-connect.png",
+    "artifacts\\test-results\\recovery-2026-11-05\\final\\external-screenshots\\failure-black.png",
+    "artifacts\\test-results\\recovery-2026-11-05\\final\\external-screenshots\\failure-white.png"
+  ],
+  "cleanup": {
+    "browser": "closed",
+    "applicationHttpAndRuntimeProvider": "closed",
+    "independentRpcProvider": "closed",
+    "ganacheHttpAndEvm": "closed"
+  },
+  "deployment": {
+    "hash": "0x3604c4c8aef76057029483a7bfd317438ff745d48ca5279198f6ed08595e375b",
+    "address": "0x81050a4e47CEEBDC092748a81A40Fb2fDD434379",
+    "blockNumber": 2,
+    "blockHash": "0x015e8c1962edb9e7c11aa868c10c416d29b45513eec5be4d1ab1ee9cac4cb4f2",
+    "runtimeCodeHash": "0xa1deb418d388581812f8da588325945a726791ee3c10a476f308955d783a162e",
+    "creationArtifactHash": "0xfadb3bf4fd5b79ac5f1e02ad4f66bd061038af6e8558bfbc849afb4fe21dd692",
+    "compiler": "0.8.30+commit.73712a01.Emscripten.clang"
+  },
+  "initialUi": {
+    "noWalletRequests": true,
+    "noTransactions": true,
+    "noLocalKey": true,
+    "noAiOrDemoButtons": true,
+    "externalBadge": true
+  },
+  "registration": {
+    "independentConnectAndRegister": true,
+    "walletApprovalHeldBeforeSubmission": true,
+    "black": {
+      "function": "register",
+      "hash": "0xb469c69b97f203c55aadf6100aebefbf5438ba0553449b62e5b1668bec1fd668",
+      "from": "0x92366B5B4D38071029aD1271B382f7E70830FA38",
+      "to": "0x81050a4e47ceebdc092748a81a40fb2fdd434379",
+      "receipt": {
+        "status": 1,
+        "blockNumber": 5,
+        "blockHash": "0xa2d781837a9f9db2ab031ef9bf18a0b2816d97d27c06dfb6cd43374bd3c9157a",
+        "gasUsed": "89480",
+        "event": "Registered",
+        "points": 1000
+      }
+    },
+    "white": {
+      "function": "register",
+      "hash": "0x6008972160bc272ee18a73b10f153beead6e9e07f6895b9e0ad41ed31f47165d",
+      "from": "0x3Ed45C4037dA2A3eb251Eb2bE0cE416f3fcB535A",
+      "to": "0x81050a4e47ceebdc092748a81a40fb2fdd434379",
+      "receipt": {
+        "status": 1,
+        "blockNumber": 10,
+        "blockHash": "0xd59dcc568f226107b6fb5d68cfb94176daa3bda5fb1e3998da8a6af28634c9b8",
+        "gasUsed": "72380",
+        "event": "Registered",
+        "points": 1000
+      }
+    },
+    "countedOutsideGameTransactions": true
+  },
+  "room": {
+    "roomId": "0x2dfe44ab33b07bbbd543be65278738d5b00613090c91c20cd0786aa82dfb11fd",
+    "channelId": "0xb956a862700298023d57de23e3f228e6207cfbd9f10109f72a96f97648089f09",
+    "black": "0x92366B5B4D38071029aD1271B382f7E70830FA38",
+    "white": "0x3Ed45C4037dA2A3eb251Eb2bE0cE416f3fcB535A",
+    "stake": 10,
+    "openJoinVerification": {
+      "valid": true,
+      "signed": false,
+      "cryptographicOnly": false,
+      "channelId": "0xb956a862700298023d57de23e3f228e6207cfbd9f10109f72a96f97648089f09",
+      "movesCount": 0,
+      "winner": 0,
+      "terminal": false,
+      "digest": "0x12cb28183b9182498ef69ae05f689ccbfe1876482e93bdd38e3323d330b42d67",
+      "black": "0x92366B5B4D38071029aD1271B382f7E70830FA38",
+      "white": "0x3Ed45C4037dA2A3eb251Eb2bE0cE416f3fcB535A",
+      "transactions": [
+        {
+          "label": "锁定黑方积分",
+          "hash": "0x1c16b12b2b090701668a70622161bc0aceee0bce5093639d0b7082ca054f6e69",
+          "gasUsed": "165897",
+          "blockNumber": 15,
+          "timestamp": 1793891228,
+          "transactionIndex": 0
+        },
+        {
+          "label": "锁定白方积分",
+          "hash": "0x2efdbfec93e30167e3e35025c52622ec4bd4835f8eb218aa21232bb1b1d348cf",
+          "gasUsed": "45697",
+          "blockNumber": 16,
+          "timestamp": 1793891229,
+          "transactionIndex": 0
+        }
+      ],
+      "transactionListComplete": true,
+      "chain": {
+        "verified": true,
+        "source": "trusted-rpc",
+        "chainId": 43124,
+        "contractAddress": "0x81050a4e47CEEBDC092748a81A40Fb2fDD434379",
+        "blockNumber": 18,
+        "blockHash": "0xa02b0f09c93c0ff244e3a14ab18e9d146ed699cc767404a22d8609cd26ab7f50",
+        "deploymentBlock": 2,
+        "runtimeCodeHash": "0xa1deb418d388581812f8da588325945a726791ee3c10a476f308955d783a162e",
+        "codeIdentityVerified": true,
+        "status": 2,
+        "winner": 0,
+        "reason": 0,
+        "deadline": 0,
+        "proofDeadline": 0,
+        "moves": [],
+        "transactions": 2
+      }
+    }
+  },
+  "failure": "Expected values to be strictly equal:\n\n10 !== 9\n",
+  "failureUi": {
+    "black": "弈·信\nGOMOKU CHANNEL LAB\n外部钱包已连接\n· 43124\n0x92366B…FA38\n990 演示积分\n开始探索\n对局大厅\n通道实验室\n对局记录\n项目说明\n每一步，皆有凭据。\n\n链下对弈 · 双方签名\n链上结算 · 可验证结果\n\n独立节点 · 外部钱包\nEXTERNAL RPC / 用户钱包\nPLAY WITH TRUST. SETTLE ON CHAIN.\n落子之间，信任自现。\n\n一场五子棋，体验链下对弈与链上结算的默契。\n\nIndependent loopback EVM (external test) · 无资产价值积分\nTHE BOARD\n五子棋 15 × 15 · 自由规则\n对局进行中\n黑方获胜\n第 9 手已确认\nA\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n\n键盘：Tab 进入棋盘，方向键选点，Enter / 空格落子，Home / End 移至行首尾。可逐点查看已落棋子。\n\n落子前确认坐标\n最近一步\n双方签名后确认棋子\n9 / 225 手\n复盘 · 局势\n正在显示最新局面\n9 / 9\n\n第 9 手 · 黑方 L8 · 立即连五\n\n↑ 黑方占优\n启发式评分：黑优 1.00（非胜率）\n↓ 白方占优\n显示手数\n标出威胁\n给我提示\n对局控制\n中继在线\n黑方 · 先手你\n0x9236…FA38\nVS\n白方 · 后手\n0x3Ed4…535A\n每人投入\n10 积分\n总奖池 20\n邀请码\n0x2dfe44ab33b07bbbd543be65278738d5b00613090c91c20cd0786aa82dfb11fd\n复制邀请链接\n\n你执黑方 · 对手已连接\n\n链上结算本局\n对局安心助手\n本地保存已核对\n双方已签 9 手\n节点交易清单已核验\n棋局结束，积分尚待结算\n\n胜负棋谱与积分到账是两个步骤。\n\n参与者点击“链上结算本局”。\n等待回执与积分刷新，再备份最终证据。\n备份本局证据\n打开签名与异常实验 →\n签名与异常实验\n弈·信 / 每一步信任，都有迹可循。\n外部钱包确认 · 独立节点核验",
+    "white": "弈·信\nGOMOKU CHANNEL LAB\n外部钱包已连接\n· 43124\n0x3Ed45C…535A\n990 演示积分\n开始探索\n对局大厅\n通道实验室\n对局记录\n项目说明\n每一步，皆有凭据。\n\n链下对弈 · 双方签名\n链上结算 · 可验证结果\n\n独立节点 · 外部钱包\nEXTERNAL RPC / 用户钱包\nPLAY WITH TRUST. SETTLE ON CHAIN.\n落子之间，信任自现。\n\n一场五子棋，体验链下对弈与链上结算的默契。\n\nIndependent loopback EVM (external test) · 无资产价值积分\nTHE BOARD\n五子棋 15 × 15 · 自由规则\n对局进行中\n黑方获胜\n第 9 手已确认\nA\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n\n键盘：Tab 进入棋盘，方向键选点，Enter / 空格落子，Home / End 移至行首尾。可逐点查看已落棋子。\n\n落子前确认坐标\n最近一步\n双方签名后确认棋子\n9 / 225 手\n复盘 · 局势\n正在显示最新局面\n9 / 9\n\n第 9 手 · 黑方 L8 · 立即连五\n\n↑ 黑方占优\n启发式评分：黑优 1.00（非胜率）\n↓ 白方占优\n显示手数\n标出威胁\n给我提示\n对局控制\n中继在线\n黑方 · 先手\n0x9236…FA38\nVS\n白方 · 后手你\n0x3Ed4…535A\n每人投入\n10 积分\n总奖池 20\n邀请码\n0x2dfe44ab33b07bbbd543be65278738d5b00613090c91c20cd0786aa82dfb11fd\n复制邀请链接\n\n你执白方 · 对手已连接\n\n链上结算本局\n对局安心助手\n本地保存已核对\n双方已签 9 手\n节点交易清单已核验\n棋局结束，积分尚待结算\n\n胜负棋谱与积分到账是两个步骤。\n\n参与者点击“链上结算本局”。\n等待回执与积分刷新，再备份最终证据。\n备份本局证据\n打开签名与异常实验 →\n签名与异常实验\n弈·信 / 每一步信任，都有迹可循。\n外部钱包确认 · 独立节点核验"
+  },
+  "wallets": [
+    {
+      "name": "black",
+      "address": "0x92366B5B4D38071029aD1271B382f7E70830FA38",
+      "requests": {
+        "eth_requestAccounts": 1,
+        "eth_chainId": 121,
+        "eth_getCode": 2,
+        "eth_accounts": 3,
+        "eth_call": 78,
+        "eth_blockNumber": 14,
+        "eth_estimateGas": 2,
+        "eth_sendTransaction": 2,
+        "eth_getTransactionByHash": 2,
+        "eth_getTransactionReceipt": 14,
+        "personal_sign": 1,
+        "eth_getBlockByNumber": 28,
+        "eth_getLogs": 1,
+        "eth_signTypedData_v4": 10
+      },
+      "transactions": [
+        {
+          "function": "register",
+          "hash": "0xb469c69b97f203c55aadf6100aebefbf5438ba0553449b62e5b1668bec1fd668",
+          "from": "0x92366B5B4D38071029aD1271B382f7E70830FA38",
+          "to": "0x81050a4e47ceebdc092748a81a40fb2fdd434379",
+          "receipt": {
+            "status": 1,
+            "blockNumber": 5,
+            "blockHash": "0xa2d781837a9f9db2ab031ef9bf18a0b2816d97d27c06dfb6cd43374bd3c9157a",
+            "gasUsed": "89480",
+            "event": "Registered",
+            "points": 1000
+          }
+        },
+        {
+          "function": "openChannel",
+          "hash": "0x1c16b12b2b090701668a70622161bc0aceee0bce5093639d0b7082ca054f6e69",
+          "from": "0x92366B5B4D38071029aD1271B382f7E70830FA38",
+          "to": "0x81050a4e47ceebdc092748a81a40fb2fdd434379"
+        }
+      ],
+      "personalSignatures": [
+        {
+          "recovered": "0x92366B5B4D38071029aD1271B382f7E70830FA38",
+          "messageBytes": 184,
+          "signature": "0x6255b6529748d2164634125a4e69e1f7b83a73dd4d89a96371aa6448da2c99234dbd08039d4619170ddceecfbac8a5c7001e61ff75c677a7d1a5ec45ad4e869b1b"
+        }
+      ],
+      "typedSignatures": [
+        {
+          "channelId": "0xb956a862700298023d57de23e3f228e6207cfbd9f10109f72a96f97648089f09",
+          "movesHash": "0x2304e88f144ae9318c71b0fb9e0f44bd9e0c6c58fb1b5315a35fd8b4b2a444ab",
+          "digest": "0x5babc725601895534315c588d116b48188aa13b332defe93a7d6b7794f2baaa5",
+          "recovered": "0x92366B5B4D38071029aD1271B382f7E70830FA38",
+          "signature": "0x43b48e23b689f32de1d54de4bd05c2bd033e5ef6837a642fc11aece64e54a58039072836f3614a70578b247303065cdddb8abbab103acec88f82decd8e1d10c31b"
+        },
+        {
+          "channelId": "0xb956a862700298023d57de23e3f228e6207cfbd9f10109f72a96f97648089f09",
+          "movesHash": "0xa6a4c7c8bd8df88a3ccb1169c1f2555b94b88bbf64bfbc44024083c92c7a54c9",
+          "digest": "0xe204fef62cc106e4ed61fd10f879e8c89a41ab0a866c2fe91a962e7e70cb8aec",
+          "recovered": "0x92366B5B4D38071029aD1271B382f7E70830FA38",
+          "signature": "0xbfca31aec7be3bd4891946bf7a2f2001b3e8b0dc718acc69333ddb9dc7190a5a3199807322c62bfd40de2076e8509c2b947ffc7b9ac81eafb5a48d73df38fbf01b"
+        },
+        {
+          "channelId": "0xb956a862700298023d57de23e3f228e6207cfbd9f10109f72a96f97648089f09",
+          "movesHash": "0xb4dcfadf7991a3c22d99a10b11db1414b5a30b7cb4e36fdaae3f788ebf9c84dd",
+          "digest": "0xbeee157a01c8205696d9bdb45e20bc5d89ac79b908e5cfc77cd207137e1f2a31",
+          "recovered": "0x92366B5B4D38071029aD1271B382f7E70830FA38",
+          "signature": "0x018727ea86d05cae7fb6e046f079bbdad62ccb8a7db2cb2ab3745ccb3ef0b0ae4400100d4acbd58a0589c8685dedb7f7b2831a96454eeb74d1d1df0f9500789d1b"
+        },
+        {
+          "channelId": "0xb956a862700298023d57de23e3f228e6207cfbd9f10109f72a96f97648089f09",
+          "movesHash": "0x2e1210e51d4ad87a396250435f76c64eb57bb2f6bac10684f4ce247423c11cc4",
+          "digest": "0x9bd50b6eadda8d7a02346efac03a1026d1f96fbfbdf619f1b9576eb40cf30a97",
+          "recovered": "0x92366B5B4D38071029aD1271B382f7E70830FA38",
+          "signature": "0xa0df3263d336417bd1769872aead8d2004b112a0fbd1003f9b8db9d30614d83a2366009c0cedf3fa2a13b479e5744c5028aa0a8414c202779e26b9c3ae3c22d91b"
+        },
+        {
+          "channelId": "0xb956a862700298023d57de23e3f228e6207cfbd9f10109f72a96f97648089f09",
+          "movesHash": "0x2e1210e51d4ad87a396250435f76c64eb57bb2f6bac10684f4ce247423c11cc4",
+          "digest": "0x9bd50b6eadda8d7a02346efac03a1026d1f96fbfbdf619f1b9576eb40cf30a97",
+          "recovered": "0x92366B5B4D38071029aD1271B382f7E70830FA38",
+          "signature": "0xa0df3263d336417bd1769872aead8d2004b112a0fbd1003f9b8db9d30614d83a2366009c0cedf3fa2a13b479e5744c5028aa0a8414c202779e26b9c3ae3c22d91b"
+        },
+        {
+          "channelId": "0xb956a862700298023d57de23e3f228e6207cfbd9f10109f72a96f97648089f09",
+          "movesHash": "0x535d0e376accb5437ff11c1313f0e7a8be0ca9509bbad33d039573f8bae7c93d",
+          "digest": "0x806074fc5ae42506e53b3ce0fb8c85a32f514bd1db59d070fe883feb929addef",
+          "recovered": "0x92366B5B4D38071029aD1271B382f7E70830FA38",
+          "signature": "0x93a6699a376c18d9ae7cb476bf6b3ac000b9b763d461455e94b6d894ee6755935fa4bd7c212d2e64b9cc00dfb760945afa988904d81b5c9b58b51f1e607224cb1c"
+        },
+        {
+          "channelId": "0xb956a862700298023d57de23e3f228e6207cfbd9f10109f72a96f97648089f09",
+          "movesHash": "0xae5ddb93d360c9487ae25dfbd0bf1ac0f8c788c6c1bf88f53cd6f38714e764b0",
+          "digest": "0xaf01d2190ea2fc9c87d8d47bded828c37a659506002efee53ebeee5014c94ab3",
+          "recovered": "0x92366B5B4D38071029aD1271B382f7E70830FA38",
+          "signature": "0xb00ff7933626d644a825ea96b525f4064234d64c907b75e798a0176854bb5a024fcd8a6e3a32a60e27742e7ee2acd8d230bcc76cd9b1ebcea39656888647a45a1b"
+        },
+        {
+          "channelId": "0xb956a862700298023d57de23e3f228e6207cfbd9f10109f72a96f97648089f09",
+          "movesHash": "0xf8d680baccffb1b2ee081b3008ce46f20ed592519bea3edb8f60cea288f2c344",
+          "digest": "0x870cbf16a20fa976ae2d43b79dbec4f8beab6539398d5f95e6c5338c7aab37d0",
+          "recovered": "0x92366B5B4D38071029aD1271B382f7E70830FA38",
+          "signature": "0x1a02a13463a4d012ca15bc0d6c47146b26a565b9937e2f5650c1174559c3895b5cdf3a6068f935483f9ac313c78bbdcb9ef8e3d7138d05e1d11f54a5c7dd17131b"
+        },
+        {
+          "channelId": "0xb956a862700298023d57de23e3f228e6207cfbd9f10109f72a96f97648089f09",
+          "movesHash": "0x2cb2fc0e593adc15a670a8ba91607123f07d44951af647d0581f3e3f3ce8745e",
+          "digest": "0x652dee534e4b38b0fe5c568f9c33a1b9286c6ae5deb0cf61477ec457bad15157",
+          "recovered": "0x92366B5B4D38071029aD1271B382f7E70830FA38",
+          "signature": "0xb20c3735b6f6f5c3af98106e3dd8f445a1f6bfcdaa3ce8a7b3356f192be870f8521d04a3d51401866b30fb7af79fded42f57ba3d095d1a507f507a5f1a2740ed1c"
+        },
+        {
+          "channelId": "0xb956a862700298023d57de23e3f228e6207cfbd9f10109f72a96f97648089f09",
+          "movesHash": "0x43da1bb143ba33f54598841bad639c5cf4a4277564d6e75d9387cb78b1a9a4ad",
+          "digest": "0x580c67fb8c4440c5b2c8b5aa9b47e4b2c30a6da2b2e07296a84dd5b3e95d60cc",
+          "recovered": "0x92366B5B4D38071029aD1271B382f7E70830FA38",
+          "signature": "0x886cd1552dac365d4b865789ed633e4f26f73cb63c262ee95ef4c86ec3d254a3534abdd8382d118623b8fa548d7c9aeab8885d4056896da809a16dc3a1d2464c1b"
+        }
+      ],
+      "events": [],
+      "rejectedAfterInvalidation": 0
+    },
+    {
+      "name": "white",
+      "address": "0x3Ed45C4037dA2A3eb251Eb2bE0cE416f3fcB535A",
+      "requests": {
+        "eth_requestAccounts": 1,
+        "eth_chainId": 91,
+        "eth_getCode": 3,
+        "eth_accounts": 3,
+        "eth_call": 51,
+        "eth_blockNumber": 14,
+        "eth_estimateGas": 2,
+        "eth_sendTransaction": 2,
+        "eth_getTransactionByHash": 2,
+        "eth_getTransactionReceipt": 15,
+        "personal_sign": 1,
+        "eth_getBlockByNumber": 22,
+        "eth_getLogs": 2,
+        "eth_signTypedData_v4": 9
+      },
+      "transactions": [
+        {
+          "function": "register",
+          "hash": "0x6008972160bc272ee18a73b10f153beead6e9e07f6895b9e0ad41ed31f47165d",
+          "from": "0x3Ed45C4037dA2A3eb251Eb2bE0cE416f3fcB535A",
+          "to": "0x81050a4e47ceebdc092748a81a40fb2fdd434379",
+          "receipt": {
+            "status": 1,
+            "blockNumber": 10,
+            "blockHash": "0xd59dcc568f226107b6fb5d68cfb94176daa3bda5fb1e3998da8a6af28634c9b8",
+            "gasUsed": "72380",
+            "event": "Registered",
+            "points": 1000
+          }
+        },
+        {
+          "function": "joinChannel",
+          "hash": "0x2efdbfec93e30167e3e35025c52622ec4bd4835f8eb218aa21232bb1b1d348cf",
+          "from": "0x3Ed45C4037dA2A3eb251Eb2bE0cE416f3fcB535A",
+          "to": "0x81050a4e47ceebdc092748a81a40fb2fdd434379"
+        }
+      ],
+      "personalSignatures": [
+        {
+          "recovered": "0x3Ed45C4037dA2A3eb251Eb2bE0cE416f3fcB535A",
+          "messageBytes": 184,
+          "signature": "0x731d15cd5e12f61bcf05d2368aaa070314cef468def18b4891faff3d09fb903914f3fc21568401b5e7e844959069311dc11c0211c38a660dc6e37913bd5ef08e1c"
+        }
+      ],
+      "typedSignatures": [
+        {
+          "channelId": "0xb956a862700298023d57de23e3f228e6207cfbd9f10109f72a96f97648089f09",
+          "movesHash": "0x2304e88f144ae9318c71b0fb9e0f44bd9e0c6c58fb1b5315a35fd8b4b2a444ab",
+          "digest": "0x5babc725601895534315c588d116b48188aa13b332defe93a7d6b7794f2baaa5",
+          "recovered": "0x3Ed45C4037dA2A3eb251Eb2bE0cE416f3fcB535A",
+          "signature": "0xac9ec6eb61f25e66dfa978c8a8f52d2e34bd98574604a4f6109edc01b24b2c911c0e7f2909a0bb124c136a985e0a5b9e466564606e53726f9ae27b1e2a6d9da71b"
+        },
+        {
+          "channelId": "0xb956a862700298023d57de23e3f228e6207cfbd9f10109f72a96f97648089f09",
+          "movesHash": "0xa6a4c7c8bd8df88a3ccb1169c1f2555b94b88bbf64bfbc44024083c92c7a54c9",
+          "digest": "0xe204fef62cc106e4ed61fd10f879e8c89a41ab0a866c2fe91a962e7e70cb8aec",
+          "recovered": "0x3Ed45C4037dA2A3eb251Eb2bE0cE416f3fcB535A",
+          "signature": "0x2d57201d103df0012cd95ed1bca52255818b7d0e6aa0bcb2e6e989dd310370d03d95627fe6ea7bda3fa00e3bfa7dfca00276d5f547d67d1e3f580cdb3566795f1c"
+        },
+        {
+          "channelId": "0xb956a862700298023d57de23e3f228e6207cfbd9f10109f72a96f97648089f09",
+          "movesHash": "0xb4dcfadf7991a3c22d99a10b11db1414b5a30b7cb4e36fdaae3f788ebf9c84dd",
+          "digest": "0xbeee157a01c8205696d9bdb45e20bc5d89ac79b908e5cfc77cd207137e1f2a31",
+          "recovered": "0x3Ed45C4037dA2A3eb251Eb2bE0cE416f3fcB535A",
+          "signature": "0xfa3643dda0e27154133d3f07317eeabf8310639b668afab6aa271dcd2f4af37e1d4d14168775226eb6bef9e1799ebd42436037a299777fd6c6cde40c888190ff1c"
+        },
+        {
+          "channelId": "0xb956a862700298023d57de23e3f228e6207cfbd9f10109f72a96f97648089f09",
+          "movesHash": "0x2e1210e51d4ad87a396250435f76c64eb57bb2f6bac10684f4ce247423c11cc4",
+          "digest": "0x9bd50b6eadda8d7a02346efac03a1026d1f96fbfbdf619f1b9576eb40cf30a97",
+          "recovered": "0x3Ed45C4037dA2A3eb251Eb2bE0cE416f3fcB535A",
+          "signature": "0x5d822da8d272bc565a5c071fbed464af7ff6b5c2c691b26c683b235783aca45b5cdeddaafcdf4b78d4e65c9dc1852a3fffc3051ceec24ae961ae409ef07e80cc1c"
+        },
+        {
+          "channelId": "0xb956a862700298023d57de23e3f228e6207cfbd9f10109f72a96f97648089f09",
+          "movesHash": "0x535d0e376accb5437ff11c1313f0e7a8be0ca9509bbad33d039573f8bae7c93d",
+          "digest": "0x806074fc5ae42506e53b3ce0fb8c85a32f514bd1db59d070fe883feb929addef",
+          "recovered": "0x3Ed45C4037dA2A3eb251Eb2bE0cE416f3fcB535A",
+          "signature": "0x91a0f954c3ce693b77f1d5cde892f96df113303ed87299be5fb777a62490c6623188fa37465542a2a59483ba36bb9d0851737a6bcd20cd11c5d30847544bc0341b"
+        },
+        {
+          "channelId": "0xb956a862700298023d57de23e3f228e6207cfbd9f10109f72a96f97648089f09",
+          "movesHash": "0xae5ddb93d360c9487ae25dfbd0bf1ac0f8c788c6c1bf88f53cd6f38714e764b0",
+          "digest": "0xaf01d2190ea2fc9c87d8d47bded828c37a659506002efee53ebeee5014c94ab3",
+          "recovered": "0x3Ed45C4037dA2A3eb251Eb2bE0cE416f3fcB535A",
+          "signature": "0x545841022dfb219e7ddef6dfa876c38e10c788f54bdee65a1ffdedc0f024159c0e46faa6cf9df598190bb00454a0ad7da0add5fac53fb40479e400e4f0ea3f541c"
+        },
+        {
+          "channelId": "0xb956a862700298023d57de23e3f228e6207cfbd9f10109f72a96f97648089f09",
+          "movesHash": "0xf8d680baccffb1b2ee081b3008ce46f20ed592519bea3edb8f60cea288f2c344",
+          "digest": "0x870cbf16a20fa976ae2d43b79dbec4f8beab6539398d5f95e6c5338c7aab37d0",
+          "recovered": "0x3Ed45C4037dA2A3eb251Eb2bE0cE416f3fcB535A",
+          "signature": "0xc2e0bb5e42fce1cec9925f25f2fb2a1010bf3d6afae66f69d58a7bf8adc083d83ab9fa6916a909222f56f1cb9fa82c250e55db210e2a7461471ab2694415fe9a1b"
+        },
+        {
+          "channelId": "0xb956a862700298023d57de23e3f228e6207cfbd9f10109f72a96f97648089f09",
+          "movesHash": "0x2cb2fc0e593adc15a670a8ba91607123f07d44951af647d0581f3e3f3ce8745e",
+          "digest": "0x652dee534e4b38b0fe5c568f9c33a1b9286c6ae5deb0cf61477ec457bad15157",
+          "recovered": "0x3Ed45C4037dA2A3eb251Eb2bE0cE416f3fcB535A",
+          "signature": "0x6969ee10e541c84d62624a94586993ccc7f3069f45bebbf4a8a6ec808ebe425a69c527a9955bb7739434e5979f4e069c9cf73ddf531926d7d4e3446002ff9d921c"
+        },
+        {
+          "channelId": "0xb956a862700298023d57de23e3f228e6207cfbd9f10109f72a96f97648089f09",
+          "movesHash": "0x43da1bb143ba33f54598841bad639c5cf4a4277564d6e75d9387cb78b1a9a4ad",
+          "digest": "0x580c67fb8c4440c5b2c8b5aa9b47e4b2c30a6da2b2e07296a84dd5b3e95d60cc",
+          "recovered": "0x3Ed45C4037dA2A3eb251Eb2bE0cE416f3fcB535A",
+          "signature": "0xc4f1ce3459048c5908aa75841fba12ff6b8f2a2fa7b48800e4ae949cddf2696330e64b36fb5068771fd01332d7d6411f3c8f02388d1cad781d367317176c6f0f1c"
+        }
+      ],
+      "events": [],
+      "rejectedAfterInvalidation": 0
+    }
+  ],
+  "finishedAt": "2026-11-05T15:07:15.740Z",
+  "summary": {
+    "passed": 3,
+    "failed": 1
+  },
+  "privacy": {
+    "scannedRunFiles": 2,
+    "generatedFilesScannedAfterBrowserClosed": true,
+    "walletSecretMatches": 0
+  }
+}

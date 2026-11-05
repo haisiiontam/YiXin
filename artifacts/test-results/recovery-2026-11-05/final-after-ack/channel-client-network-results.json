@@ -1,0 +1,38 @@
+{
+  "generatedAt": "2026-11-05T15:12:09.007Z",
+  "environment": "Real local Ganache EVM + EIP-1193 test wallet; not a live browser extension or public network",
+  "tests": [
+    {
+      "name": "external page load creates no private key, requests no wallet approval and sends no transaction",
+      "status": "passed"
+    },
+    {
+      "name": "external wallet connect is read-only until separate registration approval, using real EVM receipts",
+      "status": "passed"
+    },
+    {
+      "name": "external typed signatures come from EIP-1193 wallet and bind the canonical contract domain",
+      "status": "passed"
+    },
+    {
+      "name": "wrong chain or code fingerprint fails before wallet registration or transactions",
+      "status": "passed"
+    },
+    {
+      "name": "external mode refuses AI key generation, local funding and dual-wallet scripted demo",
+      "status": "passed"
+    },
+    {
+      "name": "account or chain change stops the signer without deleting saved evidence",
+      "status": "passed"
+    },
+    {
+      "name": "export separates signed offchain history from actual chain storage; import reconstructs all successful game transactions",
+      "status": "passed"
+    }
+  ],
+  "summary": {
+    "passed": 7,
+    "failed": 0
+  }
+}

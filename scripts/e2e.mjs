@@ -126,6 +126,7 @@ try {
     await waitForProofDeadline((await storedEvidence(black)).channelId);
     await black.getByRole('checkbox', { name: '棋盘使用链上强制落子', exact: true }).check();
     await black.getByRole('button', { name: '落子 8,12', exact: true }).click();
+    await black.getByRole('button', { name: '确认落子 L8', exact: true }).click();
     await black.getByText('已完成结算', { exact: true }).waitFor({ timeout: 30000 });
     await waitForStoredSettlement(black, 4);
     const proof = await storedEvidence(black);

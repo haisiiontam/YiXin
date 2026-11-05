@@ -1,0 +1,46 @@
+2026-11-05T15:06:47.366Z Preparing independent external-mode fixture; existing app and chain are untouched
+This version of µWS is not compatible with your Node.js build:
+
+Error: Cannot find module '../binaries/uws_win32_x64_137.node'
+Require stack:
+- E:\Gomoku\app\node_modules\.pnpm\@trufflesuite+uws-js-unofficial@20.30.0-unofficial.0\node_modules\@trufflesuite\uws-js-unofficial\src\uws.js
+- E:\Gomoku\app\node_modules\.pnpm\ganache@7.9.2\node_modules\ganache\dist\node\core.js
+Falling back to a NodeJS implementation; performance may be degraded.
+
+
+2026-11-05T15:06:55.212Z Real contract deployed 0x81050a4e47CEEBDC092748a81A40Fb2fDD434379; independent external application http://127.0.0.1:4192; RPC http://127.0.0.1:58370
+2026-11-05T15:06:56.307Z START 1. External landing: honest badge, no local key/AI/demo, no wallet request or transaction
+2026-11-05T15:06:57.326Z PASS 1. External landing: honest badge, no local key/AI/demo, no wallet request or transaction
+2026-11-05T15:06:57.327Z START 2. Read-only wallet connect; separate UI registration and test-wallet approval yield real receipts and 1000 points
+2026-11-05T15:06:57.729Z WALLET black: register submitted 0xb469c69b97f203c55aadf6100aebefbf5438ba0553449b62e5b1668bec1fd668
+2026-11-05T15:07:02.566Z WALLET white: register submitted 0x6008972160bc272ee18a73b10f153beead6e9e07f6895b9e0ad41ed31f47165d
+2026-11-05T15:07:07.049Z PASS 2. Read-only wallet connect; separate UI registration and test-wallet approval yield real receipts and 1000 points
+2026-11-05T15:07:07.051Z START 3. Two isolated contexts authenticate using personal_sign and open/join a real points channel
+2026-11-05T15:07:07.404Z WALLET black: openChannel submitted 0x1c16b12b2b090701668a70622161bc0aceee0bce5093639d0b7082ca054f6e69
+2026-11-05T15:07:08.959Z WALLET white: joinChannel submitted 0x2efdbfec93e30167e3e35025c52622ec4bd4835f8eb218aa21232bb1b1d348cf
+(node:32032) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [Server]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+(Use `node --trace-warnings ...` to show where the warning was created)
+2026-11-05T15:07:11.803Z PASS 3. Two isolated contexts authenticate using personal_sign and open/join a real points channel
+2026-11-05T15:07:11.804Z START 4. Nine alternating UI moves auto-ACK with both EIP-712 signatures; independent RPC still finds only open+join
+2026-11-05T15:07:12.288Z MOVE 1: both EIP-712 signatures verified; no move transaction
+2026-11-05T15:07:12.602Z MOVE 2: both EIP-712 signatures verified; no move transaction
+2026-11-05T15:07:12.910Z MOVE 3: both EIP-712 signatures verified; no move transaction
+2026-11-05T15:07:13.304Z MOVE 4: both EIP-712 signatures verified; no move transaction
+2026-11-05T15:07:13.603Z MOVE 5: both EIP-712 signatures verified; no move transaction
+2026-11-05T15:07:13.906Z MOVE 6: both EIP-712 signatures verified; no move transaction
+2026-11-05T15:07:14.199Z MOVE 7: both EIP-712 signatures verified; no move transaction
+2026-11-05T15:07:14.490Z MOVE 8: both EIP-712 signatures verified; no move transaction
+2026-11-05T15:07:14.787Z MOVE 9: both EIP-712 signatures verified; no move transaction
+2026-11-05T15:07:14.791Z FAIL 4. Nine alternating UI moves auto-ACK with both EIP-712 signatures; independent RPC still finds only open+join: Expected values to be strictly equal:
+
+10 !== 9
+
+2026-11-05T15:07:14.793Z ERROR Expected values to be strictly equal:
+
+10 !== 9
+
+2026-11-05T15:07:15.724Z CLEANUP browser: closed
+2026-11-05T15:07:15.726Z CLEANUP applicationHttpAndRuntimeProvider: closed
+2026-11-05T15:07:15.728Z CLEANUP independentRpcProvider: closed
+2026-11-05T15:07:15.739Z CLEANUP ganacheHttpAndEvm: closed
+2026-11-05T15:07:15.752Z RESULT 3 passed, 1 failed; artifacts\test-results\recovery-2026-11-05\final\e2e-external-results.json

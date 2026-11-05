@@ -13,6 +13,8 @@ import ExperimentPanel from './components/ExperimentPanel.jsx';
 import LabPage from './components/LabPage.jsx';
 import HistoryPage from './components/HistoryPage.jsx';
 import AboutPage from './components/AboutPage.jsx';
+import RecoveryPanel from './components/RecoveryPanel.jsx';
+import MoveConfirmation from './components/MoveConfirmation.jsx';
 
 const client = new ChannelClient();
 const EMPTY = { ready: false, busy: false, error: '', mode: 'player', address: '', points: 0, chainId: 31337, contractAddress: '', channelId: '', inviteUrl: '', role: 0, black: '', white: '', stake: 10, status: 'idle', moves: [], pending: null, winner: 0, terminal: false, reason: '', nextPlayer: 1, deadline: 0, challengePeriod: 60, now: 0, connected: false, peerConnected: false, autoAck: true, signatures: {}, digest: '', transactions: [], events: [], history: [], initialization: [], demoProgress: '', aiLevel: '', aiThinking: false, metrics: {}, networkName: 'Gomoku Local EVM' };
@@ -42,6 +44,8 @@ export default function App() {
   const [theme, setTheme] = useState(() => store.get('gomoku-theme', 'light')), [sound, setSound] = useState(() => store.get('gomoku-sound', 'on') !== 'off');
   const [reviewIndex, setReviewIndex] = useState(null), [showNumbers, setShowNumbers] = useState(false), [showThreats, setShowThreats] = useState(false), [hintList, setHintList] = useState([]);
   const [aiLevel, setAiLevel] = useState('adept'), [aiSide, setAiSide] = useState(1);
+  const [confirmMove, setConfirmMove] = useState(() => store.get('gomoku-confirm-move', window.matchMedia('(pointer: coarse)').matches ? 'on' : 'off') === 'on');
+  const [draftMove, setDraftMove] = useState(null);
   const toastTimer = useRef(), lastClientError = useRef(''), prevMoves = useRef(null), prevTerminal = useRef(false), prevStatus = useRef('idle');
 
   useEffect(() => {
@@ -59,13 +63,15 @@ export default function App() {
   // 主题与音效偏好：写入 localStorage，下次打开保持一致。
   useEffect(() => { document.documentElement.dataset.theme = theme; store.set('gomoku-theme', theme); }, [theme]);
   useEffect(() => { setSoundEnabled(sound); store.set('gomoku-sound', sound ? 'on' : 'off'); }, [sound]);
+  useEffect(() => { store.set('gomoku-confirm-move', confirmMove ? 'on' : 'off'); }, [confirmMove]);
+  useEffect(() => { setDraftMove(null); }, [state.channelId, state.moves?.join(','), state.status, state.role, state.nextPlayer, force, reviewIndex]);
 
   const busy = Boolean(state.busy || localBusy), moves = state.moves || [], txs = state.transactions || [], history = state.history || [];
   const external = state.networkMode === 'external';
   const hasRoom = Boolean(state.channelId), finished = state.status === 'settled' || state.status === 'cancelled';
   const isMyTurn = state.role === state.nextPlayer, isParticipant = state.role === 1 || state.role === 2;
-  const canMove = !busy && !state.aiThinking && !state.terminal && state.mode !== 'demo' && reviewIndex == null && isMyTurn
-    && ((state.status === 'active' && !state.pending && (state.mode === 'ai' || (state.connected && state.peerConnected))) || (state.status === 'dispute' && force && Number(state.now) >= Number(state.proofDeadline || 0) && Number(state.deadline) > Number(state.now)));
+  const canMove = state.ready && isParticipant && state.persistence?.status !== 'failed' && !busy && !state.aiThinking && !state.terminal && state.mode !== 'demo' && reviewIndex == null && isMyTurn
+    && ((state.status === 'active' && !state.pending && (state.mode === 'ai' || (state.connected && state.peerConnected))) || (state.status === 'dispute' && force && Number.isFinite(state.chainNow) && !state.chainError && state.chainNow >= Number(state.proofDeadline || 0) && Number(state.deadline) > state.chainNow));
   const inviteCode = state.inviteUrl ? new URL(state.inviteUrl, window.location.href).searchParams.get('room') || state.channelId : state.channelId;
   const role = state.role ? playerName(state.role) : '访客';
   const result = state.terminal ? state.winner ? `${playerName(state.winner)}获胜` : '本局和棋' : '';
@@ -134,9 +140,8 @@ export default function App() {
   // 从对局记录导出：刷新后客户端已回到空闲态，但每局证据仍保存在本地，证书不依赖当前对局状态。
   function exportCertificateById(item) {
     try {
-      const raw = localStorage.getItem(`gomoku-channel-v1:evidence:${item.id}`);
-      if (!raw) throw new Error('本地没有保存这局的证据，无法生成证书');
-      const evidence = JSON.parse(raw);
+      const evidence = client.repository.readEvidence(item.id);
+      if (!evidence) throw new Error('本地没有保存这局的证据，无法生成证书');
       makeCertificate(evidence, evidence.opponent?.levelName || '');
     } catch (e) { setError(`证书生成失败：${e.message || e}`); }
   }
@@ -167,7 +172,16 @@ export default function App() {
   }
   const canHint = !busy && !state.terminal && state.status === 'active' && isMyTurn && reviewIndex == null && !state.pending && (state.mode === 'ai' || state.connected);
   const turnText = state.aiThinking ? 'AI 正在思考…' : busy ? (localBusy || state.demoProgress || '正在同步对局…') : reviewIndex != null ? `复盘中 · 第 ${reviewIndex} 手` : result || (state.pending ? '等待双方签名确认' : state.status === 'active' ? (isMyTurn ? '轮到你落子' : `等待${playerName(state.nextPlayer)}落子`) : state.status === 'invited' && state.peerConnected ? '双方已到齐，等待链上开通' : STATUS[state.status] || '等待状态同步');
-  const onBoardMove = (p) => act(force && state.status === 'dispute' ? '提交链上落子' : '发送落子提案', () => force && state.status === 'dispute' ? client.forceMove(p) : client.move(p));
+  const moveVersion = `${state.channelId}:${moves.join(',')}:${state.status}:${force}:${state.role}:${state.nextPlayer}`;
+  const submitMove = (p) => {
+    if (!canMove) { setError('局面或连接已变化，请重新核对后落子。'); return; }
+    return act(force && state.status === 'dispute' ? '提交链上落子' : '发送落子提案', () => force && state.status === 'dispute' ? client.forceMove(p) : client.move(p));
+  };
+  const onBoardMove = (p) => {
+    if (!canMove) return;
+    if (confirmMove || (force && state.status === 'dispute')) setDraftMove({ position: p, version: moveVersion });
+    else submitMove(p);
+  };
   const aiBusyStart = busy || !state.ready || ['active', 'dispute', 'invited'].includes(state.status);
   const c = { state, client, busy, act, moves, txs, history, hasRoom, finished, stake, setStake, room, setRoom, inviteCode, role, result, isParticipant, copy, savings, countdown, force, setForce, exportEvidence, importEvidenceFile, importResult, exportCertificateById };
   const [headline, subline] = HEADINGS[tab];
@@ -203,6 +217,7 @@ export default function App() {
               <div className="board-heading"><div><span className="section-kicker">THE BOARD</span><h2>五子棋 <span>15 × 15 · 自由规则</span></h2></div><span className={`status-chip ${state.status === 'active' || state.terminal ? 'green' : ''}`}><i/>{STATUS[state.status] || state.status}</span></div>
               <div className={`turn-banner ${state.terminal && reviewIndex == null ? 'is-result' : ''}`} role="status"><span className={`turn-stone ${state.nextPlayer === 2 ? 'white' : ''}`}/><strong>{turnText}</strong><span>{moves.length ? `第 ${moves.length} 手已确认` : '黑棋先行 · 连五获胜'}</span>{(busy || state.aiThinking) && <span className="spinner"/>}</div>
               <Board moves={shownMoves} pending={state.pending} force={force && state.status === 'dispute'} canMove={canMove} busy={busy} onMove={onBoardMove} winnerShown={Boolean(state.winner && state.terminal && reviewIndex == null)} hints={hintCells} threats={threatCells} showNumbers={showNumbers} reviewing={reviewIndex != null}/>
+              <label className="switch-row move-confirm-toggle"><span>落子前确认坐标</span><input type="checkbox" checked={confirmMove} onChange={e => setConfirmMove(e.target.checked)}/></label>
               <div className="board-footer"><span><i className="legend-dot"/> 最近一步</span><span><Icon name="shield" size={14}/>{state.mode === 'demo' ? '自动演示 · 双本地钱包' : state.mode === 'ai' ? `人机对弈 · ${LEVELS[state.aiLevel]?.name || 'AI'}` : '双方签名后确认棋子'}</span><span>{moves.length} / 225 手</span></div>
               {!hasRoom && <div className="board-empty-note"><span>棋盘已就绪</span> {external ? '请连接外部钱包，并邀请另一位玩家创建双人对局。' : '在右侧创建双人对局、与 AI 对弈，或运行完整自动演示。'}</div>}
               {state.mode === 'demo' && <div className="demo-progress" role="status"><Icon name="play" size={15}/><span>{state.demoProgress || '此局由两个本地演示钱包自动执棋，交易由本地测试链实际执行。'}</span></div>}
@@ -211,6 +226,7 @@ export default function App() {
           </div>
           <aside className="game-panel">
             <MatchPanel c={c}/>
+            <RecoveryPanel c={c}/>
             {!external && (!hasRoom || finished) && <AiPanel level={aiLevel} onLevel={setAiLevel} side={aiSide} onSide={setAiSide} stake={stake} disabled={aiBusyStart || !Number.isInteger(Number(stake)) || Number(stake) <= 0} onStart={() => act('正在准备人机对局', () => client.startAiGame(aiLevel, aiSide, Number(stake)))}/>}
             {!external && <section className="demo-card">
               <div className="demo-heading"><span className="demo-icon"><Icon name="play" size={19}/></span><div><h3>先看一局，理解全部</h3><p>双本地钱包 · 9 手黑胜 · 真实结算</p></div></div>
@@ -228,5 +244,10 @@ export default function App() {
       </main>
     </div>
     {toast && <div className="toast" role="status"><Icon name="check" size={18}/>{toast}</div>}
+    {draftMove && <MoveConfirmation position={draftMove.position} force={force && state.status === 'dispute'} onCancel={() => setDraftMove(null)} onConfirm={() => {
+      const draft = draftMove; setDraftMove(null);
+      if (draft.version !== moveVersion) { setError('局面已变化，请重新选择落点。'); return; }
+      submitMove(draft.position);
+    }}/>}
   </div>;
 }

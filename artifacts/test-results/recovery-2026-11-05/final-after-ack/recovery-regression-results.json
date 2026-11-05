@@ -1,0 +1,29 @@
+{
+  "generatedAt": "2026-11-05T15:14:42.631Z",
+  "tests": [
+    {
+      "name": "quota failure preserves the latest in-memory checkpoint and exposes a recoverable save failure",
+      "status": "passed"
+    },
+    {
+      "name": "failed checkpoint storage prevents another signature until an explicit successful retry",
+      "status": "passed"
+    },
+    {
+      "name": "connection closed before authentication rejects immediately and retains checkpoint",
+      "status": "passed"
+    },
+    {
+      "name": "late authentication signature from a replaced connection cannot be sent",
+      "status": "passed"
+    },
+    {
+      "name": "duplicate pending broadcasts sign once, with an explicit resend reusing the same signature",
+      "status": "passed"
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 0
+  }
+}

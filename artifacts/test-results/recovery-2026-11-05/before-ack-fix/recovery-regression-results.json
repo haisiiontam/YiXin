@@ -1,0 +1,14 @@
+{
+  "generatedAt": "2026-11-05T15:10:23.945Z",
+  "tests": [
+    {
+      "name": "duplicate pending broadcasts sign once, with an explicit resend reusing the same signature",
+      "status": "failed",
+      "error": "duplicate auto-ACK must not repeat the wallet prompt\n\n2 !== 1\n"
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 1
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "generatedAt": "2026-11-05T15:16:16.066Z",
+  "environment": "Microsoft Edge + real loopback Ganache/HTTP RPC + independent local test wallets; no real user or extension acceptance",
+  "tests": [
+    {
+      "name": "keyboard grid has one tab stop, clamps edges and allows read-only cell inspection",
+      "status": "passed",
+      "durationMs": 203
+    },
+    {
+      "name": "coordinate preview is cancellable before any move proposal or signature is sent",
+      "status": "passed",
+      "durationMs": 485
+    },
+    {
+      "name": "quota fault preserves newest real double signatures for download and blocks further play until save retry",
+      "status": "passed",
+      "durationMs": 1489
+    },
+    {
+      "name": "same-room reconnect preserves signed progress, sends no chain transaction and requires manual proposal approval",
+      "status": "passed",
+      "durationMs": 2129
+    },
+    {
+      "name": "recovered match completes a legal nine-move settlement and read-only keyboard review",
+      "status": "passed",
+      "durationMs": 5131
+    },
+    {
+      "name": "touch layout defaults to confirmation and fits at 390 pixels with accessible keyboard grid",
+      "status": "passed",
+      "durationMs": 2251
+    }
+  ],
+  "errors": [],
+  "observations": {
+    "storageFault": {
+      "oldDiskMoves": 0,
+      "exportedSignedMoves": 1,
+      "retrySignedNewMove": false
+    },
+    "reconnection": {
+      "beforeMoves": 2,
+      "restoredMoves": 2,
+      "successfulChainTransactions": 2,
+      "automaticApprovalDisabled": true
+    },
+    "finalMatch": {
+      "signedMoves": 9,
+      "successfulTransactions": 3,
+      "status": "settled"
+    }
+  },
+  "summary": {
+    "passed": 6,
+    "failed": 0
+  }
+}

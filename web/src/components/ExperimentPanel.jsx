@@ -6,7 +6,7 @@ import { Button, Icon, Transactions } from './ui.jsx';
 export default function ExperimentPanel({ c }) {
   const { state, client, busy, act, txs, hasRoom, isParticipant, force, setForce, countdown, exportEvidence, importEvidenceFile, importResult, copy } = c;
   return (
-    <details className="panel experiment-panel">
+    <details className="panel experiment-panel" id="channel-experiments">
       <summary><span><Icon name="layers" size={17}/> 签名与异常实验</span><Icon name="chevron" size={16}/></summary>
       <p className="small-description">正常对弈无须链上逐步落子；对手离线或拒签时，可进入争议并在窗口内提交最新证据。</p>
       <div className="signature-summary"><span>黑方签名 <b>{state.signatures.black ? '已保存' : '暂无'}</b></span><span>白方签名 <b>{state.signatures.white ? '已保存' : '暂无'}</b></span></div>
@@ -50,7 +50,7 @@ export default function ExperimentPanel({ c }) {
         <Button icon="refresh" disabled={busy} onClick={() => act(state.ready ? '刷新状态' : '重新连接本地服务', () => state.ready ? client.refresh() : client.init())}>{state.ready ? '刷新状态' : '重新连接'}</Button>
         <Button disabled={busy || !state.connected} onClick={() => act('断开中继连接', () => client.disconnect())}>断开中继</Button>
       </div>
-      <p className="small-description">关闭自动确认可模拟拒签；断开中继后可尝试 RPC 争议路径。恢复连接请刷新页面。诚实方需要在争议窗口内在线响应。</p>
+      <p className="small-description">关闭自动确认可模拟拒签；断开中继后可使用安心助手重连原房间，或尝试 RPC 争议路径。重连关闭自动确认，保留已签进度。诚实方需要在争议窗口内在线响应。</p>
     </details>
   );
 }

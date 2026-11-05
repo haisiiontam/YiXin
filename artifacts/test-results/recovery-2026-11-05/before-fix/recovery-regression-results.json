@@ -1,0 +1,29 @@
+{
+  "generatedAt": "2026-11-05T14:56:56.933Z",
+  "tests": [
+    {
+      "name": "quota failure preserves the latest in-memory checkpoint and exposes a recoverable save failure",
+      "status": "failed",
+      "error": "Got unwanted exception.\nActual message: \"QuotaExceededError\""
+    },
+    {
+      "name": "failed checkpoint storage prevents another signature until an explicit successful retry",
+      "status": "failed",
+      "error": "Missing expected rejection."
+    },
+    {
+      "name": "connection closed before authentication rejects immediately and retains checkpoint",
+      "status": "failed",
+      "error": "Expected \"actual\" to be strictly unequal to:\n\n'still pending'"
+    },
+    {
+      "name": "late authentication signature from a replaced connection cannot be sent",
+      "status": "failed",
+      "error": "closed sockets must never send stale wallet signatures\n\n1 !== 0\n"
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 4
+  }
+}

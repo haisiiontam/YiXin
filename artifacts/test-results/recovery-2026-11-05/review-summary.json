@@ -1,0 +1,171 @@
+{
+  "generatedAt": "2026-11-05T15:16:57.134Z",
+  "node": "v24.19.0",
+  "timezone": "Asia/Shanghai",
+  "unitAndIntegration": {
+    "passed": 163,
+    "failed": 0
+  },
+  "browserScenarios": {
+    "passed": 20,
+    "failed": 0
+  },
+  "finalSuites": [
+    {
+      "file": "artifacts/test-results/recovery-2026-11-05/final-after-ack/ai-results.json",
+      "passed": 30,
+      "failed": 0,
+      "sha256": "e6700cda2f5eff719951bef207e610659dc604370095bf0fb6b46809f3844939",
+      "generatedAt": "2026-11-05T15:11:30.540Z"
+    },
+    {
+      "file": "artifacts/test-results/recovery-2026-11-05/final-after-ack/certificate-results.json",
+      "passed": 9,
+      "failed": 0,
+      "sha256": "996469d3de6cddd26341ada7ba84a2e75912a592927e249a347f275ad61c0a72",
+      "generatedAt": "2026-11-05T15:11:31.572Z"
+    },
+    {
+      "file": "artifacts/test-results/recovery-2026-11-05/final-after-ack/chain-runtime-results.json",
+      "passed": 13,
+      "failed": 0,
+      "sha256": "506faee663e47be2d371a9411dc07e154e36216076c91deabb7b5670afba63f1",
+      "generatedAt": "2026-11-05T15:11:53.017Z"
+    },
+    {
+      "file": "artifacts/test-results/recovery-2026-11-05/final-after-ack/channel-client-ai-results.json",
+      "passed": 47,
+      "failed": 0,
+      "sha256": "7995a16384a5853a43d3fd5aaaa1760027cca9fd9f56200dd123aae62274158a",
+      "generatedAt": "2026-11-05T15:11:55.146Z"
+    },
+    {
+      "file": "artifacts/test-results/recovery-2026-11-05/final-after-ack/channel-client-connect-race-results.json",
+      "passed": 8,
+      "failed": 0,
+      "sha256": "9de9aebe683d8bbbc74c47c3b0ca4dbcf78a736314b165c0573e35ac3d8a51f2",
+      "generatedAt": "2026-11-05T15:11:59.959Z"
+    },
+    {
+      "file": "artifacts/test-results/recovery-2026-11-05/final-after-ack/channel-client-network-results.json",
+      "passed": 7,
+      "failed": 0,
+      "sha256": "1ce5bb2d75ddd171d8460460cd9416dfe98b6003e730b47c21f6ec4578f76860",
+      "generatedAt": "2026-11-05T15:12:09.007Z"
+    },
+    {
+      "file": "artifacts/test-results/recovery-2026-11-05/final-after-ack/contract-results.json",
+      "passed": 14,
+      "failed": 0,
+      "sha256": "c5dee45f823d5867d99fbb8dae3fc59bedd7ad8c9088c42fa5feafdf2f037868",
+      "generatedAt": "2026-11-05T15:14:06.046Z"
+    },
+    {
+      "file": "artifacts/test-results/recovery-2026-11-05/final-after-ack/dispute-security-results.json",
+      "passed": 3,
+      "failed": 0,
+      "sha256": "04c6f24fb3e77d573c57f338005b0fa5fc5bf21146f5795a86234a1999f78708",
+      "generatedAt": "2026-11-05T15:14:25.535Z"
+    },
+    {
+      "file": "artifacts/test-results/recovery-2026-11-05/final-after-ack/evidence-chain-results.json",
+      "passed": 9,
+      "failed": 0,
+      "sha256": "cadcfd7e8941beb23a0be70b55240d3f8750f16e86388f473f6206dc8c4c97ef",
+      "generatedAt": "2026-11-05T15:14:40.106Z"
+    },
+    {
+      "file": "artifacts/test-results/recovery-2026-11-05/final-after-ack/protocol-results.json",
+      "passed": 4,
+      "failed": 0,
+      "sha256": "9b8116bd3af5fbb8e5b983950fd365da3ce4e64bfb138127230fbcd7fae828a0",
+      "generatedAt": "2026-11-05T15:14:41.327Z"
+    },
+    {
+      "file": "artifacts/test-results/recovery-2026-11-05/final-after-ack/recovery-policy-results.json",
+      "passed": 14,
+      "failed": 0,
+      "sha256": "0eb8b95d6e64fffc6cdfed8549b7160fb338a4ef122af163994ff8cf19345cb3",
+      "generatedAt": "2026-11-05T15:14:41.527Z"
+    },
+    {
+      "file": "artifacts/test-results/recovery-2026-11-05/final-after-ack/recovery-regression-results.json",
+      "passed": 5,
+      "failed": 0,
+      "sha256": "1719a035724e07036df8d6f71adfd465e1da85d321d0a4b09c14f4329aac2f4b",
+      "generatedAt": "2026-11-05T15:14:42.631Z"
+    },
+    {
+      "file": "artifacts/test-results/recovery-2026-11-05/final-after-ack/e2e-results.json",
+      "passed": 8,
+      "failed": 0,
+      "sha256": "4181e64fcc1e52c48a43b9fa29e4d8f37d0e6998f54a566e2b22e744603b4af3",
+      "generatedAt": "2026-11-05T15:11:18.775Z"
+    },
+    {
+      "file": "artifacts/test-results/recovery-2026-11-05/final-after-ack/e2e-external-results.json",
+      "passed": 6,
+      "failed": 0,
+      "sha256": "321d431b510653b298fc068e16bdad3ddd7485865dbc853cd03c9785b1c461c6",
+      "generatedAt": "2026-11-05T15:11:17.140Z"
+    },
+    {
+      "file": "artifacts/test-results/recovery-2026-11-05/final-after-ack/e2e-recovery-results.json",
+      "passed": 6,
+      "failed": 0,
+      "sha256": "ae88b0d77c0fed095c9e940c589cbb000758de0fbae219ebad0957d061784153",
+      "generatedAt": "2026-11-05T15:16:16.066Z"
+    }
+  ],
+  "sourceSha256": {
+    "contracts/GomokuChannel.sol": "0c50da4018f0b8638f333b48f557908f105e9fada511ed4848762735e0d1044b",
+    "server/index.mjs": "6ce7ea6220182a11b81ad98ef312faa7f6250d1fcd66ef0f10b26bc488c9766a",
+    "server/chain-runtime.mjs": "3734b74cac4e624381fe46db2a9638ddb5f33a12884c549effb61181264e231c",
+    "shared/gomoku.mjs": "c72b478ab13f59cce9078ce50e2c92c898ef952e6d01316ead5dfd7d66b44fea",
+    "shared/evidence.mjs": "85f809b699e0a72613142a00b2316b83e87756dc181d049323eb78a1c827c2fc",
+    "shared/evidence-chain.mjs": "76ad3f1964b33c4abc95abf2bef2125c7e964cf529ed909b89750b0e1e957ee4",
+    "shared/recovery-guide.mjs": "eee0a5ed99845cf89497acb08980686bd392cfd640dda3eefe86ca2619f6ad7c",
+    "web/src/channel-client.js": "f82b4c525c832daa945b6f2e46b638c9fc584e1b4b767d0c76c8c7a8f8ca6efd",
+    "web/src/game-repository.js": "8353c0f47bab7d7e7d24b6132af1055abbfc162567eaf48ccd0b2343dea004a5",
+    "web/src/App.jsx": "1f660b79dd33f2651ffe3ab846d850082431f832d5aa0f5b140b1fe5800a09f6",
+    "web/src/components/Board.jsx": "199b7a164f40e2044c0e811c006df6713b862cd2ddd435f1c6204f7f735d7a53",
+    "web/src/components/MatchPanel.jsx": "ba2b4d2be75c616c6f9b6a25690779fedc64973cbf7cf36a030098637b20b4bf",
+    "web/src/components/ExperimentPanel.jsx": "769725ce908f0cec9e0a2c64e64fca8b5cb9b6fdb3b272d443f8ca70acc3f741",
+    "web/src/components/RecoveryPanel.jsx": "f3dc84d0dfbfe4876e228a6a1934c70fcb1207b558aa5e7d1c1780eff08f3c48",
+    "web/src/components/MoveConfirmation.jsx": "24c2aa69538f05fbd0a0c1ac2183fffcd167af11ab83a4349f934e7de094a739",
+    "web/src/styles/recovery.css": "b3acada9b3165510c0556f3ba5414a7010f847d0d56a49911c0d861466740230",
+    "web/src/styles/index.css": "724facdf54827e2693f6833c93ac83de21c2962f88a9525105669019c0c09a9d",
+    "tests/recovery-policy.test.mjs": "9a4694b74b24bc4806947c5387db04b064c59a4779f558b45bf7adef3f1d414d",
+    "tests/recovery-regression.test.mjs": "79fec86a5c57fced681d4f88d66a48de2f902e09fe11bd5a0d83efd44ef59ef7",
+    "scripts/e2e.mjs": "6bdbe54b3d9c2828341bae0c7fb0d1c1a8aff4f8fed23fae267577cdfc873d35",
+    "scripts/e2e-recovery.mjs": "1b7dd43e36feb6bed75547fa3d8e080df4d9208177f73fb81ed1c27596161e0d",
+    "scripts/e2e-external.mjs": "7f14606d7410720f174781c8d4d2c98f38f40f19101a5a3a172375a94e1d1ac0",
+    "package.json": "0d6e71cc756d05803365f723edde5245277064dd664e7d24fa69905ba06f2e99",
+    "pnpm-lock.yaml": "2e23f036e3b79c0bd1442c07e132708186d7e05ee2f3717ead270507b18a198a"
+  },
+  "originalRegressions": 144,
+  "newFaultAndPolicyTests": 19,
+  "beforeFix": [
+    {
+      "file": "artifacts/test-results/recovery-2026-11-05/before-fix/recovery-regression-results.json",
+      "expectedFailures": 4
+    },
+    {
+      "file": "artifacts/test-results/recovery-2026-11-05/before-ack-fix/recovery-regression-results.json",
+      "expectedFailures": 1
+    }
+  ],
+  "retainedIntermediateFailure": "artifacts/test-results/recovery-2026-11-05/final/e2e-external-results.json",
+  "commands": [
+    "node scripts/verify.mjs",
+    "node scripts/e2e.mjs",
+    "node scripts/e2e-external.mjs",
+    "node scripts/e2e-recovery.mjs"
+  ],
+  "limitations": [
+    "Automated controlled fixtures and real local EVM; no real user usability acceptance.",
+    "External wallet emulator is not a real browser extension acceptance.",
+    "No public deployment, real assets, distributed consensus or third-party security audit.",
+    "Web Storage is a single-browser recovery aid; failed unexported in-memory evidence cannot survive closing the page."
+  ]
+}

@@ -55,7 +55,7 @@ export default function MatchPanel({ c }) {
       )}
       {state.pending && (
         <div className="pending-box"><strong>有一手等待共同确认</strong><span>提案位置：{Math.floor(state.pending.position / 15) + 1} 行 {state.pending.position % 15 + 1} 列</span>
-          {state.role > 0 && state.pending.by !== state.role && <Button icon="check" disabled={busy || !state.connected} onClick={() => act('签名确认落子', () => client.acknowledge())}>签名确认落子</Button>}</div>
+          {state.role > 0 && state.pending.by !== state.role && <Button icon="check" disabled={busy || !state.connected || state.persistence?.status === 'failed'} onClick={() => act('签名确认落子', () => client.acknowledge({ resend: true }))}>签名确认落子</Button>}</div>
       )}
       {state.terminal && state.status !== 'settled' && <Button kind="primary" icon="shield" disabled={busy || !state.ready || !isParticipant} onClick={() => act('正在链上结算', () => client.settle())}>链上结算本局</Button>}
       {state.status === 'settled' && <div className="settled-note"><Icon name="check" size={18}/>{result || '本局结束'} · 积分已链上结算</div>}

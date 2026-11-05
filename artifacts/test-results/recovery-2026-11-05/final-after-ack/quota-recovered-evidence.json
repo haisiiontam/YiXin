@@ -1,0 +1,68 @@
+{
+  "format": "gomoku-channel-evidence/v1",
+  "exportedAt": "2026-11-05T15:16:23.401Z",
+  "localTeachingOnly": true,
+  "domain": {
+    "name": "GomokuChannel",
+    "version": "1",
+    "chainId": 31337,
+    "verifyingContract": "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab"
+  },
+  "channelId": "0xbde774df02ec37a17c993832b8e6413e4343a269d775d6d3da911c2920f95ec3",
+  "participants": {
+    "black": "0x3faf4Cba0A8Baf9A641b1AcD972EaB44cbecE9a3",
+    "white": "0x1e9Ac9BCBDD4375DcFf2BCa0Fe19E1888c91f1C2"
+  },
+  "stake": 10,
+  "checkpoint": {
+    "moves": [
+      112
+    ],
+    "sigBlack": "0xf737070e766ed57c287fd3610c346007e53727edf40babdd23b9f9624f2b2b974e7fcc5609fb487c1cb8ff6abcb154c6ed6f28593ad640273b14ecfe676bb1351b",
+    "sigWhite": "0x7764ff546e54f9f94b1e5c072d1fba30af7cf8137cd5f5efc8d6d8ac63831df25fa9ffd617e65f711bb40a2ad079adf2b724b8d5bb35fc5b4d3da46a34f3e4061b"
+  },
+  "onchain": {
+    "status": "active",
+    "moves": [],
+    "winner": 0,
+    "reason": 0,
+    "deadline": 0,
+    "proofDeadline": 0,
+    "blockNumber": 790,
+    "blockHash": "0x83a78355f94d9d1ae89f15b38106dc4a2605736adb8bc319e78b71aaaf7fa9d4"
+  },
+  "transactions": [
+    {
+      "label": "锁定黑方积分",
+      "hash": "0xd27fee40d49d8bc5fcab2aa4af46dc9b5cc3ceb83184fa5aae16708a23bb90e6",
+      "gasUsed": "165885",
+      "blockNumber": 788,
+      "timestamp": 1793891780,
+      "transactionIndex": 0
+    },
+    {
+      "label": "锁定白方积分",
+      "hash": "0x9c84fafb3a84a2cf022e5d0343846fbe66549ad22fd574ce7a97d872348e29af",
+      "gasUsed": "45697",
+      "blockNumber": 789,
+      "timestamp": 1793891781,
+      "transactionIndex": 0
+    }
+  ],
+  "transactionListComplete": true,
+  "initialization": [
+    {
+      "label": "新钱包注册（每地址一次）",
+      "hash": "0xec67fc6f9a19380b3c632b4387df0cfddbcdc3c16a40ef0f948c03c9acfd14e9",
+      "gasUsed": "72380"
+    }
+  ],
+  "metrics": {
+    "onchainTransactions": 2,
+    "offchainMoves": 1,
+    "baselineTransactions": 3,
+    "savedPercent": 33.3,
+    "totalGas": "211582"
+  },
+  "trustBoundary": "积分无现实价值；独立保管签名快照，并在挑战期内监控链；中继不可代签；本地开发RPC不适合公网。"
+}

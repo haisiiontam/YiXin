@@ -1,0 +1,44 @@
+2026-11-05T15:11:17.142Z Preparing independent external-mode fixture; existing app and chain are untouched
+This version of µWS is not compatible with your Node.js build:
+
+Error: Cannot find module '../binaries/uws_win32_x64_137.node'
+Require stack:
+- E:\Gomoku\app\node_modules\.pnpm\@trufflesuite+uws-js-unofficial@20.30.0-unofficial.0\node_modules\@trufflesuite\uws-js-unofficial\src\uws.js
+- E:\Gomoku\app\node_modules\.pnpm\ganache@7.9.2\node_modules\ganache\dist\node\core.js
+Falling back to a NodeJS implementation; performance may be degraded.
+
+
+2026-11-05T15:11:25.712Z Real contract deployed 0x459D76CA34f18F6659537B7C726262Ad3508c0C3; independent external application http://127.0.0.1:4192; RPC http://127.0.0.1:58728
+2026-11-05T15:11:27.028Z START 1. External landing: honest badge, no local key/AI/demo, no wallet request or transaction
+2026-11-05T15:11:28.219Z PASS 1. External landing: honest badge, no local key/AI/demo, no wallet request or transaction
+2026-11-05T15:11:28.221Z START 2. Read-only wallet connect; separate UI registration and test-wallet approval yield real receipts and 1000 points
+2026-11-05T15:11:28.612Z WALLET black: register submitted 0xde61172b405e755956aeb59c0e66fb6a5d48fba6ec911a12cf0c54da0ef38111
+2026-11-05T15:11:33.473Z WALLET white: register submitted 0x2d079bd4a9e5206a2eacb6f8993bc0d9608b92c290e0f19b3b805d4e922d6d96
+2026-11-05T15:11:37.930Z PASS 2. Read-only wallet connect; separate UI registration and test-wallet approval yield real receipts and 1000 points
+2026-11-05T15:11:37.931Z START 3. Two isolated contexts authenticate using personal_sign and open/join a real points channel
+2026-11-05T15:11:38.299Z WALLET black: openChannel submitted 0x524cefba8062d49772ba306eb4ac45b5574f4d7c2063ff1f84d834d17b9cdd28
+2026-11-05T15:11:39.884Z WALLET white: joinChannel submitted 0x74113564d68d347a7e0283f1e6a480003adbad8f14020b7de357cee1a1736be3
+(node:22164) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [Server]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+(Use `node --trace-warnings ...` to show where the warning was created)
+2026-11-05T15:11:42.737Z PASS 3. Two isolated contexts authenticate using personal_sign and open/join a real points channel
+2026-11-05T15:11:42.743Z START 4. Nine alternating UI moves auto-ACK with both EIP-712 signatures; independent RPC still finds only open+join
+2026-11-05T15:11:43.427Z MOVE 1: both EIP-712 signatures verified; no move transaction
+2026-11-05T15:11:43.785Z MOVE 2: both EIP-712 signatures verified; no move transaction
+2026-11-05T15:11:44.172Z MOVE 3: both EIP-712 signatures verified; no move transaction
+2026-11-05T15:11:44.668Z MOVE 4: both EIP-712 signatures verified; no move transaction
+2026-11-05T15:11:45.019Z MOVE 5: both EIP-712 signatures verified; no move transaction
+2026-11-05T15:11:45.444Z MOVE 6: both EIP-712 signatures verified; no move transaction
+2026-11-05T15:11:45.818Z MOVE 7: both EIP-712 signatures verified; no move transaction
+2026-11-05T15:11:46.279Z MOVE 8: both EIP-712 signatures verified; no move transaction
+2026-11-05T15:11:46.658Z MOVE 9: both EIP-712 signatures verified; no move transaction
+2026-11-05T15:11:47.260Z PASS 4. Nine alternating UI moves auto-ACK with both EIP-712 signatures; independent RPC still finds only open+join
+2026-11-05T15:11:47.262Z START 5. Real settlement: three game receipts, 1010/990 points, signed checkpoint and complete independent RPC event inventory
+2026-11-05T15:11:47.727Z WALLET black: settle submitted 0x59e57c94be7aa97d88699d763cdf05e0d2834d0e7d08cf54ae58eeacea1ebe3d
+2026-11-05T15:11:53.239Z PASS 5. Real settlement: three game receipts, 1010/990 points, signed checkpoint and complete independent RPC event inventory
+2026-11-05T15:11:53.240Z START 6. Account/network changes invalidate UI and preserve evidence; persisted artifacts contain no wallet secrets
+2026-11-05T15:11:53.875Z PASS 6. Account/network changes invalidate UI and preserve evidence; persisted artifacts contain no wallet secrets
+2026-11-05T15:11:54.333Z CLEANUP browser: closed
+2026-11-05T15:11:54.336Z CLEANUP applicationHttpAndRuntimeProvider: closed
+2026-11-05T15:11:54.338Z CLEANUP independentRpcProvider: closed
+2026-11-05T15:11:54.353Z CLEANUP ganacheHttpAndEvm: closed
+2026-11-05T15:11:54.370Z RESULT 6 passed, 0 failed; artifacts\test-results\recovery-2026-11-05\final-after-ack\e2e-external-results.json

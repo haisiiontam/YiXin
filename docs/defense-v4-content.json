@@ -1,0 +1,339 @@
+{
+  "version": "V4 可靠恢复与人本设计",
+  "date": "2026-11-05",
+  "presenter": "赵国豪",
+  "members": [
+    "谭海翔",
+    "赵国豪"
+  ],
+  "mainSlides": [
+    {
+      "title": "弈信 从可验证协作到可恢复体验",
+      "subtitle": "双签与结算有约束，保存与操作有人照顾",
+      "seconds": 20,
+      "key": "从协议能运行，推进到异常能恢复。",
+      "speech": "老师好，我是赵国豪。弈信用五子棋展示链下双签与链上结算。这次我们进一步追问：存储写满、网络断开或用户误触时，系统还能否保住成果并指引恢复。下面用需求、模块、反例和真实执行结果说明。",
+      "cue": "从协议能运行，推进到异常能恢复。",
+      "evidence": "docs/engineering-review-2026-11-05.md；docs/adr-recovery-2026-11-05.md；artifacts/test-results/recovery-2026-11-05/review-summary.json",
+      "printCue": "从协议能运行，推进到异常能恢复。"
+    },
+    {
+      "title": "课程交付：程序、数据与文档相互印证",
+      "subtitle": "需求有来处，设计有取舍，结果有原始记录",
+      "seconds": 25,
+      "key": "交付的不只是能运行的程序，还有解释与复核它的依据。",
+      "speech": "课程要求最终落在三类交付上：程序让别人运行，数据让结果可以核对，文档解释为什么这样设计。我们把需求编号、架构决策、实现入口和验收记录关联起来。答辩也沿这条线展开：先讲目标与取舍，再看正常和异常路径，最后用回执、测试和演示检验交付。",
+      "cue": "指向程序、数据、文档三类成果；对应已记录验收专项是内部工程核验，不称第三方安全审计。",
+      "evidence": "docs/course-compliance.md；docs/requirements.md；docs/architecture.md；artifacts/test-results/trust-audit-2026-11-04/audit-summary.json",
+      "printCue": "指程序、数据、文档；内部核验不称第三方审计。"
+    },
+    {
+      "title": "NABCD 用明确收益解释复杂度",
+      "subtitle": "中心化更简单；选择通道是为了检验授权与非合作退出",
+      "seconds": 35,
+      "key": "产品价值与教学价值分开判断。",
+      "speech": "需求假设是对弈顺畅、积分来源可核验。方法是链下双签、终局合约重放，正常每局三笔交易。中心化记分更简单，通道则增加存证和争议监控成本。我们把这项取舍作为课程研究目标，并用恢复助手降低操作负担。D是交付推广，目前源码在GitHub私有仓库，公众获取页和真实用户需求确认仍有缺口。",
+      "cue": "产品价值与教学价值分开判断。",
+      "evidence": "docs/engineering-review-2026-11-05.md；docs/adr-recovery-2026-11-05.md；artifacts/test-results/recovery-2026-11-05/review-summary.json",
+      "printCue": "产品价值与教学价值分开判断。"
+    },
+    {
+      "title": "按风险迭代 先闭环再检验失败",
+      "subtitle": "核心与体验 → 可信核验 → 可靠恢复",
+      "seconds": 30,
+      "key": "风险与可复现反例驱动迭代。",
+      "speech": "前两轮实现核心闭环与AI复盘，随后验证旧快照攻击、节点核验和外部钱包。本轮按MIT规格设计和Stanford启发式评估，优先检查现有失败路径。我们复现了存储故障、连接悬空、迟到签名及重复确认，再逐项修复，没有把新增功能数量当作工程质量。",
+      "cue": "风险与可复现反例驱动迭代。",
+      "evidence": "docs/engineering-review-2026-11-05.md；docs/adr-recovery-2026-11-05.md；artifacts/test-results/recovery-2026-11-05/review-summary.json",
+      "printCue": "风险与可复现反例驱动迭代。"
+    },
+    {
+      "title": "FR-32 把保存失败写进恢复契约",
+      "subtitle": "需求 → 不变量 → 存储边界 → 故障验收",
+      "seconds": 30,
+      "key": "异常后的保证必须和正常返回一样明确。",
+      "speech": "FR三十二要求保存失败也不能丢掉最新内存双签，更不能继续扩大未保存的授权。设计把持久化结果变成明确状态，失败后暂停新签名，但允许导出和重试。浏览器实测磁盘还停在零手时，页面已持有第一手真实双签；导出的文件独立验签通过，恢复存储后继续完成结算。",
+      "cue": "异常后的保证必须和正常返回一样明确。",
+      "evidence": "docs/engineering-review-2026-11-05.md；docs/adr-recovery-2026-11-05.md；artifacts/test-results/recovery-2026-11-05/review-summary.json",
+      "printCue": "异常后的保证必须和正常返回一样明确。"
+    },
+    {
+      "title": "模块化 隐藏存储细节隔离恢复策略",
+      "subtitle": "表示、决策与副作用分别拥有清楚的接口",
+      "seconds": 35,
+      "key": "界面建议不能拥有自动授权能力。",
+      "speech": "这次把两个易变决策从控制器提出来。GameRepository隐藏证据和历史的存储方式，可注入配额故障替身；recoveryGuide只根据快照产生解释，没有钱包或RPC能力。界面负责呈现，控制器负责签名和重连，规则与合约仍决定有效性。这样改文案不碰授权，换存储也不改棋局规则。控制器还有进一步拆分空间。",
+      "cue": "界面建议不能拥有自动授权能力。",
+      "evidence": "docs/engineering-review-2026-11-05.md；docs/adr-recovery-2026-11-05.md；artifacts/test-results/recovery-2026-11-05/review-summary.json",
+      "printCue": "界面建议不能拥有自动授权能力。"
+    },
+    {
+      "title": "正常路径：全谱双签，每局三笔交易",
+      "subtitle": "open锁分 → join加入 → settle核验结算；落子在链下确认",
+      "seconds": 35,
+      "key": "双签确认授权，合约重放规则。",
+      "speech": "双方已注册时，开通、加入、结算各一笔。中间每次落子，双方独立检查后，用标准结构化签名确认同一份完整有序棋谱，签名绑定链、合约和通道。结算时合约重新回放规则，不能只相信前端给出的胜者。这样把频繁交互留在链下，把最终积分交给可执行规则。部署、首次注册和争议交易都另外计数。",
+      "cue": "沿open、join、settle三笔时间线；EIP-712 State(channelId,movesHash)绑定全谱，不是只签孤立坐标。签名不等于交易。",
+      "evidence": "docs/protocol-spec.md；contracts/GomokuChannel.sol；artifacts/test-results/trust-audit-2026-11-04/contract-results.json；artifacts/test-results/trust-audit-2026-11-04/e2e-results.json",
+      "printCue": "三笔仅正常局；签完整有序棋谱，签名不等于交易。"
+    },
+    {
+      "title": "两阶段争议：先举证，再续走",
+      "subtitle": "proofDeadline = now + Δ｜deadline = now + 2Δ",
+      "seconds": 35,
+      "key": "先给最新双签上链的时间，再允许改变棋局。",
+      "speech": "挑战后先留一段举证时间，只接收更长且兼容的双签更新，暂不允许强制落子。举证结束，才由当前方链上续走；未终局的续手只延长响应期，不重开举证期。响应到期仍不行动，可判当前方超时负。兼容的双签终局在通道结束前仍可结算。这个设计保护及时提交的证据，诚实方仍须保存快照，并在窗口内监控响应。",
+      "cue": "关键时间图必须显示两期限：非终局challenge更新重置proofDeadline=now+Δ与deadline=now+2Δ；forceMove仅proofDeadline≤t<deadline；续手只令deadline=now+Δ；t≥deadline开放timeout、关闭force，兼容双签终局在通道结束前仍可settle。默认Δ60秒，无watchtower或永久离线保证。",
+      "evidence": "docs/protocol-spec.md；docs/trust-audit-2026-11-04.md；artifacts/test-results/trust-audit-2026-11-04/contract-results.json；artifacts/test-results/trust-audit-2026-11-04/dispute-security-results.json",
+      "printCue": "先举证后force；到deadline关闭force，兼容终局仍可settle。"
+    },
+    {
+      "title": "可信核验：从签名授权到节点事实",
+      "subtitle": "严格4字段域／65字节签名 → 实际链谱与摘要 → 固定区块事件重建",
+      "seconds": 20,
+      "key": "文件可以描述结果，计量必须回到节点。",
+      "speech": "核验分两层：先严格检查签名域和标准签名，确认授权；再固定区块，核对实际链谱与摘要，分页扫描事件，重建本局全部成功交易，从回执取Gas。文件删交易、改数字，都不能假造完整计量。失败交易另记；节点提供的视图仍需可信来源复核。",
+      "cue": "4字段是name/version/chainId/verifyingContract；65bytes且v=27/28，无签空谱signed:false。节点按6类通道事件分页重建成功生命周期tx，失败尝试另列；代码hash只证明匹配配置锚，单RPC不是绝对可信。",
+      "evidence": "shared/evidence.mjs；shared/evidence-chain.mjs；artifacts/test-results/trust-audit-2026-11-04/evidence-chain-results.json；artifacts/test-results/trust-audit-2026-11-04/cli-live-rpc.json",
+      "printCue": "授权与链状态分层；只汇总成功交易，失败另记。"
+    },
+    {
+      "title": "独立接入：节点读取与钱包授权分开",
+      "subtitle": "连接不发交易 · 注册单独确认 · 切链清签名器 · 启动核对部署身份",
+      "seconds": 25,
+      "key": "接入已实测，公网与真人钱包验收仍待完成。",
+      "speech": "外部模式把节点读取与钱包授权分开：连接只读，注册另行确认，切链或切账户会停用旧签名器。启动还检查可信代码指纹与新九字段结构。我们已用独立本机HTTP节点和标准钱包接口测试装置完成实测；这没有替代公网部署，也没有替代真人使用MetaMask插件的确认过程。",
+      "cue": "外部钱包为EIP-1193测试装置；强调独立HTTP服务已实测。runtime hash须由独立可信渠道提供，不能循环采用同RPC自报值。启动检查链ID、部署块、周期、域/摘要及空通道9字段；external无faucet、服务器私钥、AI双钱包演示。",
+      "evidence": "docs/external-chain.md；artifacts/test-results/trust-audit-2026-11-04/chain-runtime-results.json；artifacts/test-results/trust-audit-2026-11-04/connect-race-after-fix/channel-client-connect-race-results.json；artifacts/test-results/trust-audit-2026-11-04/e2e-external-results.json；artifacts/test-results/trust-audit-2026-11-04/external-screenshots/01-external-connect.png",
+      "printCue": "独立本机HTTP＋钱包装置；未公网或真人插件验收。"
+    },
+    {
+      "title": "分层验证 163项自动测试与20组浏览器场景",
+      "subtitle": "全套重新执行；19项新增故障与策略测试，6组新增恢复场景",
+      "seconds": 35,
+      "key": "用例通过说明已列明行为，不等于没有漏洞。",
+      "speech": "最终全套自动测试一百六十三项通过，其中原有一百四十四项回归、新增十九项故障与策略测试。浏览器共二十组，包括原有本地八组、外部六组和新增恢复六组。新增场景真实走过配额失败、导出验签、原房间重连、手动确认和最终结算；这些仍是自动装置，不能替代真人任务验收。",
+      "cue": "用例通过说明已列明行为，不等于没有漏洞。",
+      "evidence": "docs/engineering-review-2026-11-05.md；docs/adr-recovery-2026-11-05.md；artifacts/test-results/recovery-2026-11-05/review-summary.json",
+      "printCue": "用例通过说明已列明行为，不等于没有漏洞。"
+    },
+    {
+      "title": "同输入实测：交易减少，Gas分别核算",
+      "subtitle": "9手：3笔／436155 对 11笔／1231600｜10手：3笔／448093 对 12笔／1406433",
+      "seconds": 30,
+      "key": "当前新合约：9手Gas降低64.59%，10手降低68.14%。",
+      "speech": "当前新合约与逐手上链基线使用相同参与方、锁分和棋谱，并汇总真实回执。九手样本从十一笔降为三笔，Gas从约一百二十三万降到四十三万六千，减少百分之六十四点五九；十手减少百分之六十八点一四。部署和注册另列。这是特定本地EVM与账户状态的比较，说明本样本交易成本下降，不外推公网吞吐量。",
+      "cue": "图表读数保留精确整数：9手436155/1231600，10手448093/1406433。笔数降幅分别72.73%/75%，不能当Gas降幅；两种方案均open+join且末手自动结算。结果仅local EVM，不是公网TPS或费用报价。",
+      "evidence": "tests/contract.test.mjs；artifacts/test-results/trust-audit-2026-11-04/contract-results.json；docs/trust-audit-2026-11-04.md",
+      "printCue": "9手Gas降64.59%；笔数降72.73%，不能混用。"
+    },
+    {
+      "title": "反例驱动 把隐藏故障变成可验证修复",
+      "subtitle": "保存失败、连接悬空、迟到签名与重复ACK均有修复前记录",
+      "seconds": 30,
+      "key": "保留失败，才知道修复实际改变了什么。",
+      "speech": "严格评审先尝试推翻设计。配额故障证实原程序会报错却继续签名；认证前断线会悬空，迟到签名还能发到旧连接。外部浏览器又发现重复广播多请求一次签名。修复后分别暂停签名、闭合连接生命周期、检查会话身份，并对ACK做幂等处理。原失败和修复后结果都保留。",
+      "cue": "保留失败，才知道修复实际改变了什么。",
+      "evidence": "docs/engineering-review-2026-11-05.md；docs/adr-recovery-2026-11-05.md；artifacts/test-results/recovery-2026-11-05/review-summary.json",
+      "printCue": "保留失败，才知道修复实际改变了什么。"
+    },
+    {
+      "title": "分工与交付 新增模块归入谭海翔工作",
+      "subtitle": "以本轮实际产物为依据，明确AI辅助与可复核入口",
+      "seconds": 20,
+      "key": "分工要能指向实现、设计和验证产物。",
+      "speech": "谭海翔承担本轮新增代码和模块设计：存储仓库、恢复策略、连接与幂等、键盘及坐标确认，并附故障验证和ADR。赵国豪主讲，使用同步材料。开发辅助AI参与实施，历史贡献按实际核对。",
+      "cue": "分工要能指向实现、设计和验证产物。",
+      "evidence": "docs/engineering-review-2026-11-05.md；docs/adr-recovery-2026-11-05.md；artifacts/test-results/recovery-2026-11-05/review-summary.json",
+      "printCue": "分工要能指向实现、设计和验证产物。"
+    },
+    {
+      "title": "45秒演示 结算之后看恢复与证据",
+      "subtitle": "运行9手演示 → 查看安心助手 → 核对交易与导出",
+      "seconds": 45,
+      "key": "现场讲正常路径，故障恢复用真实保存记录。",
+      "speech": "现场用两个本地测试钱包运行固定九手演示。结算后先看安心助手：本地保存、双方签名和节点交易清单是不同事实。再到实验室核对三笔成功交易并导出证据。存储故障和重连需要专门装置，使用备用页的已保存真实测试画面说明；不把截图称作现场结果。",
+      "cue": "现场讲正常路径，故障恢复用真实保存记录。",
+      "evidence": "docs/engineering-review-2026-11-05.md；docs/adr-recovery-2026-11-05.md；artifacts/test-results/recovery-2026-11-05/review-summary.json",
+      "printCue": "现场讲正常路径，故障恢复用真实保存记录。"
+    },
+    {
+      "title": "工程价值 异常可恢复操作可理解",
+      "subtitle": "用明确契约、模块边界和反例检验交付",
+      "seconds": 30,
+      "key": "把设计原则落实为用户能够观察的行为。",
+      "speech": "弈信的改进集中在一件事：让协议的安全条件延伸到用户操作。保存失败就暂停授权，重连保留进度，恢复助手解释下一步，误触在签名前取消。已有一百六十三项自动测试和二十组浏览器场景作为证据。下一步最重要的是让真实同学独立完成任务，观察问题后再迭代。",
+      "cue": "把设计原则落实为用户能够观察的行为。",
+      "evidence": "docs/engineering-review-2026-11-05.md；docs/adr-recovery-2026-11-05.md；artifacts/test-results/recovery-2026-11-05/review-summary.json",
+      "printCue": "把设计原则落实为用户能够观察的行为。"
+    }
+  ],
+  "questions": [
+    [
+      "到底哪些真实，哪些是模拟？",
+      "Solidity合约在Ganache EVM真实部署并执行，产生hash、回执、Gas和事件，积分实际改变。默认是本机控制的单节点，自动演示与AI由程序控制测试钱包；external验收也使用EIP-1193装置。它们不是两个独立真人、MetaMask插件验收或公网共识，积分无资产价值。",
+      "出示本轮contract-results.json与e2e-external-results.json；把真实执行、测试装置和未完成验收分开。"
+    ],
+    [
+      "为什么用单节点，区块链价值在哪里？",
+      "单节点便于课程复现、定位错误和控制边界条件，能验证合约执行与签名协议；操作者仍可停机或重置链，不能由此证明去中心化信任。中心化记分更简单，本项目用五子棋检验少交易结算与不合作退出的取舍。真正跨主体使用还需实际目标网、独立节点和真人钱包。",
+      "承认中心化替代方案；单节点验证协议行为，不当作公网不可篡改共识。"
+    ],
+    [
+      "三笔交易和Gas节省怎么算，部署注册算了吗？",
+      "已注册玩家正常open、join、settle共3笔，部署、注册、争议另列。当前新合约同参与方、同stake、同棋谱实测：9手3笔436155 Gas，对逐手11笔1231600，降64.59%；10手3笔448093，对12笔1406433，降68.14%。Gas汇总实际receipt.gasUsed，只代表该本地EVM与账户状态。",
+      "定位本轮contract-results.json comparisons及tests/contract.test.mjs；笔数、Gas和公网TPS是不同指标。"
+    ],
+    [
+      "两阶段怎样防旧快照？最后一手拒签又怎么办？",
+      "旧1手challenge后立即force曾能分叉，挡住已有9手双签。现在非终局挑战先设proofDeadline=now+Δ、deadline=now+2Δ；举证期只接收更长兼容双签，之后才可force。末手拒签可提交8手双签、等举证结束、本人补第9手胜棋结算。非终局force只延响应期；诚实方须保存快照并及时监控，无永久离线保证。",
+      "指第8页时间图；t=proofDeadline开放force；t≥deadline关闭force、开放timeout，兼容双签终局在通道结束前仍可settle。"
+    ],
+    [
+      "为什么验完签名、RPC和代码hash，还不能绝对相信？",
+      "签名证明地址授权某份棋谱，不证明已上链、现实身份或双方独立。RPC核验固定区块，检查链、合约、实际链谱及摘要，分页扫描事件并重建全部成功交易，Gas取回执。代码hash仅说明匹配独立配置的信任锚；若锚也来自同一恶意RPC就会循环自证。重要结算还需独立节点或浏览器复核，失败交易另记。",
+      "出示evidence-chain-results.json或cli-live-rpc.json；域仅4字段，签名65字节且v=27/28，空谱无签不算授权。"
+    ],
+    [
+      "外部钱包接入是否真的做了，会不会连接就发交易？",
+      "已用独立本机HTTP节点与EIP-1193装置完成6组浏览器实测：连接只授权账户和读取，注册单独确认，9手18份typed签名，本局3笔交易，最终1010/990。切链或账户变化会清旧签名器。启动核对可信hash、域、摘要和空通道9字段，拒绝旧ABI。尚未做公网或真人MetaMask插件验收。",
+      "使用本轮external-screenshots/01-external-connect.png与03-external-settled.png；装置审批由脚本控制，不能说真人点过确认。"
+    ],
+    [
+      "要上公网，还差什么？是不是直接公开端口？",
+      "先选实际目标网络与可信独立RPC，审阅新协议合约和费用，再由持有人用真实钱包部署新合约，保存地址、部署块与独立核实的runtime hash，配置external和新运行目录。随后实测钱包授权、网络切换、完整交易核验及争议监控，并处理运维和滥用问题。准备脚本只生成未签名部署数据，没有替用户部署；本轮没有公网费用。",
+      "指docs/external-chain.md；两阶段已改ABI须新部署，旧Docker或开发RPC不能直接当公网服务。"
+    ],
+    [
+      "163项测试通过能证明什么？",
+      "本次全套重跑163项自动测试：原144项回归加19项故障与策略；浏览器20组为8本地、6外部和6新增恢复。用例只覆盖列明输入和环境，不能证明无漏洞、读屏器可用或真人已学会恢复。",
+      "查看review-summary及原始失败。"
+    ],
+    [
+      "为什么不增加已经确认后的悔棋？",
+      "双方签过的有序棋谱就是授权。事后改谱会制造分叉，与原前缀约束冲突。我们把可撤销放在签名前：确认坐标、Escape返回，取消没有propose消息。若以后需要协商悔棋，必须作为新版协议重新设计与验证。",
+      "授权前取消，已双签谱保持不可变。"
+    ],
+    [
+      "哪些依赖成熟模块，哪些是自主实现？",
+      "复用OpenZeppelin的EIP712/ECDSA、ethers的签名与RPC、Ganache EVM、React及测试工具，版本和许可有记录。应用自行实现五子棋全谱规则、通道生命周期、积分结算、两阶段争议、客户端恢复、证据核验与同口径基线等集成逻辑。成熟库解决基础能力，应用协议仍需自己验证，不能把第三方库或AI辅助说成纯手工从零。",
+      "对照THIRD_PARTY_NOTICES.md与锁文件；说明自主协议代码的可定位入口，避免泛称全部原创。"
+    ],
+    [
+      "漂亮的对局证书能证明链上已经结算吗？",
+      "证书生成器验证文件自述域中的棋谱双签，并输出可留存的SVG；它不能独立证明域对应真实部署，也不保证文件自述回执与积分真实。链上结论要用可信RPC核对代码身份、实际链谱和完整成功事件清单。证书是纪念与展示输出，证据JSON和节点回执承担复核；无签空谱不能冒充双方授权。",
+      "指shared/certificate.mjs及本轮certificate-results.json；视觉印章不增加密码学或链上证明能力。"
+    ],
+    [
+      "新增工作如何分工，AI参与了什么？",
+      "本轮新增GameRepository、恢复策略、连接生命周期与ACK幂等、键盘棋盘及坐标确认，以及相关模块设计、回归和ADR，计入谭海翔工作。赵国豪主讲并使用同步材料。开发辅助AI参与实施和文档，作品责任与讲解须落实到成员；不倒填旧提交或人工验收。",
+      "本轮指定归属，历史贡献仍按实际核对。"
+    ]
+  ],
+  "references": [
+    [
+      "MIT 6.102 规格设计",
+      "2026 Spring Reading 5；接口契约、异常后状态、职责一致性；中文为概括。",
+      "https://web.mit.edu/6.102/www/sp26/classes/05-designing-specs/"
+    ],
+    [
+      "MIT 6.102 测试",
+      "2025 Spring Reading 2；输入分区、边界与回归；中文为概括。",
+      "https://web.mit.edu/6.102/www/sp25/classes/02-testing/"
+    ],
+    [
+      "MIT HCI 课程",
+      "Lecture 9；状态可见、错误预防、恢复与效率；中文为概括。",
+      "https://designftw.csail.mit.edu/lectures/heuristic-eval/"
+    ],
+    [
+      "Stanford CS147",
+      "2025 Assignment 7；评估已实现交互，逐项记问题、理由与改进，区分用户测试。",
+      "https://hci.stanford.edu/courses/cs147/2025/au/assignments/Assignment_07_Heuristic_Evaluation_Individual.pdf"
+    ],
+    [
+      "信息隐藏",
+      "Parnas 1972；沿用原项目文献，按易变设计决策划分模块。",
+      "https://doi.org/10.1145/361598.361623"
+    ]
+  ],
+  "printQuestions": [
+    [
+      "到底哪些真实，哪些是模拟？",
+      "合约在本地EVM真实部署并执行，产生交易、回执、Gas和积分变化；双签也真实验签。默认单节点、AI双钱包和外部EIP-1193钱包装置都属于测试环境，不代表独立真人、MetaMask插件验收或公网共识；积分没有资产价值。",
+      "先区分真实执行、测试装置和公网验收。"
+    ],
+    [
+      "为什么用单节点，区块链价值在哪里？",
+      "单节点便于课程复现、定位缺陷和验证期限边界，能检验合约与签名协议；操作者仍可停机或重置，不能证明去中心化。项目用五子棋研究少交易结算与不合作退出；中心化记分更简单，跨主体使用还需实际目标网与真人钱包。",
+      "承认替代方案，再解释研究目标。"
+    ],
+    [
+      "三笔交易和Gas节省怎么算，部署注册算了吗？",
+      "已注册双方正常open、join、settle共3笔，部署、注册和争议另列。同输入真实回执对照：9手436155对1231600 Gas，降64.59%；10手448093对1406433，降68.14%。逐手基线分别11、12笔；这些本地样本不外推公网TPS。",
+      "看第12页可编辑图与contract-results。"
+    ],
+    [
+      "两阶段怎样防旧快照？最后一手拒签又怎么办？",
+      "非终局challenge设proofDeadline=now+Δ、deadline=now+2Δ。举证期只接收更长兼容双签，之后才可force，续手只延响应期。末手拒签可交8手双签、等待、本人补第9手成胜局。诚实方仍须监控，无永久离线保证。",
+      "第8页：先举证后续走，兼容终局仍可settle。"
+    ],
+    [
+      "为什么验完签名、RPC和代码hash，还不能绝对相信？",
+      "签名只证明地址授权，不能证明已上链或现实身份。RPC固定区块核对实际链谱、摘要、事件与回执；代码hash只证明匹配配置锚。若锚来自同一恶意RPC会循环自证，重要结算需独立来源复核；成功事件计量不含失败交易。",
+      "授权、链事实、可信来源分开回答。"
+    ],
+    [
+      "外部钱包接入是否真的做了，会不会连接就发交易？",
+      "外部模式已用独立本机HTTP节点和EIP-1193装置完成6组浏览器测试。连接只读，注册单独确认，切链或切账户停用旧会话；实际9手18份typed签名、本局3笔、1010/990。它仍不是公网或真人MetaMask插件验收。",
+      "第10页及备用17当前外部结算截图。"
+    ],
+    [
+      "要上公网，还差什么？是不是直接公开端口？",
+      "选择实际网络和可信RPC，审阅合约与费用，由持有人钱包部署新版，保存地址、部署块和独立核实的runtime hash，再配置external。随后验授权、切链、交易与争议监控。准备脚本只生成未签名数据；本轮无公网部署或费用。",
+      "external-chain指南；不要公开开发RPC充当上线。"
+    ],
+    [
+      "163项测试通过能证明什么？",
+      "本次全套重跑163项自动测试：原144项回归加19项故障与策略；浏览器20组为8本地、6外部和6新增恢复。用例只覆盖列明输入和环境，不能证明无漏洞、读屏器可用或真人已学会恢复。",
+      "查看review-summary及原始失败。"
+    ],
+    [
+      "为什么不增加已经确认后的悔棋？",
+      "双方签过的有序棋谱就是授权。事后改谱会制造分叉，与原前缀约束冲突。我们把可撤销放在签名前：确认坐标、Escape返回，取消没有propose消息。若以后需要协商悔棋，必须作为新版协议重新设计与验证。",
+      "授权前取消，已双签谱保持不可变。"
+    ],
+    [
+      "哪些依赖成熟模块，哪些是自主实现？",
+      "复用OpenZeppelin密码组件、ethers签名/RPC、Ganache、React及测试工具。自主部分是应用协议：全谱规则、通道生命周期、两阶段争议、积分结算、恢复与证据核验，以及基线和产品集成。成熟库不替代应用协议验证，AI辅助按实说明。",
+      "区分基础组件复用与自主协议设计。"
+    ],
+    [
+      "漂亮的对局证书能证明链上已经结算吗？",
+      "证书生成器验证文件自述域中的棋谱双签，输出纪念SVG；不能独立证明部署、积分或回执。链上结论须走可信RPC，核对代码身份、实际谱和完整成功交易。视觉印章不增加证明能力，无签空谱也不能当双方授权。",
+      "证书负责留存，JSON与节点回执负责复核。"
+    ],
+    [
+      "新增工作如何分工，AI参与了什么？",
+      "本轮新增GameRepository、恢复策略、连接生命周期与ACK幂等、键盘棋盘及坐标确认，以及相关模块设计、回归和ADR，计入谭海翔工作。赵国豪主讲并使用同步材料。开发辅助AI参与实施和文档，作品责任与讲解须落实到成员；不倒填旧提交或人工验收。",
+      "本轮指定归属，历史贡献仍按实际核对。"
+    ]
+  ],
+  "roles": [
+    [
+      "谭海翔",
+      "本轮新增代码与模块设计",
+      "GameRepository；recoveryGuide/RecoveryPanel；连接生命周期、ACK幂等；Board键盘与MoveConfirmation；ADR和故障验证。"
+    ],
+    [
+      "赵国豪",
+      "答辩主讲与材料使用",
+      "本轮同步后的逐页讲稿、PPT及演示操作卡；原有历史职责不在本轮虚构重记。"
+    ],
+    [
+      "AI辅助说明",
+      "实施与文档辅助",
+      "AI协助代码、审查、测试和材料生成；不冒称新增真人访谈、会议或人工验收。"
+    ]
+  ]
+}

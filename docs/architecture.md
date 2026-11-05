@@ -1,5 +1,7 @@
 # 五子棋通道系统：架构、协议与关键设计
 
+2026-11-05 更新：在既有协议上新增可靠保存、原房间重连与恢复建议边界。`GameRepository` 隐藏证据和历史的存储表示，向控制器报告缺失/损坏/写失败；控制器维护保存失败后停止继续签名、原内存可导出的不变量。`recoveryGuide` 为只读纯策略，React安心助手展示阶段与用户主动操作。`Board` 统一键盘入口，`MoveConfirmation` 在授权前确认坐标并检查局面版本。中继生命周期兑现时机与重复ACK幂等见 [本轮ADR](adr-recovery-2026-11-05.md)。本次产品变更不改合约ABI；原部署版本约束继续适用。
+
 版本：0.2；2026-11-04 修订增加独立 RPC/注入钱包、部署身份、两阶段争议及完整事件计量，实测见[专项记录](trust-audit-2026-11-04.md)。本文件引用的2026-10-27/28测试数字为历史，不代表当前实现；当前协议以[修订约定](protocol-spec.md)为准。原0.1部分依据静态阅读形成，不是独立安全审计报告。本文作者阅读了[本地服务](../server/index.mjs)、[共享规则](../shared/gomoku.mjs)、[客户端控制器](../web/src/channel-client.js)、[证据核验](../shared/evidence.mjs)、[证据命令](../scripts/verify-evidence.mjs)、[合约](../contracts/GomokuChannel.sol)、[编译脚本](../scripts/compile.mjs)、[依赖声明](../package.json)、[协议设计](protocol-spec.md)与[Web接口](app-interface.md)。代码存在、接口设计、实际运行结果必须分别记录；已读取[合约原始结果](../artifacts/test-results/contract-results.json)的环境/11组用例段、[JS及证据结果](../artifacts/test-results/protocol-results.json)全部，以及2026-10-27T01:05:31.385Z生成的[最终浏览器结果](../artifacts/test-results/e2e-results.json)用例、拒签恢复、导入与汇总片段：8通过、0失败。本文不代替[测试报告](testing.md)，未运行场景仍不应据此标通过。
 
 需求与课程依据见[需求规格](requirements.md)和[课程合规](course-compliance.md)，外部研究与复用边界见[研究文档](research.md)。实施持续变化时应校对本文与最终版本，不将本次阅读时的缺口冒称永久缺陷或已修复。

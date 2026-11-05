@@ -1,0 +1,233 @@
+Test evidence: artifacts/test-results/recovery-2026-11-05/final-after-ack
+RUN C:\Program Files\nodejs\node.exe scripts/compile.mjs
+GomokuChannel: 11402 bytes; solc 0.8.30+commit.73712a01.Emscripten.clang; Shanghai; optimizer 200
+GomokuOnchainBaseline: 11585 bytes; solc 0.8.30+commit.73712a01.Emscripten.clang; Shanghai; optimizer 200
+RUN C:\Program Files\nodejs\node.exe node_modules/vite/bin/vite.js build
+vite v7.1.12 building for production...
+transforming...
+✓ 192 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   1.05 kB │ gzip:   0.65 kB
+dist/assets/index-BUTPlvYe.css   32.30 kB │ gzip:   7.26 kB
+dist/assets/index-DL2yTVDp.js   122.64 kB │ gzip:  41.57 kB
+dist/assets/react-CbHxib7S.js   185.86 kB │ gzip:  58.44 kB
+dist/assets/evm-BxSDsaoc.js     332.58 kB │ gzip: 128.42 kB
+✓ built in 2.21s
+RUN C:\Program Files\nodejs\node.exe --test --test-concurrency=1 tests/ai.test.mjs tests/certificate.test.mjs tests/chain-runtime.test.mjs tests/channel-client-ai.test.mjs tests/channel-client-connect-race.test.mjs tests/channel-client-network.test.mjs tests/contract.test.mjs tests/dispute-security.test.mjs tests/evidence-chain.test.mjs tests/protocol.test.mjs tests/recovery-policy.test.mjs tests/recovery-regression.test.mjs
+✔ PATTERN_NAMES 与坐标标签符合约定 (1.9871ms)
+✔ 识别连五:黑在第7行 d..h 连成五子 (2.0987ms)
+✔ 识别活四:两端皆空,completing 为两端 (0.7679ms)
+✔ 识别冲四:一端被白子封住,只剩一个成五点 (0.9904ms)
+✔ 识别跳冲四 X X . X X (0.6591ms)
+✔ 识别活三:XXX 两端留空,completing 为能升级成活四的点 (1.1143ms)
+✔ 识别眠三:一端被白子封住的 XXX (0.7968ms)
+✔ 棋盘边缘不会把相邻行的棋子"跨行"连起来 (2.7516ms)
+✔ 优势值:空盘为0,方向正确,四越强越接近±1 (2.0079ms)
+✔ classifyMove:双活三与四三的棋型计数,且不改动棋盘 (0.8731ms)
+✔ shape:最后一手形成的棋型与中文标签 (1.0357ms)
+✔ candidateMoves:空盘为天元,否则为距棋子 <=radius 的空位 (0.3146ms)
+✔ evaluationCurve:长度、与 analyzePosition 一致、225 手 <400ms (8.7325ms)
+✔ LEVELS 名称 (0.1574ms)
+✔ 首手规则:黑走天元,白走天元的斜角(rng 决定) (1.2495ms)
+✔ 终局或满盘时 chooseMove / suggestMoves 的行为 (1.9355ms)
+✔ 能赢就赢:即使对方也有四,各难度都选择连五 (31.2543ms)
+✔ 堵五:adept/master 必堵,novice 在 200 个种子中堵住的比例 >=85% (137.9612ms)
+✔ 堵跳四:唯一成五点必须被封堵 (2.0973ms)
+✔ 堵活三:adept/master 在活三的端点附近落子 (51.4561ms)
+✔ 能做活四就做活四 (1.3588ms)
+✔ 双活三:suggestMoves 的理由为"形成双活三" (1.4806ms)
+✔ 模糊测试:200 个随机中盘局面,三档难度都只走合法空位 (1721.5313ms)
+✔ 确定性:相同 seededRng 得到相同走法;seededRng 本身可复现 (181.0057ms)
+✔ suggestMoves:不修改入参,数量/排序/理由正确 (102.3116ms)
+✔ explainMove:能解释刚下的一手 (0.5789ms)
+✔ 自博弈:master 对 novice(黑白各 12 局)胜率 >= 90%,且全部合法收官 (2512.5513ms)
+✔ 自博弈:adept 对 novice(黑白各 12 局)胜率 >= 75%,且全部合法收官 (145.2813ms)
+✔ 自博弈:master 对 adept(各执黑白 8 局)执黑全胜,总胜局多于 adept (24334.0064ms)
+✔ 性能:各难度在 30 手中盘的单步耗时,master < 1500ms,且 timeBudgetMs 生效 (12.7434ms)
+✔ (a) 黑胜证书：结构、关键文字、无脚本/外链，且只透传预期的十六进制字段 (30.5227ms)
+✔ (b) 篡改棋谱或交换签名时 buildCertificateSvg 抛错 (13.3062ms)
+✔ (c) 交易标签中的 HTML/XML 特殊字符被转义，不以原文出现 (9.6358ms)
+✔ (d) 225 手和棋证书体积小于 60000 字符，且显示和棋 (13.033ms)
+✔ (d2) 未终局对局显示“对局进行中/未终局” (10.6883ms)
+✔ (e) 深色主题与浅色主题不同，且包含 #16130f (18.5106ms)
+✔ 篡改未签名的链上元数据不能伪装为证书已核验的结算或节省 (17.3816ms)
+✔ (f) 证书文件名格式 (2.6339ms)
+✔ 示例证书写入 artifacts/samples（浅色与深色） (21.0649ms)
+This version of µWS is not compatible with your Node.js build:
+
+Error: Cannot find module '../binaries/uws_win32_x64_137.node'
+Require stack:
+- E:\Gomoku\app\node_modules\.pnpm\@trufflesuite+uws-js-unofficial@20.30.0-unofficial.0\node_modules\@trufflesuite\uws-js-unofficial\src\uws.js
+- E:\Gomoku\app\node_modules\.pnpm\ganache@7.9.2\node_modules\ganache\dist\node\core.js
+Falling back to a NodeJS implementation; performance may be degraded.
+
+
+✔ external connects to independent JSON-RPC without deployment, signing, account access or funding (4547.2874ms)
+✔ external HTTP config, faucet, strict RPC allowlist and origin policy (325.8123ms)
+✔ external RPC broadcasts client-signed raw transaction and exposes real receipt/log/block reads (482.164ms)
+✔ external rejects missing configuration, wrong chain, empty code, wrong runtime hash, periods and deployment block (636.9178ms)
+✔ external rejects correct code anchors with incompatible EIP-712 domain or stateDigest (668.775ms)
+✔ external rejects a real legacy eight-field channel before registration or opening despite correct hash/domain/digest (1053.8036ms)
+✔ external manifest reuses exact identity and refuses changed chain fingerprint (963.6015ms)
+✔ local persists creation artifact and actual immutable runtime hashes and reuses the same deployment (777.5757ms)
+✔ local default mines periodic blocks so proof windows and timeouts progress without management RPC (2237.4997ms)
+✔ local refuses actual on-chain runtime code drift instead of redeploying (560.7002ms)
+✔ local refuses chain fingerprint drift, legacy manifest and untracked data without clearing directories (530.1719ms)
+✔ manual authorized preparation creates unsigned deployment data without a transaction or private key handling (5309.7547ms)
+✔ runtime directory must stay inside the workspace and deployment preparation requires explicit authorization (1188.9939ms)
+✔ 有效双签和双方钱包对应链上参与者时恢复人机局 (48.4336ms)
+✔ 执白恢复后以 busy 锁保护 AI 待回复期间，防止并发落子 (23.6007ms)
+✔ 旧 active-room 不能抢占更新的人机会话 (31.1982ms)
+✔ 没有有效人机会话时保留原先的房间恢复路径 (5.1444ms)
+✔ 拒绝恢复：AI 私钥与链上对手不符，不覆盖证据或签署下一手 (15.2091ms)
+✔ 拒绝恢复：当前人类钱包不是链上对应执子方，不覆盖证据或签署下一手 (13.8009ms)
+✔ 拒绝恢复：执子方被交换，不覆盖证据或签署下一手 (13.4852ms)
+✔ 拒绝恢复：非法执子方，不覆盖证据或签署下一手 (3.0541ms)
+✔ 拒绝恢复：原型属性不能当成难度，不覆盖证据或签署下一手 (4.3938ms)
+✔ 拒绝恢复：证据通道与会话通道不同，不覆盖证据或签署下一手 (5.8517ms)
+✔ 拒绝恢复：证据参与者与链上不同，不覆盖证据或签署下一手 (15.0872ms)
+✔ 拒绝恢复：证据积分与链上不同，不覆盖证据或签署下一手 (8.7094ms)
+✔ 拒绝恢复：证据来自另一条链，不覆盖证据或签署下一手 (3.43ms)
+✔ 拒绝恢复：证据来自另一合约，不覆盖证据或签署下一手 (4.352ms)
+✔ 旧人机会话不能替换 active-channel 指向的新局 (2.7262ms)
+✔ 恢复拒绝伪造回执，成功回执以 RPC gas 和区块数据替换文件自述 (52.0165ms)
+✔ 其他对局的回执不能被恢复成当前局的交易 (26.0866ms)
+✔ 恢复等待 RPC 时也持有操作锁，不能并发开始新局 (23.3005ms)
+✔ 临时 RPC 失败不删除 AI 密钥，网络恢复后可重试恢复 (32.1431ms)
+✔ 争议期间保留本地 AI 钱包但不自动签字；终结通道可清理会话 (17.0332ms)
+✔ startAiGame 拒绝非法执子方、不安全整数与伪难度，且不触碰链上 (2.6312ms)
+✔ 开通第一笔交易前持久化密钥与证据；join 失败保留恢复资料及已确认回执 (12.4513ms)
+✔ 待加入通道恢复人类身份与到期退款入口状态，不自动加入或签字 (19.8903ms)
+✔ 待加入时人类执白也保留开通方 AI 密钥，不自动签字 (17.9046ms)
+✔ 人类执白的待加入通道到期后由经过链上身份核验的 AI 黑方退款 (18.9053ms)
+✔ AI 开通退款不得在期限前、错误密钥或通道已加入后发送交易 (71.2637ms)
+✔ 开始人机局时移除旧 active-room，下一次刷新不会回到旧房间 (12.0003ms)
+✔ 导入同通道旧双签或无签空谱不能覆盖较新内存和持久化快照 (42.7185ms)
+✔ 尚未恢复的本地已保存双签也能阻止同通道回退及分叉导入 (31.9141ms)
+✔ 即使持久化证据缺失，当前内存快照仍阻止分叉证据替换 (30.524ms)
+✔ 其他对局的有效证据不能覆盖invited/active/dispute当前活动局 (88.5535ms)
+✔ 同通道兼容的更新快照可导入，空交易清单从RPC补齐两笔真实交易 (39.2811ms)
+✔ 首次导入无签空谱明确报告未双签并仍重建真实交易 (4.5334ms)
+✔ 链上核验期间等待日志RPC仍持有busy锁，完成前不签署AI回复 (19.776ms)
+✔ 恢复拒绝错误合约摘要且保留原始凭据，不签署下一手 (20.3868ms)
+✔ 事件扫描按可信部署区块起始并每页最多2000块，返回真实proofDeadline (14.5056ms)
+✔ 非法部署区块或截掉开通事件的扫描起点不能被报告为完整交易核验 (73.0846ms)
+✔ 重连中继的旧一手不能覆盖持久化九手双签，即使内存刚被清空 (28.1452ms)
+✔ 重连中继的真实双签分叉谱不能覆盖持久化九手双签，即使内存刚被清空 (19.2406ms)
+✔ 重连中继的无签空谱不能覆盖持久化九手双签，即使内存刚被清空 (11.3873ms)
+✔ 重连中继提供相同九手最新双签时正常恢复 (17.9448ms)
+✔ 同一等待房间首次配对可从roomId转换到正确的链上channelId (5.3982ms)
+✔ 等待房间转换例外不能允许其他房间替换当前活动邀请 (8.3575ms)
+✔ 同通道保护不能允许中继改积分，或用空谱替换已保存的参与者身份 (38.0952ms)
+✔ 外部结算后refresh先从RPC补全三笔及真实gas，再保存history和完整证据 (23.2878ms)
+✔ 争议refresh补全遗漏交易，后续链上棋谱变化再扫描并补入强制落子 (27.9983ms)
+✔ 结算refresh的RPC扫描失败时不保存虚假零交易history，恢复后可重试 (20.2261ms)
+✔ stable external connection installs the selected registered account without signing or sending (50.4767ms)
+✔ initial permission accountsChanged is accepted when the final selected account is consistent (60.1844ms)
+✔ chain change after getCode during signer acquisition rejects and clears the connection (31.4579ms)
+✔ chain change while session points RPC awaits cannot resurrect a ready session (59.8971ms)
+✔ account change after getCode during signer acquisition rejects and clears the connection (30.1559ms)
+✔ account change while session points RPC awaits cannot resurrect a ready session (64.5755ms)
+✔ rejected permission leaves no signer, contract, active timer or transaction (1.0584ms)
+✔ failed reconnection retires the previously connected signer and ready state (76.0858ms)
+This version of µWS is not compatible with your Node.js build:
+
+Error: Cannot find module '../binaries/uws_win32_x64_137.node'
+Require stack:
+- E:\Gomoku\app\node_modules\.pnpm\@trufflesuite+uws-js-unofficial@20.30.0-unofficial.0\node_modules\@trufflesuite\uws-js-unofficial\src\uws.js
+- E:\Gomoku\app\node_modules\.pnpm\ganache@7.9.2\node_modules\ganache\dist\node\core.js
+Falling back to a NodeJS implementation; performance may be degraded.
+
+
+✔ external page load creates no private key, requests no wallet approval and sends no transaction (278.0333ms)
+✔ external wallet connect is read-only until separate registration approval, using real EVM receipts (214.0701ms)
+✔ external typed signatures come from EIP-1193 wallet and bind the canonical contract domain (69.742ms)
+✔ wrong chain or code fingerprint fails before wallet registration or transactions (13.7179ms)
+✔ external mode refuses AI key generation, local funding and dual-wallet scripted demo (61.6407ms)
+✔ account or chain change stops the signer without deleting saved evidence (123.9991ms)
+✔ export separates signed offchain history from actual chain storage; import reconstructs all successful game transactions (3393.4746ms)
+This version of µWS is not compatible with your Node.js build:
+
+Error: Cannot find module '../binaries/uws_win32_x64_137.node'
+Require stack:
+- E:\Gomoku\app\node_modules\.pnpm\@trufflesuite+uws-js-unofficial@20.30.0-unofficial.0\node_modules\@trufflesuite\uws-js-unofficial\src\uws.js
+- E:\Gomoku\app\node_modules\.pnpm\ganache@7.9.2\node_modules\ganache\dist\node\core.js
+Falling back to a NodeJS implementation; performance may be degraded.
+
+
+✔ compile exposes immutable references that account for deployed runtime substitutions (3585.0624ms)
+✔ registration, escrow, access control and invitation deadline refund conserve issuance (1383.9749ms)
+✔ join requires registered white and enough liquid points; locks across channels remain conserved (1248.0474ms)
+✔ full replay validates black and white wins, all directions, edge wrap, illegal histories and legal draw (30300.9419ms)
+✔ EIP712 domain, contract, channel, move order, signer identity and malformed signatures are isolated (6914.9783ms)
+✔ white victory and full-board draw settle actual locked points exactly once (20037.9867ms)
+✔ unsigned empty challenge protects proof collection; forced continuations renew only response deadlines (5013.6412ms)
+✔ refused ninth signature recovers from an eight-move checkpoint only after the proof window (4657.2865ms)
+✔ stale one-move challenge cannot force an immediate fork that excludes an already dual-signed nine-move win (3402.9577ms)
+✔ dispute escalation rejects equal, stale and divergent checkpoints and stale terminal settlements (8610.5705ms)
+✔ deadline equality rejects moves and challenges and awards timeout to the waiting player (3227.9903ms)
+✔ terminal signed challenge immediately settles; compatible signed terminal can settle after dispute expiry (8469.7896ms)
+✔ failed on-chain transaction is recorded and preserves balances and game state (830.9077ms)
+✔ normal channel versus every-move on-chain baseline uses equal escrow and actual receipt gas (17086.4186ms)
+This version of µWS is not compatible with your Node.js build:
+
+Error: Cannot find module '../binaries/uws_win32_x64_137.node'
+Require stack:
+- E:\Gomoku\app\node_modules\.pnpm\@trufflesuite+uws-js-unofficial@20.30.0-unofficial.0\node_modules\@trufflesuite\uws-js-unofficial\src\uws.js
+- E:\Gomoku\app\node_modules\.pnpm\ganache@7.9.2\node_modules\ganache\dist\node\core.js
+Falling back to a NodeJS implementation; performance may be degraded.
+
+
+✔ old one-move challenge cannot fork away a newer jointly signed nine-move terminal state (6942.4679ms)
+✔ proof boundary admits forced play, freezes checkpoint updates and preserves the response deadline (3282.5434ms)
+✔ refused winning signature recovers after the full proof window and baseline moves remain immediate (7019.5287ms)
+This version of µWS is not compatible with your Node.js build:
+
+Error: Cannot find module '../binaries/uws_win32_x64_137.node'
+Require stack:
+- E:\Gomoku\app\node_modules\.pnpm\@trufflesuite+uws-js-unofficial@20.30.0-unofficial.0\node_modules\@trufflesuite\uws-js-unofficial\src\uws.js
+- E:\Gomoku\app\node_modules\.pnpm\ganache@7.9.2\node_modules\ganache\dist\node\core.js
+Falling back to a NodeJS implementation; performance may be degraded.
+
+
+✔ 离线校验拒绝带salt/额外字段域、compact64以及v=0/1签名 (3829.9707ms)
+✔ 空谱免签明确signed=false；真实空谱双签可验；垃圾签名被拒绝 (13.1607ms)
+✔ 真实结算从RPC返回胜负并重建完整三笔交易，空清单不能制造0交易 (2163.0817ms)
+✔ 遗漏、重复回执和伪造gas/区块/时间/标签不能改变RPC重建计量 (390.1901ms)
+✔ 不存在、其他通道和实际执行失败的交易hash被拒绝 (894.7648ms)
+✔ RPC实际分叉棋谱不能被文件自述的兼容链谱掩盖 (768.7476ms)
+✔ forceMove后的链上扩展允许原双签前缀，末手双事件只计一笔交易 (3985.7103ms)
+✔ 验证链ID/部署地址/可选可信代码hash，并拒绝无代码地址 (555.6779ms)
+✔ 实际部署的伪实现虽返回相同参与者和积分，错误stateDigest仍被拒绝 (226.0157ms)
+✔ JS规则拒绝非法类型、越界、占位、分叉和终局后落子 (2.986ms)
+✔ 合法长连、4方向及边缘不能跨行连接 (0.6102ms)
+✔ 事务指标对0手、正常局、争议额外事务和gas进行精确计量 (0.4377ms)
+✔ 证据双签可独立核验，篡改棋谱、身份、签名域与积分格式被拒绝 (143.7644ms)
+✔ damaged JSON is reported and its original bytes remain untouched (2.504ms)
+✔ a non-array history cannot masquerade as a usable empty archive (0.2955ms)
+✔ bookmark failure leaves the independently saved evidence readable (1.4418ms)
+✔ silent storage write rejection is detected by readback (0.4999ms)
+✔ repository read denial remains distinct from an absent record (0.2942ms)
+✔ evidence serialization never mutates the callers checkpoint (0.291ms)
+✔ dispute boundary 99 maps to proof using the node sample (0.4507ms)
+✔ dispute boundary 100 maps to response using the node sample (0.1979ms)
+✔ dispute boundary 119 maps to response using the node sample (0.178ms)
+✔ dispute boundary 120 maps to timeout using the node sample (0.31ms)
+✔ missing node sample or failed refresh does not imply a timeout (0.2217ms)
+✔ storage protection outranks a normal pending or dispute action (0.3659ms)
+✔ timeout advice does not promise the caller a victory (0.163ms)
+✔ a signed terminal board is distinguished from settled points (0.174ms)
+✔ quota failure preserves the latest in-memory checkpoint and exposes a recoverable save failure (94.305ms)
+✔ failed checkpoint storage prevents another signature until an explicit successful retry (25.0086ms)
+✔ connection closed before authentication rejects immediately and retains checkpoint (27.2175ms)
+✔ late authentication signature from a replaced connection cannot be sent (27.6784ms)
+✔ duplicate pending broadcasts sign once, with an explicit resend reusing the same signature (28.9506ms)
+ℹ tests 163
+ℹ suites 0
+ℹ pass 163
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 221565.6315
