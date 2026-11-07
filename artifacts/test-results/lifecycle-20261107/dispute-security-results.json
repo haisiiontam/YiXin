@@ -1,0 +1,253 @@
+{
+  "generatedAt": "2026-11-07T06:37:26.304Z",
+  "environment": {
+    "node": "v24.19.0",
+    "chainId": 31337,
+    "challengePeriod": 30,
+    "transport": "in-memory Ganache only; no external chain",
+    "solc": "0.8.30+commit.73712a01.Emscripten.clang",
+    "sourceSha256": "db7e0cdf213c332471bfce716b7be3fc5dcc496a072fe6644963f3882583f168"
+  },
+  "tests": [
+    {
+      "name": "old one-move challenge cannot fork away a newer jointly signed nine-move terminal state",
+      "status": "passed"
+    },
+    {
+      "name": "proof boundary admits forced play, freezes checkpoint updates and preserves the response deadline",
+      "status": "passed"
+    },
+    {
+      "name": "refused winning signature recovers after the full proof window and baseline moves remain immediate",
+      "status": "passed"
+    }
+  ],
+  "transactions": [
+    {
+      "label": "deploy GomokuChannel",
+      "hash": "0xe69ae87c29b91ccf263f5d4be6ff0ad3b24d62c504a00daa7a9408dbb49a993c",
+      "blockNumber": 1,
+      "gasUsed": "2364338",
+      "status": 1
+    },
+    {
+      "label": "register",
+      "hash": "0x37d347bd555143a6897472424f7eb42a155f865f55c05511e19fec3ae951e45b",
+      "blockNumber": 2,
+      "gasUsed": "89480",
+      "status": 1
+    },
+    {
+      "label": "register",
+      "hash": "0xe51cddd6a3e44d9b545ad757939aeb6836a3d948685c5920de909e620535befb",
+      "blockNumber": 3,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "label": "open",
+      "hash": "0x4bd15aa36f61a5bc8f657318d21c90edcd5f86abfdf66ccfb64d91be6856c675",
+      "blockNumber": 4,
+      "gasUsed": "165897",
+      "status": 1
+    },
+    {
+      "label": "join",
+      "hash": "0xd99b4d53b0a6cdbaa87ce211a6c18a5b225b9920254b82fc493ceb6ef6ca5757",
+      "blockNumber": 5,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "label": "losing white challenges old one-move checkpoint",
+      "hash": "0xe8bb352606266ffe0a7ea3d6c02ce2d960b066b8dd3e566ee13453476af2b7d5",
+      "blockNumber": 6,
+      "gasUsed": "126315",
+      "status": 1
+    },
+    {
+      "label": "latest nine-move double-signed result settles during proof window",
+      "hash": "0x222e9213816a6e8f27adf9a9a3a533973565a85f2c22f88041b8e6e8cc6b7995",
+      "blockNumber": 7,
+      "gasUsed": "208996",
+      "status": 1
+    },
+    {
+      "label": "deploy GomokuChannel",
+      "hash": "0xd7833f0bbb9aaca17ba57b4c73d612c15c719fbd8f96dcf37adfad90ca10a0a0",
+      "blockNumber": 8,
+      "gasUsed": "2364338",
+      "status": 1
+    },
+    {
+      "label": "register",
+      "hash": "0xa069d7411444dc0ccd8933482a5073a772703e7aa5069bfdee95eaf29be06ce3",
+      "blockNumber": 9,
+      "gasUsed": "89480",
+      "status": 1
+    },
+    {
+      "label": "register",
+      "hash": "0xcb7a5bdcc82506c0056a6488f5702ed0577754e3b04c3d62d2728ce04436c22c",
+      "blockNumber": 10,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "label": "open",
+      "hash": "0xf6e473d9c1c428f196996c52cad12f68a1c023b7964ef9038f3d8e7b4c7e8999",
+      "blockNumber": 11,
+      "gasUsed": "165897",
+      "status": 1
+    },
+    {
+      "label": "join",
+      "hash": "0x15d1802d887d229e0ca29576caa082f119a1b35d1d2d7f2ddc5fa780bd075988",
+      "blockNumber": 12,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "label": "empty checkpoint starts proof phase",
+      "hash": "0x42458d41041ff667a204b47639be749e31b4c594d52e0e4fcd26380b403c8a55",
+      "blockNumber": 13,
+      "gasUsed": "81568",
+      "status": 1
+    },
+    {
+      "label": "new one-move checkpoint before proof deadline",
+      "hash": "0xf42a31b57b9fb86a9f394856902a4b64aba50620f73e243662031fef23ceb615",
+      "blockNumber": 15,
+      "gasUsed": "90166",
+      "status": 1
+    },
+    {
+      "label": "white forced move at exact proof deadline",
+      "hash": "0xf14309a5517611aaf18bb913a0fe29762e801a226395119130a85ee4eef012fd",
+      "blockNumber": 17,
+      "gasUsed": "63507",
+      "status": 1
+    },
+    {
+      "label": "black forced move extends only response deadline",
+      "hash": "0xc88af98cead3646613364199d34d19b833e25e1eb94c8b6271a5eb7a9d1b7818",
+      "blockNumber": 19,
+      "gasUsed": "79231",
+      "status": 1
+    },
+    {
+      "label": "white response timeout at exact response deadline",
+      "hash": "0x24f27c5333597a35fea449802a23f455855870f068986e8db1806229b6164802",
+      "blockNumber": 21,
+      "gasUsed": "70996",
+      "status": 1
+    },
+    {
+      "label": "deploy GomokuChannel",
+      "hash": "0x87c2d9af4c6287da39c5680fab8d3dfc50fdbc7d6fa266af948e928f3ffd85a1",
+      "blockNumber": 22,
+      "gasUsed": "2364338",
+      "status": 1
+    },
+    {
+      "label": "register",
+      "hash": "0x831a1324bb9751ca47ac9bf93487b70fb05b55711c9a179fffda50b2b920676d",
+      "blockNumber": 23,
+      "gasUsed": "89480",
+      "status": 1
+    },
+    {
+      "label": "register",
+      "hash": "0xb1fe663a5693024cf21a701ff2bab32478371b5a6b10f9d4f3cb489c45d201a0",
+      "blockNumber": 24,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "label": "open",
+      "hash": "0x12567d78c8bf7736d17bcda3ddff6a32472b045707aa75646ec845c955ee514f",
+      "blockNumber": 25,
+      "gasUsed": "165897",
+      "status": 1
+    },
+    {
+      "label": "join",
+      "hash": "0x713da848f48bdfcf4be81492a3bd790e2b60a8e847b4b8fd0b2163d6d6cd4b6b",
+      "blockNumber": 26,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "label": "eight-move checkpoint",
+      "hash": "0xde3a7d209e137d0af76706926efee9b56fbfcb6aff3d1653568f6133b5720843",
+      "blockNumber": 27,
+      "gasUsed": "227503",
+      "status": 1
+    },
+    {
+      "label": "black forces refused winning move",
+      "hash": "0xee00422f514de5165624ed561e3f53f888128347617dac875147b64b7a492d3c",
+      "blockNumber": 29,
+      "gasUsed": "201050",
+      "status": 1
+    },
+    {
+      "label": "deploy GomokuOnchainBaseline",
+      "hash": "0xd43ab497c587de5437e1f2a27c3a7957b817e19cfd61ff02999a332cb510da9f",
+      "blockNumber": 30,
+      "gasUsed": "2404853",
+      "status": 1
+    },
+    {
+      "label": "register",
+      "hash": "0x2775b04c9695642b9f5353d7cd642d4a3dbfc0b0cf65cf59f2f95edb54890de2",
+      "blockNumber": 31,
+      "gasUsed": "89480",
+      "status": 1
+    },
+    {
+      "label": "register",
+      "hash": "0xed90376b9a50e0ecc6cfc9d8c005ae182cb3455c33c260fc053648652b6cec5b",
+      "blockNumber": 32,
+      "gasUsed": "72380",
+      "status": 1
+    },
+    {
+      "label": "open",
+      "hash": "0xfe073f1c4edd79872199b34b31201e932203de2de25e277d38cd69a29b034ac9",
+      "blockNumber": 33,
+      "gasUsed": "165919",
+      "status": 1
+    },
+    {
+      "label": "join",
+      "hash": "0x0181cb9381d002bd9d5fa00f03fcacab20dd1b7fec2425fce57cda5e6a2e884d",
+      "blockNumber": 34,
+      "gasUsed": "45697",
+      "status": 1
+    },
+    {
+      "label": "baseline immediate first move",
+      "hash": "0x7d635363982c384de90f7e44d523e7175eff24ad7c0ea9686611d140c9a9a957",
+      "blockNumber": 35,
+      "gasUsed": "89577",
+      "status": 1
+    },
+    {
+      "label": "baseline immediate second move",
+      "hash": "0x2d8adfb7800422707e25ebdc6d5da90ad70a1b54dadf835e70d464fb31964f0a",
+      "blockNumber": 36,
+      "gasUsed": "61657",
+      "status": 1
+    }
+  ],
+  "attacks": [
+    {
+      "immediateForkAccepted": false
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 0
+  }
+}

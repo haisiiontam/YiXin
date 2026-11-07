@@ -1,0 +1,65 @@
+{
+  "generatedAt": "2026-11-07T06:45:08.940Z",
+  "tests": [
+    {
+      "name": "damaged JSON is reported and its original bytes remain untouched",
+      "status": "passed"
+    },
+    {
+      "name": "a non-array history cannot masquerade as a usable empty archive",
+      "status": "passed"
+    },
+    {
+      "name": "bookmark failure leaves the independently saved evidence readable",
+      "status": "passed"
+    },
+    {
+      "name": "silent storage write rejection is detected by readback",
+      "status": "passed"
+    },
+    {
+      "name": "repository read denial remains distinct from an absent record",
+      "status": "passed"
+    },
+    {
+      "name": "evidence serialization never mutates the callers checkpoint",
+      "status": "passed"
+    },
+    {
+      "name": "dispute boundary 99 maps to proof using the node sample",
+      "status": "passed"
+    },
+    {
+      "name": "dispute boundary 100 maps to response using the node sample",
+      "status": "passed"
+    },
+    {
+      "name": "dispute boundary 119 maps to response using the node sample",
+      "status": "passed"
+    },
+    {
+      "name": "dispute boundary 120 maps to timeout using the node sample",
+      "status": "passed"
+    },
+    {
+      "name": "missing node sample or failed refresh does not imply a timeout",
+      "status": "passed"
+    },
+    {
+      "name": "storage protection outranks a normal pending or dispute action",
+      "status": "passed"
+    },
+    {
+      "name": "timeout advice does not promise the caller a victory",
+      "status": "passed"
+    },
+    {
+      "name": "a signed terminal board is distinguished from settled points",
+      "status": "passed"
+    }
+  ],
+  "summary": {
+    "passed": 14,
+    "failed": 0
+  }
+}

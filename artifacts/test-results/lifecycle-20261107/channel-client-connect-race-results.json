@@ -1,0 +1,811 @@
+{
+  "generatedAt": "2026-11-07T06:34:59.555Z",
+  "command": "node --test --test-concurrency=1 tests/channel-client-connect-race.test.mjs",
+  "implementation": "working-tree client implementation",
+  "environment": "Controlled fake EIP-1193 with real ethers BrowserProvider/Contract and compiled contract ABI; not a live extension or public-chain test",
+  "tests": [
+    {
+      "name": "stable external connection installs the selected registered account without signing or sending",
+      "status": "passed",
+      "observation": {
+        "resolved": true,
+        "error": "",
+        "expectedChainId": 31337,
+        "actualChainId": 31337,
+        "selectedAccount": "0x0000000000000000000000000000000000001111",
+        "ready": true,
+        "walletConnected": true,
+        "address": "0x0000000000000000000000000000000000001111",
+        "signerPresent": true,
+        "contractPresent": true,
+        "timerRunning": true,
+        "events": [],
+        "snapshots": [
+          {
+            "ready": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": true,
+            "walletConnected": true,
+            "address": "0x0000000000000000000000000000000000001111",
+            "points": 1000
+          },
+          {
+            "ready": true,
+            "walletConnected": true,
+            "address": "0x0000000000000000000000000000000000001111",
+            "points": 1000
+          },
+          {
+            "ready": true,
+            "walletConnected": true,
+            "address": "0x0000000000000000000000000000000000001111",
+            "points": 1000
+          },
+          {
+            "ready": true,
+            "walletConnected": true,
+            "address": "0x0000000000000000000000000000000000001111",
+            "points": 1000
+          }
+        ],
+        "methods": [
+          "eth_requestAccounts",
+          "eth_chainId",
+          "eth_chainId",
+          "eth_getCode",
+          "eth_accounts",
+          "eth_accounts",
+          "eth_chainId",
+          "eth_accounts",
+          "eth_chainId",
+          "eth_call",
+          "eth_chainId",
+          "eth_call",
+          "eth_chainId"
+        ]
+      }
+    },
+    {
+      "name": "initial permission accountsChanged is accepted when the final selected account is consistent",
+      "status": "passed",
+      "observation": {
+        "resolved": true,
+        "error": "",
+        "expectedChainId": 31337,
+        "actualChainId": 31337,
+        "selectedAccount": "0x0000000000000000000000000000000000002222",
+        "ready": true,
+        "walletConnected": true,
+        "address": "0x0000000000000000000000000000000000002222",
+        "signerPresent": true,
+        "contractPresent": true,
+        "timerRunning": true,
+        "events": [
+          {
+            "event": "accountsChanged",
+            "payload": [
+              "0x0000000000000000000000000000000000002222"
+            ],
+            "listeners": 1
+          }
+        ],
+        "snapshots": [
+          {
+            "ready": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": true,
+            "walletConnected": true,
+            "address": "0x0000000000000000000000000000000000002222",
+            "points": 650
+          },
+          {
+            "ready": true,
+            "walletConnected": true,
+            "address": "0x0000000000000000000000000000000000002222",
+            "points": 650
+          },
+          {
+            "ready": true,
+            "walletConnected": true,
+            "address": "0x0000000000000000000000000000000000002222",
+            "points": 650
+          },
+          {
+            "ready": true,
+            "walletConnected": true,
+            "address": "0x0000000000000000000000000000000000002222",
+            "points": 650
+          }
+        ],
+        "methods": [
+          "eth_requestAccounts",
+          "eth_chainId",
+          "eth_chainId",
+          "eth_getCode",
+          "eth_accounts",
+          "eth_accounts",
+          "eth_chainId",
+          "eth_accounts",
+          "eth_chainId",
+          "eth_call",
+          "eth_chainId",
+          "eth_call",
+          "eth_chainId"
+        ]
+      }
+    },
+    {
+      "name": "chain change after getCode during signer acquisition rejects and clears the connection",
+      "status": "passed",
+      "observation": {
+        "resolved": false,
+        "error": "network changed: 31337 => 1 ",
+        "expectedChainId": 31337,
+        "actualChainId": 1,
+        "selectedAccount": "0x0000000000000000000000000000000000001111",
+        "ready": false,
+        "walletConnected": false,
+        "address": "",
+        "signerPresent": false,
+        "contractPresent": false,
+        "timerRunning": false,
+        "events": [
+          {
+            "event": "chainChanged",
+            "payload": "0x1",
+            "listeners": 1
+          }
+        ],
+        "snapshots": [
+          {
+            "ready": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          }
+        ],
+        "methods": [
+          "eth_requestAccounts",
+          "eth_chainId",
+          "eth_chainId",
+          "eth_getCode",
+          "eth_accounts",
+          "eth_accounts",
+          "eth_chainId"
+        ]
+      }
+    },
+    {
+      "name": "chain change while session points RPC awaits cannot resurrect a ready session",
+      "status": "passed",
+      "observation": {
+        "resolved": false,
+        "error": "连接期间钱包账户或网络已变化，请重新连接",
+        "expectedChainId": 31337,
+        "actualChainId": 1,
+        "selectedAccount": "0x0000000000000000000000000000000000001111",
+        "ready": false,
+        "walletConnected": false,
+        "address": "",
+        "signerPresent": false,
+        "contractPresent": false,
+        "timerRunning": false,
+        "events": [
+          {
+            "event": "chainChanged",
+            "payload": "0x1",
+            "listeners": 1
+          }
+        ],
+        "snapshots": [
+          {
+            "ready": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          }
+        ],
+        "methods": [
+          "eth_requestAccounts",
+          "eth_chainId",
+          "eth_chainId",
+          "eth_getCode",
+          "eth_accounts",
+          "eth_accounts",
+          "eth_chainId",
+          "eth_accounts",
+          "eth_chainId",
+          "eth_call",
+          "eth_chainId",
+          "eth_call",
+          "eth_chainId"
+        ]
+      }
+    },
+    {
+      "name": "account change after getCode during signer acquisition rejects and clears the connection",
+      "status": "passed",
+      "observation": {
+        "resolved": false,
+        "error": "invalid account",
+        "expectedChainId": 31337,
+        "actualChainId": 31337,
+        "selectedAccount": "0x0000000000000000000000000000000000002222",
+        "ready": false,
+        "walletConnected": false,
+        "address": "",
+        "signerPresent": false,
+        "contractPresent": false,
+        "timerRunning": false,
+        "events": [
+          {
+            "event": "accountsChanged",
+            "payload": [
+              "0x0000000000000000000000000000000000002222"
+            ],
+            "listeners": 1
+          }
+        ],
+        "snapshots": [
+          {
+            "ready": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          }
+        ],
+        "methods": [
+          "eth_requestAccounts",
+          "eth_chainId",
+          "eth_chainId",
+          "eth_getCode",
+          "eth_accounts",
+          "eth_requestAccounts",
+          "eth_accounts",
+          "eth_chainId"
+        ]
+      }
+    },
+    {
+      "name": "account change while session points RPC awaits cannot resurrect a ready session",
+      "status": "passed",
+      "observation": {
+        "resolved": false,
+        "error": "连接期间钱包账户或网络已变化，请重新连接",
+        "expectedChainId": 31337,
+        "actualChainId": 31337,
+        "selectedAccount": "0x0000000000000000000000000000000000002222",
+        "ready": false,
+        "walletConnected": false,
+        "address": "",
+        "signerPresent": false,
+        "contractPresent": false,
+        "timerRunning": false,
+        "events": [
+          {
+            "event": "accountsChanged",
+            "payload": [
+              "0x0000000000000000000000000000000000002222"
+            ],
+            "listeners": 1
+          }
+        ],
+        "snapshots": [
+          {
+            "ready": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          }
+        ],
+        "methods": [
+          "eth_requestAccounts",
+          "eth_chainId",
+          "eth_chainId",
+          "eth_getCode",
+          "eth_accounts",
+          "eth_accounts",
+          "eth_chainId",
+          "eth_accounts",
+          "eth_chainId",
+          "eth_call",
+          "eth_chainId",
+          "eth_call",
+          "eth_chainId"
+        ]
+      }
+    },
+    {
+      "name": "rejected permission leaves no signer, contract, active timer or transaction",
+      "status": "passed",
+      "observation": {
+        "resolved": false,
+        "error": "User rejected wallet permission",
+        "expectedChainId": 31337,
+        "actualChainId": 31337,
+        "selectedAccount": "0x0000000000000000000000000000000000001111",
+        "ready": false,
+        "walletConnected": false,
+        "address": "",
+        "signerPresent": false,
+        "contractPresent": false,
+        "timerRunning": false,
+        "events": [],
+        "snapshots": [
+          {
+            "ready": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          }
+        ],
+        "methods": [
+          "eth_requestAccounts"
+        ]
+      }
+    },
+    {
+      "name": "failed reconnection retires the previously connected signer and ready state",
+      "status": "passed",
+      "observation": {
+        "resolved": false,
+        "error": "合约代码与已配置的部署指纹不符",
+        "expectedChainId": 31337,
+        "actualChainId": 31337,
+        "selectedAccount": "0x0000000000000000000000000000000000001111",
+        "ready": false,
+        "walletConnected": false,
+        "address": "0x0000000000000000000000000000000000001111",
+        "signerPresent": false,
+        "contractPresent": false,
+        "timerRunning": false,
+        "events": [],
+        "snapshots": [
+          {
+            "ready": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "",
+            "points": 0
+          },
+          {
+            "ready": true,
+            "walletConnected": true,
+            "address": "0x0000000000000000000000000000000000001111",
+            "points": 1000
+          },
+          {
+            "ready": true,
+            "walletConnected": true,
+            "address": "0x0000000000000000000000000000000000001111",
+            "points": 1000
+          },
+          {
+            "ready": true,
+            "walletConnected": true,
+            "address": "0x0000000000000000000000000000000000001111",
+            "points": 1000
+          },
+          {
+            "ready": true,
+            "walletConnected": true,
+            "address": "0x0000000000000000000000000000000000001111",
+            "points": 1000
+          },
+          {
+            "ready": true,
+            "walletConnected": true,
+            "address": "0x0000000000000000000000000000000000001111",
+            "points": 1000
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "0x0000000000000000000000000000000000001111",
+            "points": 1000
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "0x0000000000000000000000000000000000001111",
+            "points": 1000
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "0x0000000000000000000000000000000000001111",
+            "points": 1000
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "0x0000000000000000000000000000000000001111",
+            "points": 1000
+          },
+          {
+            "ready": false,
+            "walletConnected": false,
+            "address": "0x0000000000000000000000000000000000001111",
+            "points": 1000
+          }
+        ],
+        "methods": [
+          "eth_requestAccounts",
+          "eth_chainId",
+          "eth_chainId",
+          "eth_getCode",
+          "eth_accounts",
+          "eth_accounts",
+          "eth_chainId",
+          "eth_accounts",
+          "eth_chainId",
+          "eth_call",
+          "eth_chainId",
+          "eth_call",
+          "eth_chainId",
+          "eth_requestAccounts",
+          "eth_chainId",
+          "eth_chainId",
+          "eth_getCode"
+        ]
+      }
+    }
+  ],
+  "summary": {
+    "passed": 8,
+    "failed": 0
+  }
+}

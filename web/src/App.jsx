@@ -230,7 +230,7 @@ export default function App() {
             {!external && (!hasRoom || finished) && <AiPanel level={aiLevel} onLevel={setAiLevel} side={aiSide} onSide={setAiSide} stake={stake} disabled={aiBusyStart || !Number.isInteger(Number(stake)) || Number(stake) <= 0} onStart={() => act('正在准备人机对局', () => client.startAiGame(aiLevel, aiSide, Number(stake)))}/>}
             {!external && <section className="demo-card">
               <div className="demo-heading"><span className="demo-icon"><Icon name="play" size={19}/></span><div><h3>先看一局，理解全部</h3><p>双本地钱包 · 9 手黑胜 · 真实结算</p></div></div>
-              <Button kind="dark" icon="play" disabled={!state.ready || busy || ['active', 'dispute'].includes(state.status)} onClick={() => act('完整自动演示运行中', () => client.runDemo())}>运行完整自动演示</Button>
+              <Button kind="dark" icon="play" disabled={!state.ready || busy || ['active', 'dispute', 'invited'].includes(state.status)} onClick={() => act('完整自动演示运行中', () => client.runDemo())}>运行完整自动演示</Button>
               <p>{['active', 'dispute'].includes(state.status) && state.mode !== 'demo' ? '请先完成当前对局，再开启独立演示。' : '独立演示局，由脚本执黑与执白。'}<br/>实际发送本地链交易，可在实验室核验。</p>
             </section>}
             {state.status === 'settled' && moves.length > 0 && <section className="demo-card"><div className="demo-heading"><span className="demo-icon"><Icon name="stamp" size={19}/></span><div><h3>对局证书</h3><p>棋谱 · 摘要 · 交易，一页留念</p></div></div><Button icon="download" disabled={busy} onClick={exportCertificate}>导出对局证书（SVG）</Button></section>}

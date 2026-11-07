@@ -1,0 +1,27 @@
+{
+  "output": "E:\\Gomoku\\app\\site\\index.html",
+  "bytes": 326854,
+  "sha256": "f8fc21f2d5faca215281c7909b830c97e4b2107f57fc9789a5c9884f6f3ab1a7",
+  "sources": [
+    {
+      "path": "E:\\Gomoku\\app\\artifacts\\test-results\\recovery-2026-11-05\\final-after-ack\\recovery-screenshots\\04-keyboard-dark-settled.png",
+      "sha256": "7c5e88972d6a6dd2f6ce84eabc82c1a994d99b93f7358ff02ee9bdc24b36a4c6"
+    },
+    {
+      "path": "E:\\Gomoku\\app\\artifacts\\test-results\\recovery-2026-11-05\\final-after-ack\\local-screenshots\\01-lobby.png",
+      "sha256": "ec7c497ec0e14923118b7d629a6eee9d9cc9af013c4454c7f41d4331ebd188bd"
+    }
+  ],
+  "hero_crop": [
+    378,
+    451,
+    1033,
+    1105
+  ],
+  "product_crop": [
+    260,
+    243,
+    1515,
+    1282
+  ]
+}

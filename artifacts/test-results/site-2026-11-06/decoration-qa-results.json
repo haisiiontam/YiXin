@@ -1,0 +1,35 @@
+{
+  "date": "2026-11-06T12:17:34.172Z",
+  "checks": [
+    "All four engineering sections present",
+    "All embedded images decoded",
+    "Six architecture controls select correctly",
+    "All twelve protocol steps, previous/next and direct selection",
+    "Protocol tabs support arrow, Home and End keys",
+    "Three AI explanations select correctly",
+    "Both benchmark samples and derived reductions verified",
+    "Evidence and NABCD disclosures open",
+    "All screenshots removed; six decorative SVG placements decode",
+    "Back-to-top works",
+    "390/320/768/1024 px: no document overflow, mobile interactions work",
+    "Single-file offline load: images, interaction and zero network requests",
+    "No-JavaScript fallback remains readable",
+    "Normal-motion reveal displays content after navigation",
+    "Print styles preserve content and remove navigation",
+    "No browser JavaScript errors"
+  ],
+  "errors": [],
+  "status": "PASS",
+  "artifact": "site/index.html",
+  "artifactSha256": "6356d742de26af0c9e6f41d4e215cdc0b1e053d20c42bacbc58eca1222ee6aa3",
+  "artifactBytes": 80161,
+  "scope": "Artwork replacement only; four engineering sections and their interactions retained. Existing product tests were not rerun.",
+  "assets": "Tabler Icons go-game and Phosphor Icons signature, cube-transparent, shield-check; pinned GitHub sources and MIT notices embedded.",
+  "visualInspection": [
+    "1440px desktop hero and feature strip",
+    "390px mobile hero and feature strip",
+    "320px hero"
+  ],
+  "command": "node .tmp/verify-decoration.mjs",
+  "fixedDuringQA": "Removing obsolete screenshot CSS initially removed the print hide rule; restored and reran all page checks."
+}

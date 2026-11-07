@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, CopyButton, Icon, short } from './ui.jsx';
 
 function Player({ color, label, address, own, active }) {
@@ -15,6 +15,7 @@ function Player({ color, label, address, own, active }) {
 // 所有按钮的可访问名称与旧版保持一致，浏览器端到端脚本依赖这些名称。
 export default function MatchPanel({ c }) {
   const { state, client, busy, act, hasRoom, finished, stake, setStake, room, setRoom, inviteCode, role, result, isParticipant, copy } = c;
+  const [exitConfirm, setExitConfirm] = useState(false);
   const joinRoom = () => act('正在加入对局', () => {
     let code = room.trim();
     if (code.includes('://')) { try { code = new URL(code).searchParams.get('room') || code; } catch { /* 无效链接交由客户端报错 */ } }
@@ -53,12 +54,17 @@ export default function MatchPanel({ c }) {
           <p className="room-hint">{state.status === 'invited' ? '邀请另一浏览器打开链接，使用独立钱包加入。双方到齐后自动开通通道。' : `你执${role} · ${state.peerConnected ? '对手已连接' : '对手暂未连接'}`}</p>
         </div>
       )}
+      {state.status === 'invited' && state.role === 1 && <Button disabled={busy} onClick={() => act('取消房间', () => client.cancelRoom())}>取消房间 / 邀请</Button>}
+      {['active', 'dispute'].includes(state.status) && isParticipant && state.mode !== 'demo' && <div className="room-info">
+        {!exitConfirm ? <Button disabled={busy} onClick={() => setExitConfirm(true)}>认输并结束本局</Button> : <div role="group" aria-label="确认认输"><p>认输将判对方获胜，并由合约结算本局积分。关闭页面不会代替结算。</p><Button disabled={busy} onClick={() => act('认输结算', async () => { await client.resign(); setExitConfirm(false); })}>确认认输并结算</Button><Button disabled={busy} onClick={() => setExitConfirm(false)}>继续对局</Button></div>}
+      </div>}
+      {finished && <Button disabled={busy} onClick={() => act('返回大厅', () => client.returnToLobby())}>返回大厅</Button>}
       {state.pending && (
         <div className="pending-box"><strong>有一手等待共同确认</strong><span>提案位置：{Math.floor(state.pending.position / 15) + 1} 行 {state.pending.position % 15 + 1} 列</span>
           {state.role > 0 && state.pending.by !== state.role && <Button icon="check" disabled={busy || !state.connected || state.persistence?.status === 'failed'} onClick={() => act('签名确认落子', () => client.acknowledge({ resend: true }))}>签名确认落子</Button>}</div>
       )}
       {state.terminal && state.status !== 'settled' && <Button kind="primary" icon="shield" disabled={busy || !state.ready || !isParticipant} onClick={() => act('正在链上结算', () => client.settle())}>链上结算本局</Button>}
-      {state.status === 'settled' && <div className="settled-note"><Icon name="check" size={18}/>{result || '本局结束'} · 积分已链上结算</div>}
+      {state.status === 'settled' && <div className="settled-note"><Icon name="check" size={18}/>{result || '本局结束'}{state.reason ? `（${state.reason}）` : ''} · 积分已链上结算</div>}
     </section>
   );
 }

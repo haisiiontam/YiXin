@@ -1,0 +1,35 @@
+{
+  "date": "2026-11-06T12:11:03.965Z",
+  "checks": [
+    "All four engineering sections present",
+    "All embedded images decoded",
+    "Six architecture controls select correctly",
+    "All twelve protocol steps, previous/next and direct selection",
+    "Protocol tabs support arrow, Home and End keys",
+    "Three AI explanations select correctly",
+    "Both benchmark samples and derived reductions verified",
+    "Evidence and NABCD disclosures open",
+    "Screenshot dialog opens and closes, restores keyboard focus",
+    "Back-to-top works",
+    "390/320/768/1024 px: no document overflow, mobile interactions work",
+    "Single-file offline load: images, interaction and zero network requests",
+    "No-JavaScript fallback remains readable",
+    "Normal-motion reveal displays content after navigation",
+    "Print styles preserve content and remove navigation",
+    "No browser JavaScript errors"
+  ],
+  "errors": [],
+  "status": "PASS",
+  "artifact": "site/index.html",
+  "artifactSha256": "f8fc21f2d5faca215281c7909b830c97e4b2107f57fc9789a5c9884f6f3ab1a7",
+  "artifactBytes": 326854,
+  "environment": "Windows; local Microsoft Edge via @playwright/test 1.56.1; HTTP loopback and file URL",
+  "scope": "Introduction HTML only. Existing 163 product tests and 20 browser scenarios were referenced, not rerun.",
+  "inspection": "Desktop hero, requirements, design, protocol, AI, validation and 320/390px mobile captures visually inspected.",
+  "verificationCommand": "node .tmp/verify-site.mjs (temporary browser QA harness; local server python -m http.server 4196 --bind 127.0.0.1 --directory site)",
+  "harnessNotes": [
+    "Initial image assertion ran before lazy decoding; explicitly awaited decoding.",
+    "After adding NABCD, scoped the disclosure selector to its section.",
+    "320px title clipping found and fixed; tablet title made responsive."
+  ]
+}

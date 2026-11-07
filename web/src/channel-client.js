@@ -170,6 +170,7 @@ export class ChannelClient {
   }
   async joinRoom(input) {
     return this._busy(async () => {
+      if (['active', 'dispute', 'invited'].includes(this.state.status)) throw Error('请先结束当前房间，再加入其他对局');
       let id = input.trim(); if (id.includes('?')) id = new URL(id).searchParams.get('room') || id;
       const room = await this._api(`/api/rooms/${encodeURIComponent(id)}`);
       this._closeSocket(); this._resetGame(); await this._connect(room.roomId);
@@ -240,6 +241,15 @@ export class ChannelClient {
   }
   async _onRoom({ room, peers }, { current = () => true, allowLifecycle = true } = {}) {
     if (!current()) return;
+    if (room.cancelled) {
+      if (room.channelId || room.white || this._room?.channelId || this._checkpoint.moves.length) throw Error('拒绝中继取消已匹配或已开通的对局');
+      this._roomMayOpen = false;
+      localStorage.removeItem(`${STORE}:active-room:${this.config.address}`);
+      this._closeSocket(); this._resetGame();
+      this._emit({ status: 'cancelled', connected: false });
+      this._log('房间已取消，邀请链接已失效，未锁定积分', 'success');
+      return;
+    }
     const role = same(this.wallet.address, room.black) ? 1 : 2;
     if (room.channelId) {
       const expectedId = keccak256(AbiCoder.defaultAbiCoder().encode(['address', 'address', 'bytes32'], [room.black, room.white, room.salt]));
@@ -341,7 +351,7 @@ export class ChannelClient {
         const moves = fromHex(c.moves), result = evaluate(moves);
         this._emit({ moves, winner: Number(c.winner), terminal: status === 'settled' || result.terminal, nextPlayer: result.nextPlayer, pending: null });
       }
-      this._emit({ points, status, black: c.black, white: c.white, deadline: Number(c.deadline), proofDeadline: Number(c.proofDeadline || 0), reason: ['', '五子连珠', '满盘和棋', '超时判负'][Number(c.reason)] || '' });
+      this._emit({ points, status, black: c.black, white: c.white, deadline: Number(c.deadline), proofDeadline: Number(c.proofDeadline || 0), reason: ['', '五子连珠', '满盘和棋', '超时判负', '主动认输'][Number(c.reason)] || '' });
       const scanKey = `${id}:${c.status}:${c.moves}:${c.deadline}:${c.proofDeadline || 0}`;
       if (!this.state.transactionListComplete || this._transactionScanKey !== scanKey) {
         this._emit({ transactionListComplete: false });
@@ -423,6 +433,32 @@ export class ChannelClient {
     await this._transaction(this.contract.forceMove(this.state.channelId, position), '链上强制落子'); await this.refresh();
   }); }
   async claimTimeout() { return this._busy(async () => { await this._transaction(this.contract.claimTimeout(this.state.channelId), '超时结算'); await this.refresh(); }); }
+  async cancelRoom() {
+    return this._busy(async () => {
+      if (this.state.status !== 'invited' || this.state.role !== 1) throw Error('当前不可取消房间');
+      if (!this._room?.channelId && this._room) {
+        if (!this.state.connected) throw Error('请先重连中继后取消房间');
+        this._send({ type: 'cancel-room' });
+        return;
+      }
+      await this._transaction(this.contract.cancelInvitation(this.state.channelId), '取消待加入邀请');
+      await this.refresh();
+    });
+  }
+  async resign() {
+    return this._busy(async () => {
+      if (![1, 2].includes(this.state.role) || !['active', 'dispute'].includes(this.state.status)) throw Error('当前不可认输');
+      await this._transaction(this.contract.resign(this.state.channelId), '主动认输');
+      await this.refresh();
+    });
+  }
+  async returnToLobby() {
+    if (!['settled', 'cancelled', 'idle'].includes(this.state.status)) throw Error('请先取消邀请或完成结算，再返回大厅');
+    localStorage.removeItem(`${STORE}:active-room:${this.config.address}`);
+    this._closeSocket(); this._resetGame();
+    const url = new URL(location.href); url.searchParams.delete('room');
+    history.replaceState(null, '', url);
+  }
   async cancelUnjoined() {
     return this._busy(async () => {
       let signerContract = this.contract;
@@ -608,7 +644,7 @@ export class ChannelClient {
   async runDemo() {
     return this._busy(async () => {
       if (this.config.mode === 'external') throw Error('外部钱包模式禁止脚本双钱包自动演示，请创建双人对局');
-      if (['active', 'dispute'].includes(this.state.status)) throw Error('请先完成当前对局');
+      if (['active', 'dispute', 'invited'].includes(this.state.status)) throw Error('请先完成或取消当前对局');
       this._closeSocket(); this._resetGame(); this._emit({ mode: 'demo', demoProgress: '准备两位本地测试棋手' });
       const black = this.wallet, white = Wallet.createRandom().connect(this.provider); await this._prepareWallet(white);
       const salt = '0x' + Array.from(randomBytes(32), b => b.toString(16).padStart(2, '0')).join('');

@@ -1,0 +1,25 @@
+{
+  "generatedAt": "2026-11-07T06:36:14.072Z",
+  "tests": [
+    {
+      "name": "unmatched creator cancels and can create again",
+      "status": "passed"
+    },
+    {
+      "name": "cancelled invite cannot be reused",
+      "status": "passed"
+    },
+    {
+      "name": "concession has a reversible confirmation then settles both players",
+      "status": "passed"
+    },
+    {
+      "name": "return to lobby clears invitation and permits next game",
+      "status": "passed"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0
+  }
+}

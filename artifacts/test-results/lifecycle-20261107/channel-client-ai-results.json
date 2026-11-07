@@ -1,0 +1,197 @@
+{
+  "generatedAt": "2026-11-07T06:34:54.630Z",
+  "tests": [
+    {
+      "name": "有效双签和双方钱包对应链上参与者时恢复人机局",
+      "status": "passed"
+    },
+    {
+      "name": "执白恢复后以 busy 锁保护 AI 待回复期间，防止并发落子",
+      "status": "passed"
+    },
+    {
+      "name": "旧 active-room 不能抢占更新的人机会话",
+      "status": "passed"
+    },
+    {
+      "name": "没有有效人机会话时保留原先的房间恢复路径",
+      "status": "passed"
+    },
+    {
+      "name": "拒绝恢复：AI 私钥与链上对手不符，不覆盖证据或签署下一手",
+      "status": "passed"
+    },
+    {
+      "name": "拒绝恢复：当前人类钱包不是链上对应执子方，不覆盖证据或签署下一手",
+      "status": "passed"
+    },
+    {
+      "name": "拒绝恢复：执子方被交换，不覆盖证据或签署下一手",
+      "status": "passed"
+    },
+    {
+      "name": "拒绝恢复：非法执子方，不覆盖证据或签署下一手",
+      "status": "passed"
+    },
+    {
+      "name": "拒绝恢复：原型属性不能当成难度，不覆盖证据或签署下一手",
+      "status": "passed"
+    },
+    {
+      "name": "拒绝恢复：证据通道与会话通道不同，不覆盖证据或签署下一手",
+      "status": "passed"
+    },
+    {
+      "name": "拒绝恢复：证据参与者与链上不同，不覆盖证据或签署下一手",
+      "status": "passed"
+    },
+    {
+      "name": "拒绝恢复：证据积分与链上不同，不覆盖证据或签署下一手",
+      "status": "passed"
+    },
+    {
+      "name": "拒绝恢复：证据来自另一条链，不覆盖证据或签署下一手",
+      "status": "passed"
+    },
+    {
+      "name": "拒绝恢复：证据来自另一合约，不覆盖证据或签署下一手",
+      "status": "passed"
+    },
+    {
+      "name": "旧人机会话不能替换 active-channel 指向的新局",
+      "status": "passed"
+    },
+    {
+      "name": "恢复拒绝伪造回执，成功回执以 RPC gas 和区块数据替换文件自述",
+      "status": "passed"
+    },
+    {
+      "name": "其他对局的回执不能被恢复成当前局的交易",
+      "status": "passed"
+    },
+    {
+      "name": "恢复等待 RPC 时也持有操作锁，不能并发开始新局",
+      "status": "passed"
+    },
+    {
+      "name": "临时 RPC 失败不删除 AI 密钥，网络恢复后可重试恢复",
+      "status": "passed"
+    },
+    {
+      "name": "争议期间保留本地 AI 钱包但不自动签字；终结通道可清理会话",
+      "status": "passed"
+    },
+    {
+      "name": "startAiGame 拒绝非法执子方、不安全整数与伪难度，且不触碰链上",
+      "status": "passed"
+    },
+    {
+      "name": "开通第一笔交易前持久化密钥与证据；join 失败保留恢复资料及已确认回执",
+      "status": "passed"
+    },
+    {
+      "name": "待加入通道恢复人类身份与到期退款入口状态，不自动加入或签字",
+      "status": "passed"
+    },
+    {
+      "name": "待加入时人类执白也保留开通方 AI 密钥，不自动签字",
+      "status": "passed"
+    },
+    {
+      "name": "人类执白的待加入通道到期后由经过链上身份核验的 AI 黑方退款",
+      "status": "passed"
+    },
+    {
+      "name": "AI 开通退款不得在期限前、错误密钥或通道已加入后发送交易",
+      "status": "passed"
+    },
+    {
+      "name": "开始人机局时移除旧 active-room，下一次刷新不会回到旧房间",
+      "status": "passed"
+    },
+    {
+      "name": "导入同通道旧双签或无签空谱不能覆盖较新内存和持久化快照",
+      "status": "passed"
+    },
+    {
+      "name": "尚未恢复的本地已保存双签也能阻止同通道回退及分叉导入",
+      "status": "passed"
+    },
+    {
+      "name": "即使持久化证据缺失，当前内存快照仍阻止分叉证据替换",
+      "status": "passed"
+    },
+    {
+      "name": "其他对局的有效证据不能覆盖invited/active/dispute当前活动局",
+      "status": "passed"
+    },
+    {
+      "name": "同通道兼容的更新快照可导入，空交易清单从RPC补齐两笔真实交易",
+      "status": "passed"
+    },
+    {
+      "name": "首次导入无签空谱明确报告未双签并仍重建真实交易",
+      "status": "passed"
+    },
+    {
+      "name": "链上核验期间等待日志RPC仍持有busy锁，完成前不签署AI回复",
+      "status": "passed"
+    },
+    {
+      "name": "恢复拒绝错误合约摘要且保留原始凭据，不签署下一手",
+      "status": "passed"
+    },
+    {
+      "name": "事件扫描按可信部署区块起始并每页最多2000块，返回真实proofDeadline",
+      "status": "passed"
+    },
+    {
+      "name": "非法部署区块或截掉开通事件的扫描起点不能被报告为完整交易核验",
+      "status": "passed"
+    },
+    {
+      "name": "重连中继的旧一手不能覆盖持久化九手双签，即使内存刚被清空",
+      "status": "passed"
+    },
+    {
+      "name": "重连中继的真实双签分叉谱不能覆盖持久化九手双签，即使内存刚被清空",
+      "status": "passed"
+    },
+    {
+      "name": "重连中继的无签空谱不能覆盖持久化九手双签，即使内存刚被清空",
+      "status": "passed"
+    },
+    {
+      "name": "重连中继提供相同九手最新双签时正常恢复",
+      "status": "passed"
+    },
+    {
+      "name": "同一等待房间首次配对可从roomId转换到正确的链上channelId",
+      "status": "passed"
+    },
+    {
+      "name": "等待房间转换例外不能允许其他房间替换当前活动邀请",
+      "status": "passed"
+    },
+    {
+      "name": "同通道保护不能允许中继改积分，或用空谱替换已保存的参与者身份",
+      "status": "passed"
+    },
+    {
+      "name": "外部结算后refresh先从RPC补全三笔及真实gas，再保存history和完整证据",
+      "status": "passed"
+    },
+    {
+      "name": "争议refresh补全遗漏交易，后续链上棋谱变化再扫描并补入强制落子",
+      "status": "passed"
+    },
+    {
+      "name": "结算refresh的RPC扫描失败时不保存虚假零交易history，恢复后可重试",
+      "status": "passed"
+    }
+  ],
+  "summary": {
+    "passed": 47,
+    "failed": 0
+  }
+}

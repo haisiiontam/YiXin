@@ -129,7 +129,7 @@ wss.on('connection', (socket, req) => {
     if (msg.type === 'auth') {
       if (socket.address) throw Error('连接已认证');
       const room = rooms.get(msg.roomId);
-      if (!room) throw Error('房间不存在');
+      if (!room || room.cancelled) throw Error('房间不存在或已取消');
       const address = getAddress(msg.address);
       const signer = verifyMessage(relayAuthText(nonce, room.roomId, CHAIN_ID, deployment.address), msg.signature);
       if (signer !== address) throw Error('连接认证失败');
@@ -143,6 +143,12 @@ wss.on('connection', (socket, req) => {
     }
     if (!socket.address) throw Error('请先认证');
     const room = rooms.get(socket.roomId);
+    if (msg.type === 'cancel-room') {
+      if (socket.address !== room.black || room.white || room.channelId) throw Error('只有房主可取消尚未匹配的房间');
+      room.cancelled = true;
+      await saveRooms(); broadcast(socket.roomId); return;
+    }
+    if (room.cancelled) throw Error('房间已取消');
     if (msg.type === 'sync') { broadcast(socket.roomId); return; }
     if (msg.type === 'propose') {
       if (!room.channelId || Number((await contract.getChannel(room.channelId)).status) !== 2) throw Error('通道尚未激活或已进入争议');

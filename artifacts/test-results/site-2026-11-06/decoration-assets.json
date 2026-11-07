@@ -1,0 +1,40 @@
+{
+  "retrieved": "2026-11-06",
+  "assets": [
+    {
+      "name": "go-game",
+      "path": "https://github.com/tabler/tabler-icons/blob/ed177a085b652fe04ec4f37ced867c94621e7840/icons/outline/go-game.svg",
+      "gitBlobSha": "88b88e726e155b8bd9754194c04883c501fa2b42",
+      "commit": "ed177a085b652fe04ec4f37ced867c94621e7840",
+      "license": "MIT",
+      "modifications": "Stroke width and color adapted; decorative arrangement."
+    },
+    {
+      "name": "signature",
+      "path": "https://github.com/phosphor-icons/core/blob/2b75f3ad12b420c9504ef05df8d2564a28f8500e/assets/duotone/signature-duotone.svg",
+      "gitBlobSha": "c9da9a2ad3a7e24065a61546a1391c27099dc67c",
+      "commit": "2b75f3ad12b420c9504ef05df8d2564a28f8500e",
+      "license": "MIT",
+      "modifications": "Fill color adapted; decorative arrangement."
+    },
+    {
+      "name": "shield-check",
+      "path": "https://github.com/phosphor-icons/core/blob/2b75f3ad12b420c9504ef05df8d2564a28f8500e/assets/duotone/shield-check-duotone.svg",
+      "gitBlobSha": "1a20c191f195f7be9f8fc7d7d8745681fbef743c",
+      "commit": "2b75f3ad12b420c9504ef05df8d2564a28f8500e",
+      "license": "MIT",
+      "modifications": "Fill color adapted; decorative arrangement."
+    },
+    {
+      "name": "cube-transparent",
+      "path": "https://github.com/phosphor-icons/core/blob/2b75f3ad12b420c9504ef05df8d2564a28f8500e/assets/duotone/cube-transparent-duotone.svg",
+      "gitBlobSha": "c0cb019082f8ced23c3b12036acc15907b8b2312",
+      "commit": "2b75f3ad12b420c9504ef05df8d2564a28f8500e",
+      "license": "MIT",
+      "modifications": "Fill color adapted; decorative arrangement."
+    }
+  ],
+  "artifact": "site/index.html",
+  "artifactSha256": "6356d742de26af0c9e6f41d4e215cdc0b1e053d20c42bacbc58eca1222ee6aa3",
+  "artifactBytes": 80161
+}

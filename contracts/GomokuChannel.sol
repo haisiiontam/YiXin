@@ -87,6 +87,24 @@ contract GomokuChannel is EIP712 {
         emit ChannelCancelled(id);
     }
 
+    // An unaccepted invitation locks only the creator's points.
+    function cancelInvitation(bytes32 id) external {
+        Channel storage c = _channels[id];
+        require(c.status == State.Invited && msg.sender == c.black, "not invited black");
+        c.status = State.Cancelled;
+        points[c.black] += c.stake;
+        totalLocked -= c.stake;
+        emit ChannelCancelled(id);
+    }
+
+    // Voluntary concession is distinct from a board win and requires membership.
+    function resign(bytes32 id) external {
+        Channel storage c = _channels[id];
+        _member(c);
+        require(c.status == State.Active || c.status == State.Dispute, "not live");
+        _finish(id, msg.sender == c.black ? 2 : 1, 4);
+    }
+
     function getChannel(bytes32 id) external view returns (Channel memory) { return _channels[id]; }
 
     function stateDigest(bytes32 id, bytes calldata moves) public view returns (bytes32) {

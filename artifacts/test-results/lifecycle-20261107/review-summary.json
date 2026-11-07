@@ -1,0 +1,98 @@
+{
+  "date": "2026-11-07",
+  "automated": {
+    "passed": 166,
+    "failed": 0
+  },
+  "browserRegression": 8,
+  "lifecycleBrowser": 4,
+  "files": [
+    {
+      "file": "artifacts/test-results/lifecycle-20261107/final/ai-results.json",
+      "summary": {
+        "passed": 30,
+        "failed": 0
+      }
+    },
+    {
+      "file": "artifacts/test-results/lifecycle-20261107/final/certificate-results.json",
+      "summary": {
+        "passed": 9,
+        "failed": 0
+      }
+    },
+    {
+      "file": "artifacts/test-results/lifecycle-20261107/final/chain-runtime-results.json",
+      "summary": {
+        "passed": 13,
+        "failed": 0
+      }
+    },
+    {
+      "file": "artifacts/test-results/lifecycle-20261107/final/channel-client-ai-results.json",
+      "summary": {
+        "passed": 47,
+        "failed": 0
+      }
+    },
+    {
+      "file": "artifacts/test-results/lifecycle-20261107/final/channel-client-connect-race-results.json",
+      "summary": {
+        "passed": 8,
+        "failed": 0
+      }
+    },
+    {
+      "file": "artifacts/test-results/lifecycle-20261107/final/channel-client-network-results.json",
+      "summary": {
+        "passed": 7,
+        "failed": 0
+      }
+    },
+    {
+      "file": "artifacts/test-results/lifecycle-20261107/final/contract-results.json",
+      "summary": {
+        "passed": 17,
+        "failed": 0,
+        "successfulTransactions": 172,
+        "revertedTransactions": 2
+      }
+    },
+    {
+      "file": "artifacts/test-results/lifecycle-20261107/final/dispute-security-results.json",
+      "summary": {
+        "passed": 3,
+        "failed": 0
+      }
+    },
+    {
+      "file": "artifacts/test-results/lifecycle-20261107/final/evidence-chain-results.json",
+      "summary": {
+        "passed": 9,
+        "failed": 0
+      }
+    },
+    {
+      "file": "artifacts/test-results/lifecycle-20261107/final/protocol-results.json",
+      "summary": {
+        "passed": 4,
+        "failed": 0
+      }
+    },
+    {
+      "file": "artifacts/test-results/lifecycle-20261107/final/recovery-policy-results.json",
+      "summary": {
+        "passed": 14,
+        "failed": 0
+      }
+    },
+    {
+      "file": "artifacts/test-results/lifecycle-20261107/final/recovery-regression-results.json",
+      "summary": {
+        "passed": 5,
+        "failed": 0
+      }
+    }
+  ],
+  "limitations": "Other historical browser suites were not rerun; no public-chain or human-user acceptance claim."
+}

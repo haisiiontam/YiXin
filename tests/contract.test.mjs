@@ -439,3 +439,25 @@ check('normal channel versus every-move on-chain baseline uses equal escrow and 
     evidence.comparisons.push({ label, moveCount: moves.length, channel: { transactions: channelTx.length, gasUsed: channelGas.toString(), hashes: channelTx.map(tx => tx.hash) }, baseline: { transactions: baselineTx.length, gasUsed: baselineGas.toString(), hashes: baselineTx.map(tx => tx.hash) }, transactionReductionPercent: (1 - channelTx.length / baselineTx.length) * 100, gasReductionPercent: (1 - Number(channelGas) / Number(baselineGas)) * 100, excludes: 'Deployments and registration are recorded separately; both games use open+join and automatic final-move settlement.' });
   }
 });
+
+check('creator cancels an unaccepted invitation immediately and refunds exactly once', async () => {
+ const c = await fixture(); const id = await open(c,100n,false);
+ await assert.rejects(c.connect(signers[2]).cancelInvitation(id));
+ await receipt('cancel immediately', c.cancelInvitation(id));
+ assert.equal(Number((await c.getChannel(id)).status),5);
+ assert.equal(await c.points(wallets[0].address),1000n);
+ await assert.rejects(async () => { const tx = await c.cancelInvitation(id); await tx.wait(); }); await assert.rejects(c.connect(signers[1]).joinChannel(id)); await conservation(c);
+});
+check('only a participant may resign an active channel and transfer the locked pool once', async () => {
+ const c = await fixture(); const id = await open(c);
+ await assert.rejects(c.connect(signers[2]).resign(id));
+ await receipt('black concedes', c.resign(id));
+ const channel=await c.getChannel(id); assert.equal(Number(channel.winner),2); assert.equal(Number(channel.reason),4);
+ assert.equal(await c.points(wallets[1].address),1100n); await assert.rejects(async () => { const tx = await c.resign(id); await tx.wait(); }); await conservation(c);
+});
+check('a player can concede during a dispute without waiting for the deadline', async () => {
+ const c = await fixture(); const id = await open(c);
+ await receipt('empty checkpoint challenge',c.challenge(id,'0x','0x','0x'));
+ await receipt('white concedes',c.connect(signers[1]).resign(id));
+ assert.equal(Number((await c.getChannel(id)).winner),1); await conservation(c);
+});

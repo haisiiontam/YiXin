@@ -1,0 +1,45 @@
+{
+  "generatedAt": "2026-11-07T06:34:32.260Z",
+  "tests": [
+    {
+      "name": "(a) 黑胜证书：结构、关键文字、无脚本/外链，且只透传预期的十六进制字段",
+      "status": "passed"
+    },
+    {
+      "name": "(b) 篡改棋谱或交换签名时 buildCertificateSvg 抛错",
+      "status": "passed"
+    },
+    {
+      "name": "(c) 交易标签中的 HTML/XML 特殊字符被转义，不以原文出现",
+      "status": "passed"
+    },
+    {
+      "name": "(d) 225 手和棋证书体积小于 60000 字符，且显示和棋",
+      "status": "passed"
+    },
+    {
+      "name": "(d2) 未终局对局显示“对局进行中/未终局”",
+      "status": "passed"
+    },
+    {
+      "name": "(e) 深色主题与浅色主题不同，且包含 #16130f",
+      "status": "passed"
+    },
+    {
+      "name": "篡改未签名的链上元数据不能伪装为证书已核验的结算或节省",
+      "status": "passed"
+    },
+    {
+      "name": "(f) 证书文件名格式",
+      "status": "passed"
+    },
+    {
+      "name": "示例证书写入 artifacts/samples（浅色与深色）",
+      "status": "passed"
+    }
+  ],
+  "summary": {
+    "passed": 9,
+    "failed": 0
+  }
+}

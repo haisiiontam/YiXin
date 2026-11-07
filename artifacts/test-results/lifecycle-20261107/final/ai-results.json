@@ -1,0 +1,161 @@
+{
+  "generatedAt": "2026-11-07T06:42:07.980Z",
+  "tests": [
+    {
+      "name": "PATTERN_NAMES 与坐标标签符合约定",
+      "status": "passed"
+    },
+    {
+      "name": "识别连五:黑在第7行 d..h 连成五子",
+      "status": "passed"
+    },
+    {
+      "name": "识别活四:两端皆空,completing 为两端",
+      "status": "passed"
+    },
+    {
+      "name": "识别冲四:一端被白子封住,只剩一个成五点",
+      "status": "passed"
+    },
+    {
+      "name": "识别跳冲四 X X . X X",
+      "status": "passed"
+    },
+    {
+      "name": "识别活三:XXX 两端留空,completing 为能升级成活四的点",
+      "status": "passed"
+    },
+    {
+      "name": "识别眠三:一端被白子封住的 XXX",
+      "status": "passed"
+    },
+    {
+      "name": "棋盘边缘不会把相邻行的棋子\"跨行\"连起来",
+      "status": "passed"
+    },
+    {
+      "name": "优势值:空盘为0,方向正确,四越强越接近±1",
+      "status": "passed"
+    },
+    {
+      "name": "classifyMove:双活三与四三的棋型计数,且不改动棋盘",
+      "status": "passed"
+    },
+    {
+      "name": "shape:最后一手形成的棋型与中文标签",
+      "status": "passed"
+    },
+    {
+      "name": "candidateMoves:空盘为天元,否则为距棋子 <=radius 的空位",
+      "status": "passed"
+    },
+    {
+      "name": "evaluationCurve:长度、与 analyzePosition 一致、225 手 <400ms",
+      "status": "passed"
+    },
+    {
+      "name": "LEVELS 名称",
+      "status": "passed"
+    },
+    {
+      "name": "首手规则:黑走天元,白走天元的斜角(rng 决定)",
+      "status": "passed"
+    },
+    {
+      "name": "终局或满盘时 chooseMove / suggestMoves 的行为",
+      "status": "passed"
+    },
+    {
+      "name": "能赢就赢:即使对方也有四,各难度都选择连五",
+      "status": "passed"
+    },
+    {
+      "name": "堵五:adept/master 必堵,novice 在 200 个种子中堵住的比例 >=85%",
+      "status": "passed"
+    },
+    {
+      "name": "堵跳四:唯一成五点必须被封堵",
+      "status": "passed"
+    },
+    {
+      "name": "堵活三:adept/master 在活三的端点附近落子",
+      "status": "passed"
+    },
+    {
+      "name": "能做活四就做活四",
+      "status": "passed"
+    },
+    {
+      "name": "双活三:suggestMoves 的理由为\"形成双活三\"",
+      "status": "passed"
+    },
+    {
+      "name": "模糊测试:200 个随机中盘局面,三档难度都只走合法空位",
+      "status": "passed"
+    },
+    {
+      "name": "确定性:相同 seededRng 得到相同走法;seededRng 本身可复现",
+      "status": "passed"
+    },
+    {
+      "name": "suggestMoves:不修改入参,数量/排序/理由正确",
+      "status": "passed"
+    },
+    {
+      "name": "explainMove:能解释刚下的一手",
+      "status": "passed"
+    },
+    {
+      "name": "自博弈:master 对 novice(黑白各 12 局)胜率 >= 90%,且全部合法收官",
+      "status": "passed"
+    },
+    {
+      "name": "自博弈:adept 对 novice(黑白各 12 局)胜率 >= 75%,且全部合法收官",
+      "status": "passed"
+    },
+    {
+      "name": "自博弈:master 对 adept(各执黑白 8 局)执黑全胜,总胜局多于 adept",
+      "status": "passed"
+    },
+    {
+      "name": "性能:各难度在 30 手中盘的单步耗时,master < 1500ms,且 timeBudgetMs 生效",
+      "status": "passed"
+    }
+  ],
+  "measurements": {
+    "evaluationCurve225Ms": 4.7,
+    "noviceBlockFiveRate": 0.95,
+    "fuzzPositions": 200,
+    "masterVsNovice": {
+      "wins": 24,
+      "total": 24,
+      "rate": 1,
+      "longest": 36,
+      "ms": 2321
+    },
+    "adeptVsNovice": {
+      "wins": 24,
+      "total": 24,
+      "rate": 1,
+      "longest": 41,
+      "ms": 135
+    },
+    "masterVsAdept": {
+      "blackWins": 8,
+      "whiteWins": 4,
+      "adeptWins": 1,
+      "draws": 3,
+      "games": 16
+    },
+    "chooseMoveMs30Stones": {
+      "novice": 1.2,
+      "adept": 0.8,
+      "master": 1.1
+    },
+    "masterTimeBudget5msActualMs": 1.2
+  },
+  "summary": {
+    "passed": 30,
+    "failed": 0
+  }
+}
