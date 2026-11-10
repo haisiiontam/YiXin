@@ -1,4 +1,4 @@
-# 弈·信 运行容器：Node 22 + pnpm 12 + 项目依赖（含 solc / ganache）
+# 弈·信 运行容器：Node 22 + pnpm 10 + 项目依赖（含 solc / ganache）
 # 构建：docker build -t gomoku-channel-lab .
 # 运行：docker run --rm -p 4173:4173 -v "%cd%\\artifacts\\runtime:/app/artifacts/runtime" gomoku-channel-lab
 
@@ -10,7 +10,7 @@ ENV PNPM_HOME=/usr/local/pnpm \
     PATH=/usr/local/pnpm:$PATH
 
 # 直接用 npm 装 pnpm：比 corepack 少一层网络依赖，版本也钉死
-RUN npm install -g pnpm@12.15.0 --registry=$NPM_REGISTRY
+RUN npm install -g pnpm@10.11.0 --registry=$NPM_REGISTRY
 
 WORKDIR /app
 
