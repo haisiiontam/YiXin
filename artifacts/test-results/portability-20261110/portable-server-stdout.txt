@@ -1,0 +1,5 @@
+Node.js 24.19.0
+弈·信：启动本地链和游戏，浏览器打开 http://127.0.0.1:4173
+Gomoku Channel Lab: http://127.0.0.1:59582
+local-teaching chain 31337; contract 0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab
+All mutable data: E:\Gomoku\app\.tmp\移动 演示目录-20261110\artifacts\runtime-smoke

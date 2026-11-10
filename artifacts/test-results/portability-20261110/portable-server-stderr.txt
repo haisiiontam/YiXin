@@ -1,0 +1,9 @@
+This version of µWS is not compatible with your Node.js build:
+
+Error: Cannot find module '../binaries/uws_win32_x64_137.node'
+Require stack:
+- E:\Gomoku\app\node_modules\.pnpm\@trufflesuite+uws-js-unofficial@20.30.0-unofficial.0\node_modules\@trufflesuite\uws-js-unofficial\src\uws.js
+- E:\Gomoku\app\node_modules\.pnpm\ganache@7.9.2\node_modules\ganache\dist\node\core.js
+Falling back to a NodeJS implementation; performance may be degraded.
+
+

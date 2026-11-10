@@ -8,18 +8,30 @@
 
 ## 安装与启动
 
-所有依赖、缓存和运行数据限制在 E:\Gomoku 工作区内。安装已锁定的依赖后执行：
+在解压或克隆得到的项目根目录执行（路径可包含空格）。安装 Node.js LTS 后，双击 `启动游戏.cmd`，或运行：
 
 ```powershell
-$env:TEMP='E:\Gomoku\app\.tmp'
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\start.ps1
+```
+
+启动会检查 Node 版本、自动按锁文件补齐缺失依赖并构建缺失的前端。Node 未安装时会给出 [官方下载地址](https://nodejs.org/)。支持 Node 20.19.x 或 22.12 及以上版本；可选 `NODE_BINARY` 指定可执行文件。pnpm 固定版本由 npm exec 下载至项目缓存，不全局安装。依赖、缓存和运行数据保存在项目内；首次安装需要网络。仅检查环境、不安装依赖可运行 `scripts/bootstrap.ps1 -CheckOnly`。
+
+手动运行或协议版本升级时：
+
+```powershell
+$projectPath=(Get-Location).Path
+$env:TEMP=Join-Path $projectPath '.tmp'
 $env:TMP=$env:TEMP
+$env:npm_config_cache=Join-Path $projectPath '.cache\npm'
+New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
+# 缺少依赖时先运行 scripts/bootstrap.ps1
 node scripts/compile.mjs
 node node_modules/vite/bin/vite.js build
-$env:RUNTIME_DIR='E:\Gomoku\app\artifacts\runtime-lifecycle-20261107'
+$env:RUNTIME_DIR=Join-Path $projectPath 'artifacts\runtime-lifecycle-20261107'
 node server/index.mjs
 ```
 
-默认地址 http://127.0.0.1:4173 。首次安装可用 pnpm install --frozen-lockfile --ignore-scripts，同时将 pnpm 缓存设置在工作区。两个玩家使用独立浏览器配置或普通与无痕窗口，不能用同配置普通标签页充当两人。
+默认地址 http://127.0.0.1:4173 。两个玩家使用独立浏览器配置或普通与无痕窗口，不能用同配置普通标签页充当两人。
 
 本轮新增 cancelInvitation 与 resign，合约字节码已变化。旧运行目录保留，不能直接复用旧部署；为当前版本选择新 RUNTIME_DIR。不要同时打开同一链数据库。
 
@@ -42,8 +54,12 @@ node scripts/e2e-lifecycle.mjs
 
 当前迭代原始记录位于 artifacts/test-results/lifecycle-20261107，final 为修正回执等待后的全套结果，browser-regression 为八组既有浏览器回归，lifecycle-browser-results.json 为四组新增退出场景。历史通过与本轮重跑分开记录，失败证据不删除。
 
+当前浏览器脚本默认使用 Windows Edge。其他安装位置请设置 `BROWSER_PATH` 为实际 Chromium/Chrome/Edge 可执行文件；仅运行 `playwright install chromium` 不会自动改变这些脚本的默认路径。未安装浏览器的新机器不能直接宣称 E2E 已通过。
+
+开发过程的缺陷、失败与遗留风险见 [缺陷复盘](docs/bug-retrospective.md) 及 [本轮逐项核查](docs/bug-review-20261110.md)。Git 历史保留实际提交；导出的源码 ZIP 通常不含 `.git`，不通过补造旧提交冒充历史。
+
 ## 分工与边界
 
-谭海翔承担主要架构设计、核心代码、功能扩展、可靠性验证与工程整合；赵国豪承担辅助说明核对与展示讲解，不据此虚构核心代码贡献。开发辅助工具参与实施与文档整理。
+谭海翔承担需求、架构设计、核心代码、功能扩展、测试、工程整合、材料及课堂讲解；赵国豪发现 Docker 部署中存在的问题，提高程序部署的方便性和鲁棒性。开发辅助工具参与实施与文档整理。
 
 默认 Ganache 是本地单节点教学链，积分无现实价值，不等于公网共识。外部 RPC/用户钱包接入见 [外部指南](docs/external-chain.md)。尚未实现 Watchtower；自动化浏览器和钱包接口装置不能代替真人任务、读屏器及真实插件钱包验收。GitHub 推送也不自动等于公众可访问或满足课程发布期限。

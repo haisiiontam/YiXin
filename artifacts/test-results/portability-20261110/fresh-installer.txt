@@ -1,0 +1,15 @@
+Node.js 24.19.0
+按锁文件安装依赖（pnpm@10.11.0，缓存位于项目 .cache）…
+npm warn Unknown project config "node-linker". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+npm warn Unknown project config "package-import-method". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+npm warn Unknown user config "msvs_version". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+npm warn Unknown user config "msbuild_path". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+npm warn Unknown user config "python". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+Lockfile is up to date, resolution step is skipped
+Packages: +1
++
+Progress: resolved 0, reused 0, downloaded 1, added 0
+Progress: resolved 0, reused 0, downloaded 1, added 1, done
+
+Done in 810ms using pnpm v10.11.0
+C:\Program Files\nodejs\node.exe

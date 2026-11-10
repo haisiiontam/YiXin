@@ -1,0 +1,801 @@
+{
+  "generatedAt": "2026-11-10T08:47:27.000Z",
+  "command": "node --test --test-concurrency=1 tests/chain-runtime.test.mjs",
+  "observations": {
+    "remote": {
+      "chainId": 43123,
+      "address": "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab",
+      "deploymentHash": "0xa01545b110209464ef3fcfa30288a5ea6603d4119bfc17872d8c7da168dc16b4",
+      "deploymentBlock": 1,
+      "runtimeCodeHash": "0x34ff897dd53bb86b70325595d41a8036e49440344f6727f62d3891a46ab060a6",
+      "transport": "independent ganache.server over HTTP JSON-RPC on loopback",
+      "publicDeployment": false
+    },
+    "initializationMethods": [
+      "eth_chainId",
+      "eth_getCode",
+      "eth_getBlockByNumber",
+      "eth_call",
+      "net_version"
+    ],
+    "externalConfig": {
+      "mode": "external",
+      "walletMode": "injected",
+      "chainId": 43123,
+      "address": "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab",
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "challengePeriod_",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "invitePeriod_",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "constructor"
+        },
+        {
+          "inputs": [],
+          "name": "ECDSAInvalidSignature",
+          "type": "error"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "length",
+              "type": "uint256"
+            }
+          ],
+          "name": "ECDSAInvalidSignatureLength",
+          "type": "error"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "s",
+              "type": "bytes32"
+            }
+          ],
+          "name": "ECDSAInvalidSignatureS",
+          "type": "error"
+        },
+        {
+          "inputs": [],
+          "name": "InvalidShortString",
+          "type": "error"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "string",
+              "name": "str",
+              "type": "string"
+            }
+          ],
+          "name": "StringTooLong",
+          "type": "error"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32"
+            }
+          ],
+          "name": "ChannelCancelled",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32"
+            }
+          ],
+          "name": "ChannelJoined",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "black",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "white",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "stake",
+              "type": "uint256"
+            }
+          ],
+          "name": "ChannelOpened",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint8",
+              "name": "winner",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint8",
+              "name": "reason",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "blackPoints",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "whitePoints",
+              "type": "uint256"
+            }
+          ],
+          "name": "ChannelSettled",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "movesCount",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "deadline",
+              "type": "uint256"
+            }
+          ],
+          "name": "CheckpointChallenged",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [],
+          "name": "EIP712DomainChanged",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint8",
+              "name": "position",
+              "type": "uint8"
+            }
+          ],
+          "name": "ForcedMove",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "player",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "points",
+              "type": "uint256"
+            }
+          ],
+          "name": "Registered",
+          "type": "event"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32"
+            }
+          ],
+          "name": "cancelInvitation",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32"
+            }
+          ],
+          "name": "cancelUnjoined",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes",
+              "name": "moves",
+              "type": "bytes"
+            },
+            {
+              "internalType": "bytes",
+              "name": "sigBlack",
+              "type": "bytes"
+            },
+            {
+              "internalType": "bytes",
+              "name": "sigWhite",
+              "type": "bytes"
+            }
+          ],
+          "name": "challenge",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "challengePeriod",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32"
+            }
+          ],
+          "name": "claimTimeout",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "eip712Domain",
+          "outputs": [
+            {
+              "internalType": "bytes1",
+              "name": "fields",
+              "type": "bytes1"
+            },
+            {
+              "internalType": "string",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "version",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "chainId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "verifyingContract",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "salt",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint256[]",
+              "name": "extensions",
+              "type": "uint256[]"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "moves",
+              "type": "bytes"
+            }
+          ],
+          "name": "evaluate",
+          "outputs": [
+            {
+              "internalType": "uint8",
+              "name": "winner",
+              "type": "uint8"
+            },
+            {
+              "internalType": "bool",
+              "name": "terminal",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "pure",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint8",
+              "name": "position",
+              "type": "uint8"
+            }
+          ],
+          "name": "forceMove",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32"
+            }
+          ],
+          "name": "getChannel",
+          "outputs": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "black",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "white",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "stake",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "enum GomokuChannel.State",
+                  "name": "status",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "deadline",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "proofDeadline",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bytes",
+                  "name": "moves",
+                  "type": "bytes"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "winner",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "reason",
+                  "type": "uint8"
+                }
+              ],
+              "internalType": "struct GomokuChannel.Channel",
+              "name": "",
+              "type": "tuple"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "invitePeriod",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32"
+            }
+          ],
+          "name": "joinChannel",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "white",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "stake",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "salt",
+              "type": "bytes32"
+            }
+          ],
+          "name": "openChannel",
+          "outputs": [
+            {
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "name": "points",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "register",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ],
+          "name": "registered",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32"
+            }
+          ],
+          "name": "resign",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes",
+              "name": "moves",
+              "type": "bytes"
+            },
+            {
+              "internalType": "bytes",
+              "name": "sigBlack",
+              "type": "bytes"
+            },
+            {
+              "internalType": "bytes",
+              "name": "sigWhite",
+              "type": "bytes"
+            }
+          ],
+          "name": "settle",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "id",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "bytes",
+              "name": "moves",
+              "type": "bytes"
+            }
+          ],
+          "name": "stateDigest",
+          "outputs": [
+            {
+              "internalType": "bytes32",
+              "name": "",
+              "type": "bytes32"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "totalIssued",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "totalLocked",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        }
+      ],
+      "networkName": "External EVM 43123",
+      "challengePeriod": 60,
+      "invitePeriod": 300,
+      "deploymentBlock": 1,
+      "runtimeCodeHash": "0x34ff897dd53bb86b70325595d41a8036e49440344f6727f62d3891a46ab060a6",
+      "domain": {
+        "name": "GomokuChannel",
+        "version": "1",
+        "chainId": 43123,
+        "verifyingContract": "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab"
+      },
+      "pointsInitial": 1000
+    },
+    "rawTransaction": {
+      "hash": "0x40c56fdddf7926cf29f8525dce8a42891e1591aef5bb6054684c42bdc743568d",
+      "status": "0x1",
+      "blockNumber": "0x2",
+      "eventCount": 1,
+      "signerSource": "deterministic local test account, key not recorded"
+    },
+    "legacyLayoutRejection": {
+      "address": "0x254dffcd3277C0b1660F6d42EFbB754edaBAbC2B",
+      "deploymentHash": "0xda538f4dfae66e5c0ec1187d74b6b7048cd8510f45fb86673502234cbfc43da2",
+      "runtimeCodeHash": "0x8aea4082e50c286a87fc0b05b9c276a1ac3bab05d4ed83b11e3c1f5a91316f75",
+      "oldFieldCount": 8,
+      "misdecodedProofDeadline": "256",
+      "misdecodedMoves": "0x",
+      "startupRejected": true,
+      "registrationCount": 0,
+      "openingCount": 0,
+      "initializationBroadcast": false
+    },
+    "localReuse": {
+      "address": "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab",
+      "creationArtifactHash": "0x95ffebd8427d2268f04f55c196f9ce8f032cb6e48260247b92992b1b1da39b80",
+      "runtimeCodeHash": "0x276e6929515ba22db2da676c1dcaf48ab9c96af755b3c4c864ddf685f00e3d09",
+      "deploymentBlock": 1,
+      "reusedWithoutDeployment": true
+    },
+    "periodicMining": {
+      "initialBlock": 1,
+      "laterBlock": 2,
+      "initialTimestamp": 1794300440,
+      "laterTimestamp": 1794300441,
+      "defaultBlockTime": 1
+    },
+    "manualPreparation": {
+      "path": "artifacts\\deployment-preparations\\unsigned-43123-1794300446113.json",
+      "chainId": 43123,
+      "gasEstimate": "2364350",
+      "transactionBroadcast": false,
+      "privateKeysRead": false
+    },
+    "manualPreparationGuard": {
+      "withoutFlagExitCode": 1,
+      "signedOrBroadcast": false
+    }
+  },
+  "tests": [
+    {
+      "name": "external connects to independent JSON-RPC without deployment, signing, account access or funding",
+      "status": "passed",
+      "durationMs": 304
+    },
+    {
+      "name": "external HTTP config, faucet, strict RPC allowlist and origin policy",
+      "status": "passed",
+      "durationMs": 372
+    },
+    {
+      "name": "external RPC broadcasts client-signed raw transaction and exposes real receipt/log/block reads",
+      "status": "passed",
+      "durationMs": 509
+    },
+    {
+      "name": "external rejects missing configuration, wrong chain, empty code, wrong runtime hash, periods and deployment block",
+      "status": "passed",
+      "durationMs": 579
+    },
+    {
+      "name": "external rejects correct code anchors with incompatible EIP-712 domain or stateDigest",
+      "status": "passed",
+      "durationMs": 516
+    },
+    {
+      "name": "external rejects a real legacy eight-field channel before registration or opening despite correct hash/domain/digest",
+      "status": "passed",
+      "durationMs": 787
+    },
+    {
+      "name": "external manifest reuses exact identity and refuses changed chain fingerprint",
+      "status": "passed",
+      "durationMs": 762
+    },
+    {
+      "name": "local persists creation artifact and actual immutable runtime hashes and reuses the same deployment",
+      "status": "passed",
+      "durationMs": 515
+    },
+    {
+      "name": "local default mines periodic blocks so proof windows and timeouts progress without management RPC",
+      "status": "passed",
+      "durationMs": 2170
+    },
+    {
+      "name": "local refuses actual on-chain runtime code drift instead of redeploying",
+      "status": "passed",
+      "durationMs": 308
+    },
+    {
+      "name": "local refuses chain fingerprint drift, legacy manifest and untracked data without clearing directories",
+      "status": "passed",
+      "durationMs": 313
+    },
+    {
+      "name": "manual authorized preparation creates unsigned deployment data without a transaction or private key handling",
+      "status": "passed",
+      "durationMs": 3763
+    },
+    {
+      "name": "runtime directory must stay inside the workspace and deployment preparation requires explicit authorization",
+      "status": "passed",
+      "durationMs": 822
+    }
+  ],
+  "summary": {
+    "passed": 13,
+    "failed": 0
+  }
+}

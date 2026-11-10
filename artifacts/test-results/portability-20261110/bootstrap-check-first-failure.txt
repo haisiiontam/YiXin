@@ -1,0 +1,10 @@
+& : The term 'C:\Program Files\nodejs\node.exe C:\Users\lenovo\.cache\codex-runtimes\codex-primary-runtime\dependencies
+\node\bin\node.exe' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the sp
+elling of the name, or if a path was included, verify that the path is correct and try again.
+At E:\Gomoku\app\scripts\bootstrap.ps1:25 char:22
++ $nodeVersionText = & $nodeExe -p 'process.versions.node'
++                      ~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\Program File...de\bin\node.exe:String) [], ParentContainsErrorRecord 
+   Exception
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 

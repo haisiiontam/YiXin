@@ -1,0 +1,2 @@
+Node.js 24.19.0
+C:\Program Files\nodejs\node.exe

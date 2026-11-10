@@ -1,0 +1,1 @@
+未找到 Node.js。请从 https://nodejs.org/ 下载并安装 LTS，加入 PATH 后重试；也可设置 NODE_BINARY。需要 Node 20.19.x 或 22.12 及以上版本。

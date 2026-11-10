@@ -2,6 +2,7 @@
   "name": "gomoku-channel-lab",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "pnpm@10.11.0",
   "type": "module",
   "description": "可验证结算的状态通道五子棋课程设计",
   "scripts": {

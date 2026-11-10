@@ -1,0 +1,27 @@
+{
+  "limitations": [
+    "Relocation on the same Windows host, not a second machine.",
+    "Fresh install fixture has one small dependency; full product clean install not rerun.",
+    "No new browser end-to-end execution in this portability check."
+  ],
+  "checks": [
+    {
+      "status": "passed",
+      "exitCode": 1,
+      "name": "missing-node-official-guidance"
+    },
+    {
+      "scope": "Actual npm exec/pinned pnpm download, local cache, frozen lock; NOT a full clean product install",
+      "status": "passed",
+      "name": "fresh-small-fixture-install"
+    },
+    {
+      "port": 59582,
+      "status": "passed",
+      "path": "E:\\Gomoku\\app\\.tmp\\移动 演示目录-20261110",
+      "name": "relocated-product-start-and-http",
+      "scope": "Copied product and built frontend, shared existing dependencies via junction; no real second machine or browser task"
+    }
+  ],
+  "date": "2026-11-10"
+}

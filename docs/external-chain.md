@@ -26,7 +26,7 @@ $env:EXPECTED_RUNTIME_CODE_HASH = '<经独立核实的0x开头32字节代码hash
 $env:CHALLENGE_PERIOD = '60'
 $env:INVITE_PERIOD = '300'
 $env:NETWORK_NAME = 'Operator verified EVM'
-$env:RUNTIME_DIR = 'E:\Gomoku\app\artifacts\runtime-external-new'
+$env:RUNTIME_DIR = Join-Path (Get-Location).Path 'artifacts\runtime-external-new'
 node server/index.mjs
 ```
 
@@ -77,8 +77,9 @@ node scripts/deploy-external.mjs --prepare-authorized
 
 ```powershell
 # 在应用根目录执行，缓存、临时目录与证据均留在工作区
-$env:TEMP = 'E:\Gomoku\app\artifacts\test-results\trust-audit-2026-11-04\tmp'
+$env:TEMP = Join-Path (Get-Location).Path '.tmp\external-chain-tests'
 $env:TMP = $env:TEMP
+New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
 node --test --test-concurrency=1 tests/chain-runtime.test.mjs
 ```
 

@@ -7,7 +7,7 @@ import { compile } from '../scripts/compile.mjs';
 import { STATE_TYPES } from '../shared/gomoku.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-// Windows workspace is E:\\Gomoku; container deployments confine writes to their actual app root.
+// Windows confines writes to the parent workspace; containers use their actual app root.
 const WORKSPACE = process.platform === 'win32' ? path.resolve(ROOT, '..') : ROOT;
 const MANIFEST_VERSION = 2;
 export const RPC_ALLOWLIST = new Set([
@@ -32,7 +32,7 @@ function insideWorkspace(target) {
 }
 export async function resolveRuntimeDirectory(value, fallback = path.join(ROOT, 'artifacts/runtime')) {
   const resolved = path.resolve(ROOT, value || fallback);
-  if (!insideWorkspace(resolved) || path.relative(WORKSPACE, resolved) === '' || path.relative(ROOT, resolved) === '') fail('RUNTIME_DIR 必须指向工作区内的专用运行目录（Windows：E:\\Gomoku；容器：应用目录）');
+  if (!insideWorkspace(resolved) || path.relative(WORKSPACE, resolved) === '' || path.relative(ROOT, resolved) === '') fail(`RUNTIME_DIR 必须指向工作区 ${WORKSPACE} 内的专用运行目录`);
   let ancestor = resolved;
   for (;;) {
     try {
@@ -56,7 +56,7 @@ async function readManifest(directory) {
     fail('deployment.json 无法解析；请保留旧数据并使用新的 RUNTIME_DIR');
   }
 }
-function refuseReuse(reason) { fail(`运行目录拒绝复用：${reason}。请保留旧链，设置 E:\\Gomoku 内全新的 RUNTIME_DIR；不会自动清理或迁移`); }
+function refuseReuse(reason) { fail(`运行目录拒绝复用：${reason}。请保留旧链，设置工作区 ${WORKSPACE} 内全新的 RUNTIME_DIR；不会自动清理或迁移`); }
 function checkManifest(manifest, mode, artifactHash, periods) {
   if (!manifest) return;
   if (manifest.schemaVersion !== MANIFEST_VERSION || !/^0x[0-9a-f]{64}$/i.test(manifest.creationArtifactHash || '') || !/^0x[0-9a-f]{64}$/i.test(manifest.runtimeCodeHash || '') || !manifest.chainFingerprint || !manifest.deploymentBlockHash || !Number.isSafeInteger(manifest.deploymentBlock) || !Number.isSafeInteger(manifest.chainId) || !manifest.address || (mode === 'local' && !manifest.deploymentHash)) refuseReuse('旧 manifest 缺少 creation artifact hash、实际 runtime hash 或链指纹');

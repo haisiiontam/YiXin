@@ -1,61 +1,60 @@
-﻿# 弈·信 环境自检与一键准备：缺什么补什么，补不了就告诉你装什么。
+﻿# 所有下载、依赖及缓存均在项目内；不全局安装 Node 或 pnpm。
+param([switch]$CheckOnly)
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
 Set-Location -LiteralPath $projectRoot
-
-function Get-NodeExe {
-    $cmd = Get-Command node -ErrorAction SilentlyContinue
-    if ($cmd) { return $cmd.Source }
-    $fallback = 'C:\Users\66487\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\node\bin\node.exe'
-    if (Test-Path -LiteralPath $fallback) { return $fallback }
-    return $null
-}
-
-$nodeExe = Get-NodeExe
-if (-not $nodeExe) {
-    Write-Host '缺少 Node.js（需要 20.19 或更高）。' -ForegroundColor Red
-    Write-Host '安装方式二选一：'
-    Write-Host '  1) winget install OpenJS.NodeJS.LTS'
-    Write-Host '  2) 下载 https://npmmirror.com/mirrors/node/ 的 win-x64 zip，解压后把目录加入 PATH'
-    Write-Host '装好后重新运行本脚本。'
-    exit 1
-}
-
-$version = & $nodeExe -v
-$major = [int]($version.TrimStart('v').Split('.')[0])
-$minor = [int]($version.TrimStart('v').Split('.')[1])
-Write-Host "Node.js $version ($nodeExe)" -ForegroundColor Green
-if ($major -lt 20 -or ($major -eq 20 -and $minor -lt 19)) {
-    Write-Host '版本过低：需要 20.19 或更高。' -ForegroundColor Red
-    exit 1
-}
-
-$pnpmCmd = Get-Command pnpm -ErrorAction SilentlyContinue
-if (-not $pnpmCmd) {
-    Write-Host '缺少 pnpm，正在用 npm 安装…' -ForegroundColor Yellow
-    & (Join-Path (Split-Path -Parent $nodeExe) 'npm.cmd') install -g pnpm@latest --registry=https://registry.npmmirror.com
-    $pnpmCmd = Get-Command pnpm -ErrorAction SilentlyContinue
-    if (-not $pnpmCmd) { Write-Host 'pnpm 安装失败，请手动执行 npm i -g pnpm' -ForegroundColor Red; exit 1 }
-}
-
 $env:TEMP = Join-Path $projectRoot '.tmp'
 $env:TMP = $env:TEMP
 $env:XDG_CACHE_HOME = Join-Path $projectRoot '.cache'
 $env:npm_config_cache = Join-Path $projectRoot '.cache\npm'
-New-Item -ItemType Directory -Force -Path $env:TEMP, $env:XDG_CACHE_HOME | Out-Null
-
-if (-not (Test-Path -LiteralPath 'node_modules\vite\bin\vite.js')) {
-    Write-Host '安装项目依赖…' -ForegroundColor Cyan
-    & pnpm install --frozen-lockfile --ignore-scripts
-    if ($LASTEXITCODE -ne 0) { Write-Host '依赖安装失败。' -ForegroundColor Red; exit 1 }
+$env:npm_config_prefix = Join-Path $projectRoot '.cache\npm-prefix'
+$env:PNPM_HOME = Join-Path $projectRoot '.cache\pnpm-home'
+New-Item -ItemType Directory -Force -Path $env:TEMP,$env:XDG_CACHE_HOME | Out-Null
+if ($env:NODE_BINARY) {
+    if (-not (Test-Path -LiteralPath $env:NODE_BINARY -PathType Leaf)) {
+        throw 'NODE_BINARY 不是有效的 Node 可执行文件，请修正该环境变量或清空后使用 PATH。'
+    }
+    $nodeExe = (Resolve-Path -LiteralPath $env:NODE_BINARY).Path
+} else {
+    $nodeCommand = Get-Command node -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($nodeCommand) { $nodeExe = $nodeCommand.Source }
 }
-
-if (-not (Test-Path -LiteralPath 'web\dist\index.html')) {
+if (-not $nodeExe) {
+    throw '未找到 Node.js。请从 https://nodejs.org/ 下载并安装 LTS，加入 PATH 后重试；也可设置 NODE_BINARY。需要 Node 20.19.x 或 22.12 及以上版本。'
+}
+$nodeVersionText = & $nodeExe -p 'process.versions.node'
+if ($LASTEXITCODE -ne 0) { throw 'Node.js 无法执行，请检查 NODE_BINARY / PATH。' }
+$nodeVersion = [Version]$nodeVersionText
+if (-not (($nodeVersion.Major -eq 20 -and $nodeVersion.Minor -ge 19) -or $nodeVersion -ge [Version]'22.12.0')) {
+    throw "Node $nodeVersionText 不满足 Vite 7 要求。请从 https://nodejs.org/ 安装 Node 20.19.x 或 22.12 及以上版本。"
+}
+# npm 通过 PATH 找 Node，确保使用同一个运行时。
+$env:PATH = (Split-Path -Parent $nodeExe) + [IO.Path]::PathSeparator + $env:PATH
+Write-Host "Node.js $nodeVersionText" -ForegroundColor Green
+$manifest = Get-Content -LiteralPath 'package.json' -Raw -Encoding UTF8 | ConvertFrom-Json
+$requiredPackages = @($manifest.dependencies.PSObject.Properties.Name) + @($manifest.devDependencies.PSObject.Properties.Name)
+$missingPackages = @($requiredPackages | Where-Object { -not (Test-Path -LiteralPath (Join-Path $projectRoot "node_modules\$_\package.json")) })
+if ($missingPackages.Count -gt 0) {
+    if ($CheckOnly) {
+        Write-Host ('尚缺依赖：' + ($missingPackages -join ', ') + '；正常启动时会按锁文件安装。')
+    } else {
+        $npmExe = Join-Path (Split-Path -Parent $nodeExe) 'npm.cmd'
+        if (-not (Test-Path -LiteralPath $npmExe)) {
+            $npmCommand = Get-Command npm.cmd -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+            if ($npmCommand) { $npmExe = $npmCommand.Source }
+        }
+        if (-not (Test-Path -LiteralPath $npmExe)) { throw '缺少 npm.cmd，请安装包含 npm 的 Node.js LTS：https://nodejs.org/' }
+        $pnpmSpec = $manifest.packageManager
+        if ($pnpmSpec -notmatch '^pnpm@\d+\.\d+\.\d+$') { throw 'package.json 必须固定 pnpm 完整版本。' }
+        Write-Host "按锁文件安装依赖（$pnpmSpec，缓存位于项目 .cache）…" -ForegroundColor Cyan
+        & $npmExe exec --yes "--package=$pnpmSpec" -- pnpm install --frozen-lockfile --ignore-scripts --store-dir (Join-Path $projectRoot '.cache\pnpm-store') | Out-Host
+        if ($LASTEXITCODE -ne 0) { throw '依赖安装失败；请检查网络及上方错误，修复后重新启动。' }
+    }
+}
+if (-not $CheckOnly -and -not (Test-Path -LiteralPath 'web\dist\index.html')) {
     Write-Host '构建前端…' -ForegroundColor Cyan
-    & $nodeExe 'node_modules\vite\bin\vite.js' build
-    if ($LASTEXITCODE -ne 0) { Write-Host '构建失败。' -ForegroundColor Red; exit 1 }
+    & $nodeExe 'node_modules\vite\bin\vite.js' build | Out-Host
+    if ($LASTEXITCODE -ne 0) { throw '前端构建失败，请检查上方错误。' }
 }
-
-Write-Host ''
-Write-Host '准备完成。双击 启动游戏.cmd 开玩；要跑浏览器端到端测试就先执行：' -ForegroundColor Green
-Write-Host '  pnpm exec playwright install chromium'
+# 唯一成功流输出供 start.ps1 使用，提示信息使用 Host 流。
+Write-Output $nodeExe

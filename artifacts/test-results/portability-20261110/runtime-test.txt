@@ -1,0 +1,30 @@
+This version of µWS is not compatible with your Node.js build:
+
+Error: Cannot find module '../binaries/uws_win32_x64_137.node'
+Require stack:
+- E:\Gomoku\app\node_modules\.pnpm\@trufflesuite+uws-js-unofficial@20.30.0-unofficial.0\node_modules\@trufflesuite\uws-js-unofficial\src\uws.js
+- E:\Gomoku\app\node_modules\.pnpm\ganache@7.9.2\node_modules\ganache\dist\node\core.js
+Falling back to a NodeJS implementation; performance may be degraded.
+
+
+✔ external connects to independent JSON-RPC without deployment, signing, account access or funding (3799.583ms)
+✔ external HTTP config, faucet, strict RPC allowlist and origin policy (371.5342ms)
+✔ external RPC broadcasts client-signed raw transaction and exposes real receipt/log/block reads (508.7735ms)
+✔ external rejects missing configuration, wrong chain, empty code, wrong runtime hash, periods and deployment block (579.7624ms)
+✔ external rejects correct code anchors with incompatible EIP-712 domain or stateDigest (516.2584ms)
+✔ external rejects a real legacy eight-field channel before registration or opening despite correct hash/domain/digest (787.3298ms)
+✔ external manifest reuses exact identity and refuses changed chain fingerprint (761.7501ms)
+✔ local persists creation artifact and actual immutable runtime hashes and reuses the same deployment (514.6474ms)
+✔ local default mines periodic blocks so proof windows and timeouts progress without management RPC (2170.4831ms)
+✔ local refuses actual on-chain runtime code drift instead of redeploying (308.8553ms)
+✔ local refuses chain fingerprint drift, legacy manifest and untracked data without clearing directories (313.6049ms)
+✔ manual authorized preparation creates unsigned deployment data without a transaction or private key handling (3762.6127ms)
+✔ runtime directory must stay inside the workspace and deployment preparation requires explicit authorization (822.2376ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 19837.6451
